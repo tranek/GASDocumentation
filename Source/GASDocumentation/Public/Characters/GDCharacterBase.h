@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h"
+#include "GameplayTagContainer.h"
 #include "GASDocumentation.h"
 #include "GDCharacterBase.generated.h"
 
@@ -35,6 +36,11 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	EGDHitReactDirection GetHitReactDirection(const FVector& ImpactPoint);
+
+	UFUNCTION(NetMulticast, Reliable, WithValidation)
+	virtual void PlayHitReact(FGameplayTag HitDirection, AActor* DamageCauser);
+	virtual void PlayHitReact_Implementation(FGameplayTag HitDirection, AActor* DamageCauser);
+	virtual bool PlayHitReact_Validate(FGameplayTag HitDirection, AActor* DamageCauser);
 
 	/**
 	* Getters for attributes from GDAttributeSetBase
@@ -87,4 +93,10 @@ protected:
 	// so that we don't have to wait. The Server's replication to the Client won't matter since
 	// the values should be the same.
 	virtual void InitializeAttributes();
+
+private:
+	FGameplayTag HitDirectionFrontTag;
+	FGameplayTag HitDirectionBackTag;
+	FGameplayTag HitDirectionRightTag;
+	FGameplayTag HitDirectionLeftTag;
 };

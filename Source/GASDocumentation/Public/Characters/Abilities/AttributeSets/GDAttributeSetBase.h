@@ -23,6 +23,8 @@ class GASDOCUMENTATION_API UGDAttributeSetBase : public UAttributeSet
 	GENERATED_BODY()
 	
 public:
+	UGDAttributeSetBase();
+
 	// AttributeSet Overrides
 	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
 	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
@@ -164,4 +166,10 @@ protected:
 
 	UFUNCTION()
 	virtual void OnRep_GoldBounty();
+
+private:
+	FGameplayTag HitDirectionFrontTag;
+	FGameplayTag HitDirectionBackTag;
+	FGameplayTag HitDirectionRightTag;
+	FGameplayTag HitDirectionLeftTag;
 };

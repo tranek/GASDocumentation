@@ -8,6 +8,15 @@
 #include "GDPlayerController.h"
 #include "UnrealNetwork.h"
 
+UGDAttributeSetBase::UGDAttributeSetBase()
+{
+	// Cache tags
+	HitDirectionFrontTag = FGameplayTag::RequestGameplayTag(FName("Effect.HitReact.Front"));
+	HitDirectionBackTag = FGameplayTag::RequestGameplayTag(FName("Effect.HitReact.Back"));
+	HitDirectionRightTag = FGameplayTag::RequestGameplayTag(FName("Effect.HitReact.Right"));
+	HitDirectionLeftTag = FGameplayTag::RequestGameplayTag(FName("Effect.HitReact.Left"));
+}
+
 void UGDAttributeSetBase::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
 {
 	// This is called whenever attributes change, so for max health/mana we want to scale the current totals to match
@@ -128,33 +137,30 @@ void UGDAttributeSetBase::PostGameplayEffectExecute(const FGameplayEffectModCall
 				// Play HitReact animation and sound with a multicast RPC.
 				const FHitResult* Hit = Data.EffectSpec.GetContext().GetHitResult();
 
-				//TODO
-				/*
 				if (Hit && Hit->IsValidBlockingHit())
 				{
-					EPGHitReactDirection HitDirection = TargetCharacter->GetHitReactDirection(Data.EffectSpec.GetContext().GetHitResult()->Location);
+					EGDHitReactDirection HitDirection = TargetCharacter->GetHitReactDirection(Data.EffectSpec.GetContext().GetHitResult()->Location);
 					switch (HitDirection)
 					{
-					case EPGHitReactDirection::Left:
-						TargetCharacter->PlayHitReact(FGameplayTag::RequestGameplayTag(FName("Effect.HitReact.Left")), SourceCharacter);
+					case EGDHitReactDirection::Left:
+						TargetCharacter->PlayHitReact(HitDirectionLeftTag, SourceCharacter);
 						break;
-					case EPGHitReactDirection::Front:
-						TargetCharacter->PlayHitReact(FGameplayTag::RequestGameplayTag(FName("Effect.HitReact.Front")), SourceCharacter);
+					case EGDHitReactDirection::Front:
+						TargetCharacter->PlayHitReact(HitDirectionFrontTag, SourceCharacter);
 						break;
-					case EPGHitReactDirection::Right:
-						TargetCharacter->PlayHitReact(FGameplayTag::RequestGameplayTag(FName("Effect.HitReact.Right")), SourceCharacter);
+					case EGDHitReactDirection::Right:
+						TargetCharacter->PlayHitReact(HitDirectionRightTag, SourceCharacter);
 						break;
-					case EPGHitReactDirection::Back:
-						TargetCharacter->PlayHitReact(FGameplayTag::RequestGameplayTag(FName("Effect.HitReact.Back")), SourceCharacter);
+					case EGDHitReactDirection::Back:
+						TargetCharacter->PlayHitReact(HitDirectionBackTag, SourceCharacter);
 						break;
 					}
 				}
 				else
 				{
 					// No hit result. Default to front.
-					TargetCharacter->PlayHitReact(FGameplayTag::RequestGameplayTag(FName("Effect.HitReact.Front")), SourceCharacter);
+					TargetCharacter->PlayHitReact(HitDirectionFrontTag, SourceCharacter);
 				}
-				*/
 			}
 		}
 	}// Damage
@@ -169,6 +175,11 @@ void UGDAttributeSetBase::PostGameplayEffectExecute(const FGameplayEffectModCall
 		// Handle mana changes.
 		SetMana(FMath::Clamp(GetMana(), 0.0f, GetMaxMana()));
 	} // Mana
+	else if (Data.EvaluatedData.Attribute == GetStaminaAttribute())
+	{
+		// Handle stamina changes.
+		SetStamina(FMath::Clamp(GetStamina(), 0.0f, GetMaxStamina()));
+	}
 }
 
 void UGDAttributeSetBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
