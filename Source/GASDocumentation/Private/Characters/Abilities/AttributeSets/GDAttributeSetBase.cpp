@@ -192,6 +192,9 @@ void UGDAttributeSetBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 	DOREPLIFETIME(UGDAttributeSetBase, Mana);
 	DOREPLIFETIME(UGDAttributeSetBase, MaxMana);
 	DOREPLIFETIME(UGDAttributeSetBase, ManaRegenRate);
+	DOREPLIFETIME(UGDAttributeSetBase, Stamina);
+	DOREPLIFETIME(UGDAttributeSetBase, MaxStamina);
+	DOREPLIFETIME(UGDAttributeSetBase, StaminaRegenRate);
 	DOREPLIFETIME(UGDAttributeSetBase, MoveSpeed);
 	DOREPLIFETIME(UGDAttributeSetBase, CharacterLevel);
 	DOREPLIFETIME(UGDAttributeSetBase, XP);

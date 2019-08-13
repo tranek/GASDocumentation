@@ -16,6 +16,5 @@ class GASDOCUMENTATION_API UGDAbilitySystemComponent : public UAbilitySystemComp
 	
 public:
 	bool CharacterAbilitiesGiven = false;
-	bool GameplayEffectsGivenOnFirstSpawnGiven = false;
-	bool GameplayEffectsActiveWhileAliveGiven = false;
+	bool StartupEffectsApplied = false;
 };

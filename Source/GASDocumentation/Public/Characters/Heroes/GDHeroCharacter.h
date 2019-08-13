@@ -23,7 +23,13 @@ public:
 	// Only called on the Server. Calls before Server's AcknowledgePossession.
 	virtual void PossessedBy(AController* NewController) override;
 
+	class USpringArmComponent* GetCameraBoom();
+
+	class UCameraComponent* GetFollowCamera();
+
 	class UGDFloatingStatusBarWidget* GetFloatingStatusBar();
+
+	USkeletalMeshComponent* GetGunComponent() const;
 
 protected:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "GASDocumentation|Camera")
@@ -32,11 +38,14 @@ protected:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "GASDocumentation|Camera")
 	float BaseLookUpRate = 45.0f;
 
-	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "GASDocumentation|Camera")
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "GASDocumentation|Camera")
 	class USpringArmComponent* CameraBoom;
 
-	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "GASDocumentation|Camera")
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "GASDocumentation|Camera")
 	class UCameraComponent* FollowCamera;
+
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "GASDocumentation|GDHeroCharacter")
+	USkeletalMeshComponent* GunComponent;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "GASDocumentation|UI")
 	TSubclassOf<class UGDFloatingStatusBarWidget> UIFloatingStatusBarClass;

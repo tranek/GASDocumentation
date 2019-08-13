@@ -23,8 +23,15 @@ float UGDCharacterMovementComponent::GetMaxSpeed() const
 	if (Owner->GetAbilitySystemComponent()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.AimDownSights"))) &&
 		!Owner->GetAbilitySystemComponent()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.AimDownSights.Removal"))))
 	{
-		float ADSSpeed = Owner->GetMoveSpeedBaseValue() * 0.7f;
+		float ADSSpeed = Owner->GetMoveSpeedBaseValue() * 0.6f;
 		return ADSSpeed < Owner->GetMoveSpeed() ? ADSSpeed : Owner->GetMoveSpeed();
+	}
+
+	if (Owner->GetAbilitySystemComponent()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.Sprint"))) &&
+		!Owner->GetAbilitySystemComponent()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.Sprint.Removal"))))
+	{
+		float SprintSpeed = Owner->GetMoveSpeedBaseValue() * 1.4f;
+		return SprintSpeed > Owner->GetMoveSpeed() ? SprintSpeed : Owner->GetMoveSpeed();
 	}
 
 	return Owner->GetMoveSpeed();

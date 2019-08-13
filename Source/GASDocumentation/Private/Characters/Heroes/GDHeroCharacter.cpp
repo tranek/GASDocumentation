@@ -28,6 +28,8 @@ AGDHeroCharacter::AGDHeroCharacter(const class FObjectInitializer& ObjectInitial
 	FollowCamera->SetupAttachment(CameraBoom);
 	FollowCamera->FieldOfView = 80.0f;
 
+	GunComponent = CreateDefaultSubobject<USkeletalMeshComponent>(FName("Gun"));
+
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
 
 	// Makes sure that the animations play on the Server so that we can use bone and socket transforms
@@ -93,11 +95,7 @@ void AGDHeroCharacter::PossessedBy(AController * NewController)
 		// For now assume possession = spawn/respawn.
 		InitializeAttributes();
 
-		//TODO
-		//GiveGameplayEffectsGivenOnFirstSpawn();
-
-		//GiveGameplayEffectsActiveWhileAlive();
-
+		AddStartupEffects();
 
 		AddCharacterAbilities();
 
@@ -109,9 +107,24 @@ void AGDHeroCharacter::PossessedBy(AController * NewController)
 	}
 }
 
+USpringArmComponent * AGDHeroCharacter::GetCameraBoom()
+{
+	return CameraBoom;
+}
+
+UCameraComponent * AGDHeroCharacter::GetFollowCamera()
+{
+	return FollowCamera;
+}
+
 UGDFloatingStatusBarWidget * AGDHeroCharacter::GetFloatingStatusBar()
 {
 	return UIFloatingStatusBar;
+}
+
+USkeletalMeshComponent * AGDHeroCharacter::GetGunComponent() const
+{
+	return GunComponent;
 }
 
 void AGDHeroCharacter::BeginPlay()
@@ -121,6 +134,8 @@ void AGDHeroCharacter::BeginPlay()
 	// Set up floating status bar for when the player is the Server.
 	// Simulated proxies on client don't have their PlayerState yet so we call this again in OnRep_PlayerState.
 	InitializeFloatingStatusBar();
+
+	GunComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, FName("GunSocket"));
 }
 
 void AGDHeroCharacter::LookUp(float Value)

@@ -151,6 +151,8 @@ void AGDPlayerState::HealthChanged(const FOnAttributeChangeData & Data)
 	}
 
 	// Update the HUD
+	// Handled in the UI itself using the AsyncTaskAttributeChanged node as an example how to do it in Blueprint
+	/*
 	AGDPlayerController* PC = Cast<AGDPlayerController>(GetOwner());
 	if (PC)
 	{
@@ -160,6 +162,7 @@ void AGDPlayerState::HealthChanged(const FOnAttributeChangeData & Data)
 			HUD->SetCurrentHealth(Health);
 		}
 	}
+	*/
 }
 
 void AGDPlayerState::MaxHealthChanged(const FOnAttributeChangeData & Data)

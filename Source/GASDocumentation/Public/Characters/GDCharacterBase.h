@@ -85,6 +85,10 @@ protected:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "GASDocumentation|Abilities")
 	TSubclassOf<class UGameplayEffect> DefaultAttributes;
 
+	// These effects are only applied one time on startup
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "GASDocumentation|Abilities")
+	TArray<TSubclassOf<class UGameplayEffect>> StartupEffects;
+
 	virtual void AddCharacterAbilities();
 
 	virtual void RemoveCharacterAbilities();
@@ -93,6 +97,8 @@ protected:
 	// so that we don't have to wait. The Server's replication to the Client won't matter since
 	// the values should be the same.
 	virtual void InitializeAttributes();
+
+	virtual void AddStartupEffects();
 
 private:
 	FGameplayTag HitDirectionFrontTag;
