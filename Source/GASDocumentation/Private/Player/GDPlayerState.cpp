@@ -117,6 +117,8 @@ int32 AGDPlayerState::GetGoldBounty() const
 
 void AGDPlayerState::BeginPlay()
 {
+	Super::BeginPlay();
+
 	if (AbilitySystemComponent)
 	{
 		// Attribute change callbacks
