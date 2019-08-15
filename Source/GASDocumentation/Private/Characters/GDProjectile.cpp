@@ -2,6 +2,7 @@
 
 
 #include "GDProjectile.h"
+#include "GameFramework/ProjectileMovementComponent.h"
 
 // Sets default values
 AGDProjectile::AGDProjectile()
@@ -10,6 +11,8 @@ AGDProjectile::AGDProjectile()
 	PrimaryActorTick.bCanEverTick = true;
 
 	bReplicates = true;
+
+	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(FName("ProjectileMovement"));
 }
 
 // Called when the game starts or when spawned

@@ -41,6 +41,7 @@ void UGDGA_FireGun::ActivateAbility(const FGameplayAbilitySpecHandle Handle, con
 	Task->OnInterrupted.AddDynamic(this, &UGDGA_FireGun::OnCancelled);
 	Task->OnCancelled.AddDynamic(this, &UGDGA_FireGun::OnCancelled);
 	Task->EventReceived.AddDynamic(this, &UGDGA_FireGun::EventReceived);
+	// ReadyForActivation() is how you activate the AbilityTask in C++. Blueprint has magic from K2Node_LatentGameplayTaskCall that will automatically call ReadyForActivation().
 	Task->ReadyForActivation();
 }
 
@@ -79,16 +80,20 @@ void UGDGA_FireGun::EventReceived(FGameplayTag EventTag, FGameplayEventData Even
 		FRotator Rotation = UKismetMathLibrary::FindLookAtRotation(Start, End);
 
 		FGameplayEffectSpecHandle DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageGameplayEffect, GetAbilityLevel());
+		
+		// Pass the damage to the Damage Execution Calculation through a SetByCaller value on the GameplayEffectSpec
+		DamageEffectSpecHandle.Data.Get()->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Damage")), Damage);
 
 		FTransform MuzzleTransform = Hero->GetGunComponent()->GetSocketTransform(FName("Muzzle"));
 		MuzzleTransform.SetRotation(Rotation.Quaternion());
 		MuzzleTransform.SetScale3D(FVector(1.0f));
+
 		FActorSpawnParameters SpawnParameters;
 		SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
 		AGDProjectile* Projectile = GetWorld()->SpawnActorDeferred<AGDProjectile>(ProjectileClass, MuzzleTransform, GetOwningActorFromActorInfo(),
 			Hero, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 		Projectile->DamageEffectSpecHandle = DamageEffectSpecHandle;
-		Projectile->InstigatorLocation = Hero->GetActorLocation();
 		Projectile->Range = Range;
 		Projectile->FinishSpawning(MuzzleTransform);
 	}

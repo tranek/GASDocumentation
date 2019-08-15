@@ -16,6 +16,13 @@ class GASDOCUMENTATION_API UGDHUDWidget : public UUserWidget
 	
 public:
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void ShowAbilityConfirmCancelText(bool ShowText);
+
+
+	/**
+	* Attribute setters
+	*/
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void SetMaxHealth(float MaxHealth);
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)

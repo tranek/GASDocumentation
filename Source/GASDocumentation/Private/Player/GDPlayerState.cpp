@@ -40,6 +40,19 @@ UGDAttributeSetBase * AGDPlayerState::GetAttributeSetBase() const
 	return AttributeSetBase;
 }
 
+void AGDPlayerState::ShowAbilityConfirmCancelText(bool ShowText)
+{
+	AGDPlayerController* PC = Cast<AGDPlayerController>(GetOwner());
+	if (PC)
+	{
+		UGDHUDWidget* HUD = PC->GetHUD();
+		if (HUD)
+		{
+			HUD->ShowAbilityConfirmCancelText(ShowText);
+		}
+	}
+}
+
 float AGDPlayerState::GetHealth() const
 {
 	return AttributeSetBase->GetHealth();
@@ -83,6 +96,11 @@ float AGDPlayerState::GetMaxStamina() const
 float AGDPlayerState::GetStaminaRegenRate() const
 {
 	return AttributeSetBase->GetStaminaRegenRate();
+}
+
+float AGDPlayerState::GetArmor() const
+{
+	return AttributeSetBase->GetArmor();
 }
 
 float AGDPlayerState::GetMoveSpeed() const
@@ -226,6 +244,8 @@ void AGDPlayerState::ManaChanged(const FOnAttributeChangeData & Data)
 	}
 
 	// Update the HUD
+	// Handled in the UI itself using the AsyncTaskAttributeChanged node as an example how to do it in Blueprint
+	/*
 	AGDPlayerController* PC = Cast<AGDPlayerController>(GetOwner());
 	if (PC)
 	{
@@ -235,6 +255,7 @@ void AGDPlayerState::ManaChanged(const FOnAttributeChangeData & Data)
 			HUD->SetCurrentMana(Mana);
 		}
 	}
+	*/
 }
 
 void AGDPlayerState::MaxManaChanged(const FOnAttributeChangeData & Data)
@@ -285,6 +306,8 @@ void AGDPlayerState::StaminaChanged(const FOnAttributeChangeData & Data)
 	float Stamina = Data.NewValue;
 
 	// Update the HUD
+	// Handled in the UI itself using the AsyncTaskAttributeChanged node as an example how to do it in Blueprint
+	/*
 	AGDPlayerController* PC = Cast<AGDPlayerController>(GetOwner());
 	if (PC)
 	{
@@ -294,6 +317,7 @@ void AGDPlayerState::StaminaChanged(const FOnAttributeChangeData & Data)
 			HUD->SetCurrentStamina(Stamina);
 		}
 	}
+	*/
 }
 
 void AGDPlayerState::MaxStaminaChanged(const FOnAttributeChangeData & Data)

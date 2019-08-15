@@ -195,6 +195,7 @@ void UGDAttributeSetBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 	DOREPLIFETIME(UGDAttributeSetBase, Stamina);
 	DOREPLIFETIME(UGDAttributeSetBase, MaxStamina);
 	DOREPLIFETIME(UGDAttributeSetBase, StaminaRegenRate);
+	DOREPLIFETIME(UGDAttributeSetBase, Armor);
 	DOREPLIFETIME(UGDAttributeSetBase, MoveSpeed);
 	DOREPLIFETIME(UGDAttributeSetBase, CharacterLevel);
 	DOREPLIFETIME(UGDAttributeSetBase, XP);
@@ -260,6 +261,11 @@ void UGDAttributeSetBase::OnRep_MaxStamina()
 void UGDAttributeSetBase::OnRep_StaminaRegenRate()
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UGDAttributeSetBase, StaminaRegenRate);
+}
+
+void UGDAttributeSetBase::OnRep_Armor()
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UGDAttributeSetBase, Armor);
 }
 
 void UGDAttributeSetBase::OnRep_MoveSpeed()

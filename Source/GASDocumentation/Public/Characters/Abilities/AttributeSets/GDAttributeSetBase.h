@@ -78,6 +78,11 @@ public:
 	FGameplayAttributeData StaminaRegenRate;
 	ATTRIBUTE_ACCESSORS(UGDAttributeSetBase, StaminaRegenRate);
 
+	// Armor reduces the amount of damage done by attackers
+	UPROPERTY(BlueprintReadOnly, Category = "Armor", ReplicatedUsing = OnRep_Armor)
+	FGameplayAttributeData Armor;
+	ATTRIBUTE_ACCESSORS(UGDAttributeSetBase, Armor);
+
 	// Damage is a meta attribute used by the DamageExecution to calculate final damage, which then turns into -Health
 	// Temporary value that only exists on the Server. Not replicated.
 	UPROPERTY(BlueprintReadOnly, Category = "Damage", meta = (HideFromLevelInfos))
@@ -148,6 +153,9 @@ protected:
 
 	UFUNCTION()
 	virtual void OnRep_StaminaRegenRate();
+
+	UFUNCTION()
+	virtual void OnRep_Armor();
 
 	UFUNCTION()
 	virtual void OnRep_MoveSpeed();

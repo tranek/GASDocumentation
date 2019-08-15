@@ -27,6 +27,12 @@ public:
 
 	class UCameraComponent* GetFollowCamera();
 
+	UFUNCTION(BlueprintCallable, Category = "GASDocumentation|Camera")
+	float GetStartingCameraBoomArmLength();
+
+	UFUNCTION(BlueprintCallable, Category = "GASDocumentation|Camera")
+	FVector GetStartingCameraBoomLocation();
+
 	class UGDFloatingStatusBarWidget* GetFloatingStatusBar();
 
 	USkeletalMeshComponent* GetGunComponent() const;
@@ -37,6 +43,12 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "GASDocumentation|Camera")
 	float BaseLookUpRate = 45.0f;
+
+	UPROPERTY(BlueprintReadOnly, Category = "GASDocumentation|Camera")
+	float StartingCameraBoomArmLength;
+
+	UPROPERTY(BlueprintReadOnly, Category = "GASDocumentation|Camera")
+	FVector StartingCameraBoomLocation;
 
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "GASDocumentation|Camera")
 	class USpringArmComponent* CameraBoom;

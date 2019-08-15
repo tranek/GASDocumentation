@@ -22,8 +22,8 @@ public:
 	UPROPERTY(BlueprintReadWrite, Meta = (ExposeOnSpawn = true))
 	FGameplayEffectSpecHandle DamageEffectSpecHandle;
 
-	UPROPERTY(BlueprintReadWrite, Meta = (ExposeOnSpawn = true))
-	FVector InstigatorLocation;
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+	class UProjectileMovementComponent* ProjectileMovement;
 
 protected:
 	// Called when the game starts or when spawned

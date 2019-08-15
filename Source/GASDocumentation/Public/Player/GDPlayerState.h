@@ -24,6 +24,9 @@ public:
 
 	class UGDAttributeSetBase* GetAttributeSetBase() const;
 
+	UFUNCTION(BlueprintCallable, Category = "GASDocumenation|GDPlayerState|UI")
+	void ShowAbilityConfirmCancelText(bool ShowText);
+
 
 	/**
 	* Getters for attributes from GDAttributeSetBase. Returns Current Value unless otherwise specified.
@@ -55,6 +58,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "GASDocumentation|GDPlayerState|Attributes")
 	float GetStaminaRegenRate() const;
+
+	UFUNCTION(BlueprintCallable, Category = "GASDocumentation|GDPlayerState|Attributes")
+	float GetArmor() const;
 
 	UFUNCTION(BlueprintCallable, Category = "GASDocumentation|GDPlayerState|Attributes")
 	float GetMoveSpeed() const;

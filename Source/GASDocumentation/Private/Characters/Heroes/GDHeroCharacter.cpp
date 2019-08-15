@@ -117,6 +117,16 @@ UCameraComponent * AGDHeroCharacter::GetFollowCamera()
 	return FollowCamera;
 }
 
+float AGDHeroCharacter::GetStartingCameraBoomArmLength()
+{
+	return StartingCameraBoomArmLength;
+}
+
+FVector AGDHeroCharacter::GetStartingCameraBoomLocation()
+{
+	return StartingCameraBoomLocation;
+}
+
 UGDFloatingStatusBarWidget * AGDHeroCharacter::GetFloatingStatusBar()
 {
 	return UIFloatingStatusBar;
@@ -136,6 +146,9 @@ void AGDHeroCharacter::BeginPlay()
 	InitializeFloatingStatusBar();
 
 	GunComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, FName("GunSocket"));
+
+	StartingCameraBoomArmLength = CameraBoom->TargetArmLength;
+	StartingCameraBoomLocation = CameraBoom->RelativeLocation;
 }
 
 void AGDHeroCharacter::LookUp(float Value)
