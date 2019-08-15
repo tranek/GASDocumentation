@@ -13,10 +13,12 @@ struct GDDamageStatics
 	{
 		// Snapshot happens at time of GESpec creation
 
-		// Capture the Target's Armor.
+		// We're not capturing anything from the Source in this example, but there could be like AttackPower attributes that you might want.
+
+		// Capture the Target's Armor. Don't snapshot (the false).
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UGDAttributeSetBase, Armor, Target, false);
 
-		// Capture the Target's Damage. This is the value of health that will be subtracted on the Target.
+		// Capture the Target's Damage. This is the value of health that will be subtracted on the Target. Don't snapshot (the false).
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UGDAttributeSetBase, Damage, Target, false);
 	}
 };
