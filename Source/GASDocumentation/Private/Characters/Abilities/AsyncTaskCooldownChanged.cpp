@@ -49,7 +49,9 @@ void UAsyncTaskCooldownChanged::BeginDestroy()
 
 void UAsyncTaskCooldownChanged::OnActiveGameplayEffectAddedCallback(UAbilitySystemComponent * Target, const FGameplayEffectSpec & SpecApplied, FActiveGameplayEffectHandle ActiveHandle)
 {
-	// Expecting the cooldown tags to be granted tags, not asset tags. Change to asset tags if you prefer to use those instead. Or both!
+	FGameplayTagContainer AssetTags;
+	SpecApplied.GetAllAssetTags(AssetTags);
+	
 	FGameplayTagContainer GrantedTags;
 	SpecApplied.GetAllGrantedTags(GrantedTags);
 
@@ -58,7 +60,7 @@ void UAsyncTaskCooldownChanged::OnActiveGameplayEffectAddedCallback(UAbilitySyst
 
 	for (FGameplayTag CooldownTag : CooldownTagArray)
 	{
-		if (GrantedTags.HasTagExact(CooldownTag))
+		if (AssetTags.HasTagExact(CooldownTag) || GrantedTags.HasTagExact(CooldownTag))
 		{
 			float TimeRemaining = 0.0f;
 			float Duration = 0.0f;

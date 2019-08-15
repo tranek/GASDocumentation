@@ -196,7 +196,7 @@ void AGDCharacterBase::AddCharacterAbilities()
 	{
 		//UE_LOG(LogTemp, Warning, TEXT("%s() Adding Ability: %s. Ability Level: %d. InputID: %d"), TEXT(__FUNCTION__), *StartupAbility->GetName(), GetAbilityLevel(StartupAbility.GetDefaultObject()->AbilityIDForLevel), static_cast<int32>(StartupAbility.GetDefaultObject()->AbilityInputID));
 		AbilitySystemComponent->GiveAbility(
-			FGameplayAbilitySpec(StartupAbility, GetAbilityLevel(StartupAbility.GetDefaultObject()->AbilityIDForLevel), static_cast<int32>(StartupAbility.GetDefaultObject()->AbilityInputID), this));
+			FGameplayAbilitySpec(StartupAbility, GetAbilityLevel(StartupAbility.GetDefaultObject()->AbilityID), static_cast<int32>(StartupAbility.GetDefaultObject()->AbilityInputID), this));
 	}
 
 	AbilitySystemComponent->CharacterAbilitiesGiven = true;

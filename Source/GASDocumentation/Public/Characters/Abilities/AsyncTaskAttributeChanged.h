@@ -40,7 +40,5 @@ protected:
 	FGameplayAttribute AttributeToListenFor;
 	TArray<FGameplayAttribute> AttributesToListenFor;
 
-	void RegisterAttributeChangeListener(UAbilitySystemComponent* AbilitySystemComponent, FGameplayAttribute Attribute);
-	void RegisterAttributesChangeListener(UAbilitySystemComponent* AbilitySystemComponent, TArray<FGameplayAttribute> Attributes);
 	void AttributeChanged(const FOnAttributeChangeData& Data);
 };

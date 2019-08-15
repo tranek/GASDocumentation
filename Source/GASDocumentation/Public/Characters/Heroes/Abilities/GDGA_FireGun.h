@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Abilities/GDGameplayAbility.h"
-#include "Abilities/Tasks/GDAT_PlayMontageAndWaitForEvent.h"
+#include "Abilities/AbilityTasks/GDAT_PlayMontageAndWaitForEvent.h"
 #include "GDProjectile.h"
 #include "GDGA_FireGun.generated.h"
 

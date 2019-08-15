@@ -2,8 +2,10 @@
 
 
 #include "GDDamageExecCalculation.h"
+#include "GDAbilitySystemComponent.h"
 #include "GDAttributeSetBase.h"
 
+// Declare the attributes to capture and define how we want to capture them from the Source and Target.
 struct GDDamageStatics
 {
 	DECLARE_ATTRIBUTE_CAPTUREDEF(Armor);
@@ -65,5 +67,13 @@ void UGDDamageExecCalculation::Execute_Implementation(const FGameplayEffectCusto
 	if (MitigatedDamage > 0.f)
 	{
 		OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(DamageStatics().DamageProperty, EGameplayModOp::Additive, MitigatedDamage));
+	}
+
+	// Broadcast damages to Target ASC
+	UGDAbilitySystemComponent* TargetASC = Cast<UGDAbilitySystemComponent>(TargetAbilitySystemComponent);
+	if (TargetASC)
+	{
+		UGDAbilitySystemComponent* SourceASC = Cast<UGDAbilitySystemComponent>(SourceAbilitySystemComponent);
+		TargetASC->ReceiveDamage(SourceASC, UnmitigatedDamage, MitigatedDamage);
 	}
 }
