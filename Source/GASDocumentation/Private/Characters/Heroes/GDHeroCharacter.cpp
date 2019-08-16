@@ -104,6 +104,11 @@ void AGDHeroCharacter::PossessedBy(AController * NewController)
 		{
 			PC->CreateHUD();
 		}
+
+		if (AbilitySystemComponent.IsValid())
+		{
+			AbilitySystemComponent->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag(FName("State.Debuff.Stun")), EGameplayTagEventType::NewOrRemoved).AddUObject(this, &AGDHeroCharacter::StunTagChanged);
+		}
 	}
 }
 
@@ -137,6 +142,11 @@ USkeletalMeshComponent * AGDHeroCharacter::GetGunComponent() const
 	return GunComponent;
 }
 
+/**
+* On the Server, Possession happens before BeginPlay.
+* On the Client, BeginPlay happens before Possession.
+* So we can't use BeginPlay to do anything with the AbilitySystemComponent because we don't have it until the PlayerState replicates from possession.
+*/
 void AGDHeroCharacter::BeginPlay()
 {
 	Super::BeginPlay();
@@ -249,5 +259,24 @@ void AGDHeroCharacter::OnRep_PlayerState()
 
 		// Simulated on proxies don't have their PlayerStates yet when BeginPlay is called so we call it again here
 		InitializeFloatingStatusBar();
+
+		if (AbilitySystemComponent.IsValid())
+		{
+			AbilitySystemComponent->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag(FName("State.Debuff.Stun")), EGameplayTagEventType::NewOrRemoved).AddUObject(this, &AGDHeroCharacter::StunTagChanged);
+		}
+	}
+}
+
+void AGDHeroCharacter::StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
+{
+	if (NewCount > 0 && AbilitySystemComponent.IsValid())
+	{
+		FGameplayTagContainer AbilityTagsToCancel;
+		AbilityTagsToCancel.AddTag(FGameplayTag::RequestGameplayTag(FName("Ability")));
+	
+		FGameplayTagContainer AbilityTagsToIgnore;
+		AbilityTagsToIgnore.AddTag(FGameplayTag::RequestGameplayTag(FName("Ability.NotCanceledByStun")));
+
+		AbilitySystemComponent->CancelAbilities(&AbilityTagsToCancel, &AbilityTagsToIgnore);
 	}
 }

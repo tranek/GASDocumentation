@@ -96,4 +96,6 @@ protected:
 
 	// Client only
 	virtual void OnRep_PlayerState() override;
+
+	virtual void StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
 };

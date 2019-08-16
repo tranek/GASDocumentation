@@ -70,7 +70,7 @@ void UAsyncTaskCooldownChanged::OnActiveGameplayEffectAddedCallback(UAbilitySyst
 
 			if (ASC->GetOwnerRole() == ROLE_Authority)
 			{
-				// Server
+				// Player is Server
 				OnCooldownBegin.Broadcast(CooldownTag, TimeRemaining, Duration);
 			}
 			else if (!UseServerCooldown && SpecApplied.GetContext().GetAbilityInstance_NotReplicated())

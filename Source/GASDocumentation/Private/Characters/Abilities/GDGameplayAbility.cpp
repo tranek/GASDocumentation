@@ -12,6 +12,7 @@ UGDGameplayAbility::UGDGameplayAbility()
 
 	// Default tags that block this ability from activating
 	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag(FName("State.Dead")));
+	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag(FName("State.Debuff.Stun")));
 }
 
 void UGDGameplayAbility::OnGiveAbility(const FGameplayAbilityActorInfo * ActorInfo, const FGameplayAbilitySpec & Spec)
