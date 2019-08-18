@@ -137,7 +137,7 @@ void UGDAttributeSetBase::PostGameplayEffectExecute(const FGameplayEffectModCall
 				// Play HitReact animation and sound with a multicast RPC.
 				const FHitResult* Hit = Data.EffectSpec.GetContext().GetHitResult();
 
-				if (Hit && Hit->IsValidBlockingHit())
+				if (Hit)
 				{
 					EGDHitReactDirection HitDirection = TargetCharacter->GetHitReactDirection(Data.EffectSpec.GetContext().GetHitResult()->Location);
 					switch (HitDirection)
@@ -160,6 +160,16 @@ void UGDAttributeSetBase::PostGameplayEffectExecute(const FGameplayEffectModCall
 				{
 					// No hit result. Default to front.
 					TargetCharacter->PlayHitReact(HitDirectionFrontTag, SourceCharacter);
+				}
+
+				// Show damage number for the Source player unless it was self damage
+				if (SourceActor != TargetActor)
+				{
+					AGDPlayerController* PC = Cast<AGDPlayerController>(SourceController);
+					if (PC)
+					{
+						PC->ShowDamageNumber(LocalDamageDone, TargetCharacter);
+					}
 				}
 			}
 		}

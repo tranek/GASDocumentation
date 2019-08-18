@@ -34,6 +34,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "GASDocumentation|GDCharacter")
 	virtual int32 GetAbilityLevel(EGDAbilityInputID AbilityID) const;
 
+	// Removes all CharacterAbilities. Can only be called by the Server. Removing on the Server will remove from Client too.
+	virtual void RemoveCharacterAbilities();
+
 	UFUNCTION(BlueprintCallable)
 	EGDHitReactDirection GetHitReactDirection(const FVector& ImpactPoint);
 
@@ -59,6 +62,12 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "GASDocumentation|GDCharacter|Attributes")
 	float GetMaxMana() const;
+
+	UFUNCTION(BlueprintCallable, Category = "GASDocumentation|GDCharacter|Attributes")
+	float GetStamina() const;
+
+	UFUNCTION(BlueprintCallable, Category = "GASDocumentation|GDCharacter|Attributes")
+	float GetMaxStamina() const;
 	
 	// Gets the Current value of MoveSpeed
 	UFUNCTION(BlueprintCallable, Category = "GASDocumentation|GDCharacter|Attributes")
@@ -68,6 +77,11 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "GASDocumentation|GDCharacter|Attributes")
 	float GetMoveSpeedBaseValue() const;
 
+	virtual void Die();
+
+	UFUNCTION(BlueprintCallable, Category = "GASDocumentation|GDCharacter")
+	virtual void FinishDying();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -75,6 +89,10 @@ protected:
 	TWeakObjectPtr<class UGDAbilitySystemComponent> AbilitySystemComponent;
 
 	TWeakObjectPtr<class UGDAttributeSetBase> AttributeSetBase;
+
+	// Death Animation
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "GASDocumentation|Animation")
+	UAnimMontage* DeathMontage;
 
 	// Default abilities for this Character. These will be removed on Character death and regiven if Character respawns.
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "GASDocumentation|Abilities")
@@ -91,14 +109,22 @@ protected:
 
 	virtual void AddCharacterAbilities();
 
-	virtual void RemoveCharacterAbilities();
-
 	// Initialize the Character's attributes. Must run on Server but we run it on Client too
 	// so that we don't have to wait. The Server's replication to the Client won't matter since
 	// the values should be the same.
 	virtual void InitializeAttributes();
 
 	virtual void AddStartupEffects();
+
+
+	/**
+	* Setters for Attributes. Only use these in special cases like Respawning, otherwise use a GE to change Attributes.
+	* These change the Attribute's Base Value.
+	*/
+
+	virtual void SetHealth(float Health);
+	virtual void SetMana(float Mana);
+	virtual void SetStamina(float Stamina);
 
 private:
 	FGameplayTag HitDirectionFrontTag;

@@ -13,7 +13,17 @@ class AGASDocumentationGameMode : public AGameModeBase
 
 public:
 	AGASDocumentationGameMode();
+
+	void HeroDied(AController* Controller);
+
+protected:
+	float RespawnDelay;
+
+	TSubclassOf<class AGDHeroCharacter> HeroClass;
+
+	AActor* EnemySpawnPoint;
+
+	virtual void BeginPlay() override;
+
+	void RespawnHero(AController* Controller);
 };
-
-
-

@@ -8,6 +8,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/DecalComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "GASDocumentationGameMode.h"
 #include "GDAbilitySystemComponent.h"
 #include "GDPlayerController.h"
 #include "GDPlayerState.h"
@@ -45,13 +46,14 @@ AGDHeroCharacter::AGDHeroCharacter(const class FObjectInitializer& ObjectInitial
 	UIFloatingStatusBarComponent->SetDrawSize(FVector2D(500, 500));
 
 	UIFloatingStatusBarClass = StaticLoadClass(UObject::StaticClass(), nullptr, TEXT("/Game/GASDocumentation/UI/UI_FloatingStatusBar.UI_FloatingStatusBar_C"));
-
 	if (!UIFloatingStatusBarClass)
 	{
 		UE_LOG(LogTemp, Error, TEXT("%s() Failed to find UIFloatingStatusBarClass. If it was moved, please update the reference location in C++."), TEXT(__FUNCTION__));
 	}
 
 	AIControllerClass = AGDHeroAIController::StaticClass();
+
+	DeadTag = FGameplayTag::RequestGameplayTag(FName("State.Dead"));
 }
 
 // Called to bind functionality to input
@@ -105,10 +107,16 @@ void AGDHeroCharacter::PossessedBy(AController * NewController)
 			PC->CreateHUD();
 		}
 
-		if (AbilitySystemComponent.IsValid())
-		{
-			AbilitySystemComponent->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag(FName("State.Debuff.Stun")), EGameplayTagEventType::NewOrRemoved).AddUObject(this, &AGDHeroCharacter::StunTagChanged);
-		}
+
+		// Respawn specific things that won't affect first possession.
+
+		// Forcibly set the DeadTag count to 0
+		AbilitySystemComponent->SetTagMapCount(DeadTag, 0);
+
+		// Set Health/Mana/Stamina to their max. This is only necessary for *Respawn*.
+		SetHealth(GetMaxHealth());
+		SetMana(GetMaxMana());
+		SetStamina(GetMaxStamina());
 	}
 }
 
@@ -140,6 +148,21 @@ UGDFloatingStatusBarWidget * AGDHeroCharacter::GetFloatingStatusBar()
 USkeletalMeshComponent * AGDHeroCharacter::GetGunComponent() const
 {
 	return GunComponent;
+}
+
+void AGDHeroCharacter::FinishDying()
+{
+	if (Role == ROLE_Authority)
+	{
+		AGASDocumentationGameMode* GM = Cast<AGASDocumentationGameMode>(GetWorld()->GetAuthGameMode());
+
+		if (GM)
+		{
+			GM->HeroDied(GetController());
+		}
+	}
+
+	Super::FinishDying();
 }
 
 /**
@@ -260,23 +283,15 @@ void AGDHeroCharacter::OnRep_PlayerState()
 		// Simulated on proxies don't have their PlayerStates yet when BeginPlay is called so we call it again here
 		InitializeFloatingStatusBar();
 
-		if (AbilitySystemComponent.IsValid())
-		{
-			AbilitySystemComponent->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag(FName("State.Debuff.Stun")), EGameplayTagEventType::NewOrRemoved).AddUObject(this, &AGDHeroCharacter::StunTagChanged);
-		}
-	}
-}
 
-void AGDHeroCharacter::StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
-{
-	if (NewCount > 0 && AbilitySystemComponent.IsValid())
-	{
-		FGameplayTagContainer AbilityTagsToCancel;
-		AbilityTagsToCancel.AddTag(FGameplayTag::RequestGameplayTag(FName("Ability")));
-	
-		FGameplayTagContainer AbilityTagsToIgnore;
-		AbilityTagsToIgnore.AddTag(FGameplayTag::RequestGameplayTag(FName("Ability.NotCanceledByStun")));
+		// Respawn specific things that won't affect first possession.
 
-		AbilitySystemComponent->CancelAbilities(&AbilityTagsToCancel, &AbilityTagsToIgnore);
+		// Forcibly set the DeadTag count to 0
+		AbilitySystemComponent->SetTagMapCount(DeadTag, 0);
+
+		// Set Health/Mana/Stamina to their max. This is only necessary for *Respawn*.
+		SetHealth(GetMaxHealth());
+		SetMana(GetMaxMana());
+		SetStamina(GetMaxStamina());
 	}
 }

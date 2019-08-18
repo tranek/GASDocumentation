@@ -24,8 +24,13 @@ public:
 
 	class UGDAttributeSetBase* GetAttributeSetBase() const;
 
+	UFUNCTION(BlueprintCallable, Category = "GASDocumentation|GDPlayerState")
+	bool IsAlive() const;
+
 	UFUNCTION(BlueprintCallable, Category = "GASDocumenation|GDPlayerState|UI")
 	void ShowAbilityConfirmCancelText(bool ShowText);
+
+	//void RespawnPlayer();
 
 
 	/**
@@ -87,6 +92,9 @@ protected:
 	UPROPERTY()
 	class UGDAttributeSetBase* AttributeSetBase;
 
+	FGameplayTag DeadTag;
+	FGameplayTag EffectRemoveOnDeathTag;
+
 	FDelegateHandle HealthChangedDelegateHandle;
 	FDelegateHandle MaxHealthChangedDelegateHandle;
 	FDelegateHandle HealthRegenRateChangedDelegateHandle;
@@ -116,4 +124,7 @@ protected:
 	virtual void XPChanged(const FOnAttributeChangeData& Data);
 	virtual void GoldChanged(const FOnAttributeChangeData& Data);
 	virtual void CharacterLevelChanged(const FOnAttributeChangeData& Data);
+
+	// Tag change callbacks
+	virtual void StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
 };

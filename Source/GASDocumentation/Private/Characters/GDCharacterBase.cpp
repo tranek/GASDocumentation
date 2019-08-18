@@ -7,6 +7,7 @@
 #include "Components/CapsuleComponent.h"
 #include "GDAbilitySystemComponent.h"
 #include "GDCharacterMovementComponent.h"
+#include "GDDamageTextWidgetComponent.h"
 
 // Sets default values
 AGDCharacterBase::AGDCharacterBase(const class FObjectInitializer& ObjectInitializer) :
@@ -39,6 +40,32 @@ bool AGDCharacterBase::IsAlive() const
 int32 AGDCharacterBase::GetAbilityLevel(EGDAbilityInputID AbilityID) const
 {
 	return 1;
+}
+
+void AGDCharacterBase::RemoveCharacterAbilities()
+{
+	if (Role != ROLE_Authority || !AbilitySystemComponent.IsValid() || !AbilitySystemComponent->CharacterAbilitiesGiven)
+	{
+		return;
+	}
+
+	// Remove any abilities added from a previous call. This checks to make sure the ability is in the startup 'CharacterAbilities' array.
+	TArray<FGameplayAbilitySpecHandle> AbilitiesToRemove;
+	for (const FGameplayAbilitySpec& Spec : AbilitySystemComponent->GetActivatableAbilities())
+	{
+		if ((Spec.SourceObject == this) && CharacterAbilities.Contains(Spec.Ability->GetClass()))
+		{
+			AbilitiesToRemove.Add(Spec.Handle);
+		}
+	}
+
+	// Do in two passes so the removal happens after we have the full list
+	for (int32 i = 0; i < AbilitiesToRemove.Num(); i++)
+	{
+		AbilitySystemComponent->ClearAbility(AbilitiesToRemove[i]);
+	}
+
+	AbilitySystemComponent->CharacterAbilitiesGiven = false;
 }
 
 EGDHitReactDirection AGDCharacterBase::GetHitReactDirection(const FVector & ImpactPoint)
@@ -158,6 +185,26 @@ float AGDCharacterBase::GetMaxMana() const
 	return 0.0f;
 }
 
+float AGDCharacterBase::GetStamina() const
+{
+	if (AttributeSetBase.IsValid())
+	{
+		return AttributeSetBase->GetStamina();
+	}
+
+	return 0.0f;
+}
+
+float AGDCharacterBase::GetMaxStamina() const
+{
+	if (AttributeSetBase.IsValid())
+	{
+		return AttributeSetBase->GetMaxStamina();
+	}
+
+	return 0.0f;
+}
+
 float AGDCharacterBase::GetMoveSpeed() const
 {
 	if (AttributeSetBase.IsValid())
@@ -176,6 +223,31 @@ float AGDCharacterBase::GetMoveSpeedBaseValue() const
 	}
 
 	return 0.0f;
+}
+
+// Run on Server and all clients
+void AGDCharacterBase::Die()
+{
+	// Only runs on Server
+	RemoveCharacterAbilities();
+
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	GetCharacterMovement()->GravityScale = 0;
+	GetCharacterMovement()->Velocity = FVector(0);
+
+	if (DeathMontage)
+	{
+		PlayAnimMontage(DeathMontage);
+	}
+	else
+	{
+		FinishDying();
+	}
+}
+
+void AGDCharacterBase::FinishDying()
+{
+	Destroy();
 }
 
 // Called when the game starts or when spawned
@@ -200,32 +272,6 @@ void AGDCharacterBase::AddCharacterAbilities()
 	}
 
 	AbilitySystemComponent->CharacterAbilitiesGiven = true;
-}
-
-void AGDCharacterBase::RemoveCharacterAbilities()
-{
-	if (Role != ROLE_Authority || !AbilitySystemComponent.IsValid() || !AbilitySystemComponent->CharacterAbilitiesGiven)
-	{
-		return;
-	}
-
-	// Remove any abilities added from a previous call. This checks to make sure the ability is in the startup 'CharacterAbilities' array.
-	TArray<FGameplayAbilitySpecHandle> AbilitiesToRemove;
-	for (const FGameplayAbilitySpec& Spec : AbilitySystemComponent->GetActivatableAbilities())
-	{
-		if ((Spec.SourceObject == this) && CharacterAbilities.Contains(Spec.Ability->GetClass()))
-		{
-			AbilitiesToRemove.Add(Spec.Handle);
-		}
-	}
-
-	// Do in two passes so the removal happens after we have the full list
-	for (int32 i = 0; i < AbilitiesToRemove.Num(); i++)
-	{
-		AbilitySystemComponent->ClearAbility(AbilitiesToRemove[i]);
-	}
-
-	AbilitySystemComponent->CharacterAbilitiesGiven = false;
 }
 
 void AGDCharacterBase::InitializeAttributes()
@@ -272,5 +318,29 @@ void AGDCharacterBase::AddStartupEffects()
 	}
 
 	AbilitySystemComponent->StartupEffectsApplied = true;
+}
+
+void AGDCharacterBase::SetHealth(float Health)
+{
+	if (AttributeSetBase.IsValid())
+	{
+		AttributeSetBase->SetHealth(Health);
+	}
+}
+
+void AGDCharacterBase::SetMana(float Mana)
+{
+	if (AttributeSetBase.IsValid())
+	{
+		AttributeSetBase->SetMana(Mana);
+	}
+}
+
+void AGDCharacterBase::SetStamina(float Stamina)
+{
+	if (AttributeSetBase.IsValid())
+	{
+		AttributeSetBase->SetStamina(Stamina);
+	}
 }
 

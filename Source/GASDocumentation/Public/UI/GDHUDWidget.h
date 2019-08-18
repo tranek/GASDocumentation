@@ -18,6 +18,9 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void ShowAbilityConfirmCancelText(bool ShowText);
 
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void SetRespawnCountdown(float RespawnTimeRemaining);
+
 
 	/**
 	* Attribute setters

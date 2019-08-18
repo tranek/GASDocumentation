@@ -37,6 +37,8 @@ public:
 
 	USkeletalMeshComponent* GetGunComponent() const;
 
+	virtual void FinishDying() override;
+
 protected:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "GASDocumentation|Camera")
 	float BaseTurnRate = 45.0f;
@@ -56,7 +58,7 @@ protected:
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "GASDocumentation|Camera")
 	class UCameraComponent* FollowCamera;
 
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "GASDocumentation|GDHeroCharacter")
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
 	USkeletalMeshComponent* GunComponent;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "GASDocumentation|UI")
@@ -67,6 +69,8 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "GASDocumentation|UI")
 	class UWidgetComponent* UIFloatingStatusBarComponent;
+
+	FGameplayTag DeadTag;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -96,6 +100,4 @@ protected:
 
 	// Client only
 	virtual void OnRep_PlayerState() override;
-
-	virtual void StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
 };

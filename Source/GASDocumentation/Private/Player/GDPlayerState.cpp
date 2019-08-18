@@ -28,6 +28,9 @@ AGDPlayerState::AGDPlayerState()
 	// Default is very low for PlayerStates and introduces perceived lag in the ability system.
 	// 100 is probably way too high for a shipping game, you can adjust to fit your needs.
 	NetUpdateFrequency = 100.0f;
+
+	DeadTag = FGameplayTag::RequestGameplayTag(FName("State.Dead"));
+	EffectRemoveOnDeathTag = FGameplayTag::RequestGameplayTag(FName("Effect.RemoveOnDeath"));
 }
 
 UAbilitySystemComponent * AGDPlayerState::GetAbilitySystemComponent() const
@@ -38,6 +41,11 @@ UAbilitySystemComponent * AGDPlayerState::GetAbilitySystemComponent() const
 UGDAttributeSetBase * AGDPlayerState::GetAttributeSetBase() const
 {
 	return AttributeSetBase;
+}
+
+bool AGDPlayerState::IsAlive() const
+{
+	return GetHealth() > 0.0f;
 }
 
 void AGDPlayerState::ShowAbilityConfirmCancelText(bool ShowText)
@@ -152,6 +160,9 @@ void AGDPlayerState::BeginPlay()
 		XPChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSetBase->GetXPAttribute()).AddUObject(this, &AGDPlayerState::XPChanged);
 		GoldChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSetBase->GetGoldAttribute()).AddUObject(this, &AGDPlayerState::GoldChanged);
 		CharacterLevelChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSetBase->GetCharacterLevelAttribute()).AddUObject(this, &AGDPlayerState::CharacterLevelChanged);
+
+		// Tag change callbacks
+		AbilitySystemComponent->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag(FName("State.Debuff.Stun")), EGameplayTagEventType::NewOrRemoved).AddUObject(this, &AGDPlayerState::StunTagChanged);
 	}
 }
 
@@ -172,17 +183,23 @@ void AGDPlayerState::HealthChanged(const FOnAttributeChangeData & Data)
 
 	// Update the HUD
 	// Handled in the UI itself using the AsyncTaskAttributeChanged node as an example how to do it in Blueprint
-	/*
-	AGDPlayerController* PC = Cast<AGDPlayerController>(GetOwner());
-	if (PC)
+
+	// If the player died, handle death
+	if (!IsAlive() && !AbilitySystemComponent->HasMatchingGameplayTag(DeadTag))
 	{
-		UGDHUDWidget* HUD = PC->GetHUD();
-		if (HUD)
+		if (Hero)
 		{
-			HUD->SetCurrentHealth(Health);
+			Hero->Die();
 		}
+
+		AbilitySystemComponent->CancelAllAbilities();
+
+		FGameplayTagContainer EffectTagsToRemove;
+		EffectTagsToRemove.AddTag(EffectRemoveOnDeathTag);
+		int32 NumEffectsRemoved = AbilitySystemComponent->RemoveActiveEffectsWithTags(EffectTagsToRemove);
+
+		AbilitySystemComponent->AddLooseGameplayTag(DeadTag);
 	}
-	*/
 }
 
 void AGDPlayerState::MaxHealthChanged(const FOnAttributeChangeData & Data)
@@ -245,17 +262,6 @@ void AGDPlayerState::ManaChanged(const FOnAttributeChangeData & Data)
 
 	// Update the HUD
 	// Handled in the UI itself using the AsyncTaskAttributeChanged node as an example how to do it in Blueprint
-	/*
-	AGDPlayerController* PC = Cast<AGDPlayerController>(GetOwner());
-	if (PC)
-	{
-		UGDHUDWidget* HUD = PC->GetHUD();
-		if (HUD)
-		{
-			HUD->SetCurrentMana(Mana);
-		}
-	}
-	*/
 }
 
 void AGDPlayerState::MaxManaChanged(const FOnAttributeChangeData & Data)
@@ -307,17 +313,6 @@ void AGDPlayerState::StaminaChanged(const FOnAttributeChangeData & Data)
 
 	// Update the HUD
 	// Handled in the UI itself using the AsyncTaskAttributeChanged node as an example how to do it in Blueprint
-	/*
-	AGDPlayerController* PC = Cast<AGDPlayerController>(GetOwner());
-	if (PC)
-	{
-		UGDHUDWidget* HUD = PC->GetHUD();
-		if (HUD)
-		{
-			HUD->SetCurrentStamina(Stamina);
-		}
-	}
-	*/
 }
 
 void AGDPlayerState::MaxStaminaChanged(const FOnAttributeChangeData & Data)
@@ -397,5 +392,19 @@ void AGDPlayerState::CharacterLevelChanged(const FOnAttributeChangeData & Data)
 		{
 			HUD->SetHeroLevel(CharacterLevel);
 		}
+	}
+}
+
+void AGDPlayerState::StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
+{
+	if (NewCount > 0)
+	{
+		FGameplayTagContainer AbilityTagsToCancel;
+		AbilityTagsToCancel.AddTag(FGameplayTag::RequestGameplayTag(FName("Ability")));
+
+		FGameplayTagContainer AbilityTagsToIgnore;
+		AbilityTagsToIgnore.AddTag(FGameplayTag::RequestGameplayTag(FName("Ability.NotCanceledByStun")));
+
+		AbilitySystemComponent->CancelAbilities(&AbilityTagsToCancel, &AbilityTagsToIgnore);
 	}
 }
