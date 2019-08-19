@@ -45,7 +45,7 @@ AGDHeroCharacter::AGDHeroCharacter(const class FObjectInitializer& ObjectInitial
 	UIFloatingStatusBarComponent->SetWidgetSpace(EWidgetSpace::Screen);
 	UIFloatingStatusBarComponent->SetDrawSize(FVector2D(500, 500));
 
-	UIFloatingStatusBarClass = StaticLoadClass(UObject::StaticClass(), nullptr, TEXT("/Game/GASDocumentation/UI/UI_FloatingStatusBar.UI_FloatingStatusBar_C"));
+	UIFloatingStatusBarClass = StaticLoadClass(UObject::StaticClass(), nullptr, TEXT("/Game/GASDocumentation/UI/UI_FloatingStatusBar_Hero.UI_FloatingStatusBar_Hero_C"));
 	if (!UIFloatingStatusBarClass)
 	{
 		UE_LOG(LogTemp, Error, TEXT("%s() Failed to find UIFloatingStatusBarClass. If it was moved, please update the reference location in C++."), TEXT(__FUNCTION__));
@@ -106,6 +106,8 @@ void AGDHeroCharacter::PossessedBy(AController * NewController)
 		{
 			PC->CreateHUD();
 		}
+
+		InitializeFloatingStatusBar();
 
 
 		// Respawn specific things that won't affect first possession.
@@ -174,11 +176,12 @@ void AGDHeroCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// Set up floating status bar for when the player is the Server.
-	// Simulated proxies on client don't have their PlayerState yet so we call this again in OnRep_PlayerState.
+	// Only needed for Heroes placed in world and when the player is the Server.
+	// On respawn, they are set up in PossessedBy.
+	// When the player a client, the floating status bars are all set up in OnRep_PlayerState.
 	InitializeFloatingStatusBar();
 
-	GunComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, FName("GunSocket"));
+	GunComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, FName("GunSocket"));
 
 	StartingCameraBoomArmLength = CameraBoom->TargetArmLength;
 	StartingCameraBoomLocation = CameraBoom->RelativeLocation;

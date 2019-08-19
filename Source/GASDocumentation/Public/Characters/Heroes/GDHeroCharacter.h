@@ -7,7 +7,7 @@
 #include "GDHeroCharacter.generated.h"
 
 /**
- * 
+ * A player or AI controlled hero character.
  */
 UCLASS()
 class GASDOCUMENTATION_API AGDHeroCharacter : public AGDCharacterBase

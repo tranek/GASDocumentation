@@ -93,7 +93,6 @@ protected:
 	class UGDAttributeSetBase* AttributeSetBase;
 
 	FGameplayTag DeadTag;
-	FGameplayTag EffectRemoveOnDeathTag;
 
 	FDelegateHandle HealthChangedDelegateHandle;
 	FDelegateHandle MaxHealthChangedDelegateHandle;

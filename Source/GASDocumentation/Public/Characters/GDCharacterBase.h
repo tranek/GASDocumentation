@@ -10,7 +10,11 @@
 #include "GDCharacterBase.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCharacterBaseHitReactDelegate, EGDHitReactDirection, Direction);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCharacterDiedDelegate, AGDCharacterBase*, Character);
 
+/**
+* This base Character class should not be instantiated and instead subclassed.
+*/
 UCLASS()
 class GASDOCUMENTATION_API AGDCharacterBase : public ACharacter, public IAbilitySystemInterface
 {
@@ -24,8 +28,11 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "GASDocumentation|GDCharacter")
 	FCharacterBaseHitReactDelegate ShowHitReact;
 
+	UPROPERTY(BlueprintAssignable, Category = "GASDocumentation|GDCharacter")
+	FCharacterDiedDelegate OnCharacterDied;
+
 	// Implement IAbilitySystemInterface
-	class UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	virtual class UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
 	UFUNCTION(BlueprintCallable, Category = "GASDocumentation|GDCharacter")
 	virtual bool IsAlive() const;
@@ -86,9 +93,17 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	TWeakObjectPtr<class UGDAbilitySystemComponent> AbilitySystemComponent;
+	// Instead of TWeakObjectPtrs, you could just have UPROPERTY() hard references or no references at all and just call
+	// GetAbilitySystem() and make a GetAttributeSetBase() that can read from the PlayerState or from child classes.
+	// Just make sure you test if the pointer is valid before using.
+	// I opted for TWeakObjectPtrs because I didn't want a shared hard reference here and I didn't want an extra function call of getting
+	// the ASC/AttributeSet from the PlayerState or child classes every time I referenced them in this base class.
 
+	TWeakObjectPtr<class UGDAbilitySystemComponent> AbilitySystemComponent;
 	TWeakObjectPtr<class UGDAttributeSetBase> AttributeSetBase;
+
+	FGameplayTag DeadTag;
+	FGameplayTag EffectRemoveOnDeathTag;
 
 	// Death Animation
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "GASDocumentation|Animation")
