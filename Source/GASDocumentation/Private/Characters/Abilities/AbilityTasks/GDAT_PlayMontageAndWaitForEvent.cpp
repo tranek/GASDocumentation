@@ -1,4 +1,5 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright 2019 Dan Kestranek.
+
 
 #include "GDAT_PlayMontageAndWaitForEvent.h"
 #include "GASDocumentation.h"

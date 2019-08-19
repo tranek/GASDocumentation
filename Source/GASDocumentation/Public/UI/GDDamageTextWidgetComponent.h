@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright 2019 Dan Kestranek.
 
 #pragma once
 
@@ -7,7 +7,7 @@
 #include "GDDamageTextWidgetComponent.generated.h"
 
 /**
- * 
+ * For the floating Damage Numbers when a Character receives damage.
  */
 UCLASS()
 class GASDOCUMENTATION_API UGDDamageTextWidgetComponent : public UWidgetComponent

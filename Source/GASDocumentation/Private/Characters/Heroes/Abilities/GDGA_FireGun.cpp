@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright 2019 Dan Kestranek.
 
 
 #include "GDGA_FireGun.h"
@@ -17,6 +17,9 @@ UGDGA_FireGun::UGDGA_FireGun()
 	ActivationOwnedTags.AddTag(Ability1Tag);
 
 	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag(FName("Ability.Skill")));
+
+	Range = 1000.0f;
+	Damage = 12.0f;
 }
 
 void UGDGA_FireGun::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo * ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData * TriggerEventData)

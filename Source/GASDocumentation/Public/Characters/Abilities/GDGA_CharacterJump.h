@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright 2019 Dan Kestranek.
 
 #pragma once
 
@@ -7,7 +7,7 @@
 #include "GDGA_CharacterJump.generated.h"
 
 /**
- * 
+ * Makes the Character try to jump using the standard Character->Jump. This is an example of a non-instanced ability.
  */
 UCLASS()
 class GASDOCUMENTATION_API UGDGA_CharacterJump : public UGDGameplayAbility

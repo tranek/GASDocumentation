@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright 2019 Dan Kestranek.
 
 #pragma once
 
@@ -25,8 +25,6 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FOnCooldownChanged OnCooldownEnd;
-
-	//TODO Cooldown duration changed while active
 
 	// Listens for changes (Begin and End) to cooldown GameplayEffects based on the cooldown tag.
 	// UseServerCooldown determines if the Sever's cooldown is returned in addition to the local predicted cooldown.

@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright 2019 Dan Kestranek.
 
 #pragma once
 
@@ -13,7 +13,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCharacterBaseHitReactDelegate, EGDH
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCharacterDiedDelegate, AGDCharacterBase*, Character);
 
 /**
-* This base Character class should not be instantiated and instead subclassed.
+* The base Character class for the game. Everything with an AbilitySystemComponent in this game will inherit from this class.
+* This class should not be instantiated and instead subclassed.
 */
 UCLASS()
 class GASDOCUMENTATION_API AGDCharacterBase : public ACharacter, public IAbilitySystemInterface
@@ -52,9 +53,11 @@ public:
 	virtual void PlayHitReact_Implementation(FGameplayTag HitDirection, AActor* DamageCauser);
 	virtual bool PlayHitReact_Validate(FGameplayTag HitDirection, AActor* DamageCauser);
 
+
 	/**
 	* Getters for attributes from GDAttributeSetBase
 	**/
+	
 	UFUNCTION(BlueprintCallable, Category = "GASDocumentation|GDCharacter|Attributes")
 	int32 GetCharacterLevel() const;
 
@@ -84,6 +87,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "GASDocumentation|GDCharacter|Attributes")
 	float GetMoveSpeedBaseValue() const;
 
+
 	virtual void Die();
 
 	UFUNCTION(BlueprintCallable, Category = "GASDocumentation|GDCharacter")
@@ -102,8 +106,15 @@ protected:
 	TWeakObjectPtr<class UGDAbilitySystemComponent> AbilitySystemComponent;
 	TWeakObjectPtr<class UGDAttributeSetBase> AttributeSetBase;
 
+	FGameplayTag HitDirectionFrontTag;
+	FGameplayTag HitDirectionBackTag;
+	FGameplayTag HitDirectionRightTag;
+	FGameplayTag HitDirectionLeftTag;
 	FGameplayTag DeadTag;
 	FGameplayTag EffectRemoveOnDeathTag;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "GASDocumentation|GDCharacter")
+	FText CharacterName;
 
 	// Death Animation
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "GASDocumentation|Animation")
@@ -122,6 +133,7 @@ protected:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "GASDocumentation|Abilities")
 	TArray<TSubclassOf<class UGameplayEffect>> StartupEffects;
 
+	// Grant abilities on the Server. The Ability Specs will be replicated to the owning client.
 	virtual void AddCharacterAbilities();
 
 	// Initialize the Character's attributes. Must run on Server but we run it on Client too
@@ -140,10 +152,4 @@ protected:
 	virtual void SetHealth(float Health);
 	virtual void SetMana(float Mana);
 	virtual void SetStamina(float Stamina);
-
-private:
-	FGameplayTag HitDirectionFrontTag;
-	FGameplayTag HitDirectionBackTag;
-	FGameplayTag HitDirectionRightTag;
-	FGameplayTag HitDirectionLeftTag;
 };

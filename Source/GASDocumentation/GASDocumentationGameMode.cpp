@@ -1,4 +1,4 @@
-// Copyright 1998-2019 Epic Games, Inc. All Rights Reserved.
+// Copyright 2019 Dan Kestranek.
 
 #include "GASDocumentationGameMode.h"
 #include "Engine/World.h"

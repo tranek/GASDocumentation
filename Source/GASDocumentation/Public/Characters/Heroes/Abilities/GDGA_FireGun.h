@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright 2019 Dan Kestranek.
 
 #pragma once
 
@@ -36,10 +36,10 @@ public:
 
 protected:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-	float Range = 1000.0f;
+	float Range;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-	float Damage = 20.0f;
+	float Damage;
 
 	UFUNCTION()
 	void OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData);

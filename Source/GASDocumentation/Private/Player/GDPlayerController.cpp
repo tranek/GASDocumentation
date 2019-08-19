@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright 2019 Dan Kestranek.
 
 
 #include "GDPlayerController.h"
@@ -31,21 +31,6 @@ void AGDPlayerController::CreateHUD()
 	// Need a valid PlayerState to get attributes from
 	AGDPlayerState* PS = GetPlayerState<AGDPlayerState>();
 	if (!PS)
-	{
-		return;
-	}
-
-	// Need a valid hero to grab UI data from
-	AGDHeroCharacter* Hero = nullptr;
-	if (GetPawn())
-	{
-		Hero = Cast<AGDHeroCharacter>(GetPawn());
-		if (!Hero)
-		{
-			return;
-		}
-	}
-	else
 	{
 		return;
 	}

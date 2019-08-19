@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright 2019 Dan Kestranek.
 
 
 #include "GDMinionCharacter.h"
@@ -68,6 +68,8 @@ void AGDMinionCharacter::BeginPlay()
 
 					// Setup the floating status bar
 					UIFloatingStatusBar->SetHealthPercentage(GetHealth() / GetMaxHealth());
+
+					UIFloatingStatusBar->SetCharacterName(CharacterName);
 				}
 			}
 		}

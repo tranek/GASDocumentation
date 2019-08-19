@@ -1,4 +1,5 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright 2019 Dan Kestranek.
+
 
 #include "GDAT_WaitReceiveDamage.h"
 #include "GDAbilitySystemComponent.h"
@@ -6,12 +7,13 @@
 UGDAT_WaitReceiveDamage::UGDAT_WaitReceiveDamage(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
+	TriggerOnce = false;
 }
 
-UGDAT_WaitReceiveDamage* UGDAT_WaitReceiveDamage::WaitReceiveDamage(UGameplayAbility* OwningAbility)
+UGDAT_WaitReceiveDamage* UGDAT_WaitReceiveDamage::WaitReceiveDamage(UGameplayAbility* OwningAbility, bool InTriggerOnce)
 {
 	UGDAT_WaitReceiveDamage* MyObj = NewAbilityTask<UGDAT_WaitReceiveDamage>(OwningAbility);
-
+	MyObj->TriggerOnce = InTriggerOnce;
 	return MyObj;
 }
 
@@ -43,5 +45,9 @@ void UGDAT_WaitReceiveDamage::OnDamageReceived(UGDAbilitySystemComponent* Source
 	{
 		OnDamage.Broadcast(SourceASC, UnmitigatedDamage, MitigatedDamage);
 	}
-	EndTask();
+
+	if (TriggerOnce)
+	{
+		EndTask();
+	}
 }

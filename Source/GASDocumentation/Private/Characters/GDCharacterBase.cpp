@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright 2019 Dan Kestranek.
 
 
 #include "GDCharacterBase.h"
@@ -281,7 +281,6 @@ void AGDCharacterBase::AddCharacterAbilities()
 
 	for (TSubclassOf<UGDGameplayAbility>& StartupAbility : CharacterAbilities)
 	{
-		//UE_LOG(LogTemp, Warning, TEXT("%s() Adding Ability: %s. Ability Level: %d. InputID: %d"), TEXT(__FUNCTION__), *StartupAbility->GetName(), GetAbilityLevel(StartupAbility.GetDefaultObject()->AbilityIDForLevel), static_cast<int32>(StartupAbility.GetDefaultObject()->AbilityInputID));
 		AbilitySystemComponent->GiveAbility(
 			FGameplayAbilitySpec(StartupAbility, GetAbilityLevel(StartupAbility.GetDefaultObject()->AbilityID), static_cast<int32>(StartupAbility.GetDefaultObject()->AbilityInputID), this));
 	}
