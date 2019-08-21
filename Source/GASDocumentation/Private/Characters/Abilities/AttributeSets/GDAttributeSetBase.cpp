@@ -223,22 +223,22 @@ void UGDAttributeSetBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME(UGDAttributeSetBase, Health);
-	DOREPLIFETIME(UGDAttributeSetBase, MaxHealth);
-	DOREPLIFETIME(UGDAttributeSetBase, HealthRegenRate);
-	DOREPLIFETIME(UGDAttributeSetBase, Mana);
-	DOREPLIFETIME(UGDAttributeSetBase, MaxMana);
-	DOREPLIFETIME(UGDAttributeSetBase, ManaRegenRate);
-	DOREPLIFETIME(UGDAttributeSetBase, Stamina);
-	DOREPLIFETIME(UGDAttributeSetBase, MaxStamina);
-	DOREPLIFETIME(UGDAttributeSetBase, StaminaRegenRate);
-	DOREPLIFETIME(UGDAttributeSetBase, Armor);
-	DOREPLIFETIME(UGDAttributeSetBase, MoveSpeed);
-	DOREPLIFETIME(UGDAttributeSetBase, CharacterLevel);
-	DOREPLIFETIME(UGDAttributeSetBase, XP);
-	DOREPLIFETIME(UGDAttributeSetBase, XPBounty);
-	DOREPLIFETIME(UGDAttributeSetBase, Gold);
-	DOREPLIFETIME(UGDAttributeSetBase, GoldBounty);
+	DOREPLIFETIME_CONDITION_NOTIFY(UGDAttributeSetBase, Health, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UGDAttributeSetBase, MaxHealth, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UGDAttributeSetBase, HealthRegenRate, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UGDAttributeSetBase, Mana, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UGDAttributeSetBase, MaxMana, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UGDAttributeSetBase, ManaRegenRate, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UGDAttributeSetBase, Stamina, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UGDAttributeSetBase, MaxStamina, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UGDAttributeSetBase, StaminaRegenRate, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UGDAttributeSetBase, Armor, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UGDAttributeSetBase, MoveSpeed, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UGDAttributeSetBase, CharacterLevel, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UGDAttributeSetBase, XP, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UGDAttributeSetBase, XPBounty, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UGDAttributeSetBase, Gold, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UGDAttributeSetBase, GoldBounty, COND_None, REPNOTIFY_Always);
 }
 
 void UGDAttributeSetBase::AdjustAttributeForMaxChange(FGameplayAttributeData & AffectedAttribute, const FGameplayAttributeData & MaxAttribute, float NewMaxValue, const FGameplayAttribute & AffectedAttributeProperty)
