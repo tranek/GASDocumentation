@@ -71,6 +71,7 @@ void UGDDamageExecCalculation::Execute_Implementation(const FGameplayEffectCusto
 
 	if (MitigatedDamage > 0.f)
 	{
+		// Set the Target's damage meta attribute
 		OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(DamageStatics().DamageProperty, EGameplayModOp::Additive, MitigatedDamage));
 	}
 
