@@ -9,6 +9,9 @@
 struct GDDamageStatics
 {
 	DECLARE_ATTRIBUTE_CAPTUREDEF(Armor);
+
+	// Meta attribute that we're passing into the ExecCalc via SetByCaller on the GESpec so we don't capture it.
+	// We still need to declare and define it so that we can output to it.
 	DECLARE_ATTRIBUTE_CAPTUREDEF(Damage);
 
 	GDDamageStatics()
@@ -20,7 +23,7 @@ struct GDDamageStatics
 		// Capture the Target's Armor. Don't snapshot (the false).
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UGDAttributeSetBase, Armor, Target, false);
 
-		// Capture the Target's Damage. This is the value of health that will be subtracted on the Target. Don't snapshot (the false).
+		// The Target's received Damage. This is the value of health that will be subtracted on the Target. We're not capturing this.
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UGDAttributeSetBase, Damage, Target, false);
 	}
 };
@@ -34,6 +37,8 @@ static const GDDamageStatics& DamageStatics()
 UGDDamageExecCalculation::UGDDamageExecCalculation()
 {
 	RelevantAttributesToCapture.Add(DamageStatics().ArmorDef);
+
+	// We don't include Damage here because we're not capturing it. It is generated inside the ExecCalc.
 }
 
 void UGDDamageExecCalculation::Execute_Implementation(const FGameplayEffectCustomExecutionParameters & ExecutionParams, OUT FGameplayEffectCustomExecutionOutput & OutExecutionOutput) const
