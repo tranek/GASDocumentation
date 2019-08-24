@@ -15,9 +15,9 @@ UGDGameplayAbility::UGDGameplayAbility()
 	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag(FName("State.Debuff.Stun")));
 }
 
-void UGDGameplayAbility::OnGiveAbility(const FGameplayAbilityActorInfo * ActorInfo, const FGameplayAbilitySpec & Spec)
+void UGDGameplayAbility::OnAvatarSet(const FGameplayAbilityActorInfo * ActorInfo, const FGameplayAbilitySpec & Spec)
 {
-	Super::OnGiveAbility(ActorInfo, Spec);
+	Super::OnAvatarSet(ActorInfo, Spec);
 
 	if (ActivateAbilityOnGranted)
 	{
