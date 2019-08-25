@@ -9,7 +9,7 @@
 UGDCharacterMovementComponent::UGDCharacterMovementComponent()
 {
 	SprintSpeedMultiplier = 1.4f;
-	ADSSpeedMultiplier = 0.6f;
+	ADSSpeedMultiplier = 0.5f;
 }
 
 float UGDCharacterMovementComponent::GetMaxSpeed() const
