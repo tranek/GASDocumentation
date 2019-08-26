@@ -3,27 +3,30 @@ My understanding of Unreal Engine 4's GameplayAbilitySystem plugin (GAS) with a 
 
 The goal of this documentation is to explain the major concepts and classes in GAS and provide some additional commentary based on my experience with it. There is a lot of 'tribal knowledge' of GAS among users in the community and I aim to share all of mine here.
 
-The best documenation will always be the plugin source code.
+The best documentation will always be the plugin source code.
 
 <a name="table-of-contents"></a>
 ## Table of Contents
 
 > 1. [Intro to the GameplayAbilitySystem Plugin](#intro)
 > 1. [Sample Project](#sp)
-> 1. [Concepts](#concepts)
+> 1. [Concepts](#concepts)  
+>    3.1 [Ability System Component](#concepts-asc)  
+>    3.2 [Gameplay Tags](#concepts-gt)  
+>    3.3 [Attributes](#concepts-a)  
+>    &nbsp;&nbsp;&nbsp;&nbsp;3.3.1 [Attribute Definition](#concepts-a-definition)  
+>    3.4 [Attribute Set](#concepts-as)  
+>    3.5 [Gameplay Effects](#concepts-ge)  
+>    3.6 [Gameplay Abilities](#concepts-ga)  
+>    3.7 [Ability Tasks](#concepts-at)  
+>    3.8 [Gameplay Cues](#concepts-gc)  
+>    3.9 [Ability System Globals](#concepts-asg)  
+>    3.10 [Prediction](#concepts-p)
+> 1. [Commonly Implemented Abilities and Effects](#cae)
 > 1. [Setting Up a Project Using GAS](#setup)
 > 1. [Debugging](#debugging)
-> 1. [Commonly Implemented Effects](#ce)
 > 1. [Common GAS Acronymns](#acronyms)
 > 1. [Other Resources](#resources)
-
-1. Item 1
-1. Item 2
-1. Item 3
-   1. Item 3a
-   1. Item 3b
-      1. Item 3?
-         1. Item 3??
          
 <a name="intro"></a>
 <a name="1"></a>
@@ -112,24 +115,15 @@ Minions do not come with any predefined `GameplayAbilities`. The Red Minions hav
 
 #### Sections
 
-> 3.1 [Ability System Component](#concepts-asc)
-
-> 3.2 [Gameplay Tags](#concepts-gt)
-
-> 3.3 [Attributes](#concepts-a)
-
-> 3.4 [Attribute Set](#concepts-as)
-
-> 3.5 [Gameplay Effects](#concepts-ge)
-
-> 3.6 [Gameplay Abilities](#concepts-ga)
-
-> 3.7 [Ability Tasks](#concepts-at)
-
-> 3.8 [Gameplay Cues](#concepts-gc)
-
-> 3.9 [Ability System Globals](#concepts-asg)
-
+> 3.1 [Ability System Component](#concepts-asc)  
+> 3.2 [Gameplay Tags](#concepts-gt)  
+> 3.3 [Attributes](#concepts-a)  
+> 3.4 [Attribute Set](#concepts-as)  
+> 3.5 [Gameplay Effects](#concepts-ge)  
+> 3.6 [Gameplay Abilities](#concepts-ga)  
+> 3.7 [Ability Tasks](#concepts-at)  
+> 3.8 [Gameplay Cues](#concepts-gc)  
+> 3.9 [Ability System Globals](#concepts-asg)  
 > 3.10 [Prediction](#concepts-p)
 
 <a name="concepts-asc"></a>
@@ -1365,6 +1359,8 @@ GameplayCueNotifyPaths="/Game/GASDocumentation/Characters"
 
 We do want the `GameplayCueManager` to scan and find all of the `GameplayCueNotifies`; however, we don't want it to async load every single one on play. This will put every `GameplayCueNotify` and all of their referenced sounds and particles into memory regardless if they're even used in a level. In a large game like Paragon, this can be hundreds of megabytes of unneeded assets in memory. It is possible to only load the `GameplayCueNotifies` that we need by subclassing the `GameplayCueManager`, but I haven't put the time into figuring it out yet and no one else has offered a solution. My ideal scenario would be to load `GameplayCuesNotifies` based on common parent `GameplayCueTags` like `GameplayCue.Hero.HeroX.*`.
 
+****This needs to be figured out at some point.**
+
 <a name="concepts-gc-prevention"></a>
 <a name="3.8.4"></a>
 #### 3.8.4 Prevent Gameplay Cues from Firing
@@ -1392,21 +1388,96 @@ AbilitySystemGlobalsClassName="/Script/ParagonAssets.PAAbilitySystemGlobals"
 
 **[⬆ Back to Top](#table-of-contents)**
 
-<a name="setup"></a>
+<a name="cae"></a>
 <a name="4"></a>
-## 4. Setting Up a Project Using GAS
+## 4. Commonly Implemented Abilties and Effects
+
+<a name="cae-stun"></a>
+<a name="4.1"></a>
+### 4.1 Stun
+
+
+
+<a name="cae-sprint"></a>
+<a name="4.2"></a>
+### 4.2 Sprint
+
+
+
+<a name="cae-ads"></a>
+<a name="4.3"></a>
+### 4.3 Aim Down Sights
+
+
+
+<a name="cae-ls"></a>
+<a name="4.4"></a>
+### 4.4 Lifesteal
+
+
+
+<a name="cae-random"></a>
+<a name="4.5"></a>
+### 4.5 Generating a Random Number on Client and Server
+
+
+
+<a name="cae-crit"></a>
+<a name="4.6"></a>
+### 4.6 Critical Hits
+
+
+
+<a name="cae-paused"></a>
+<a name="4.7"></a>
+### 4.7 Generate Target Data While Game is Paused
+
+
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+<a name="setup"></a>
+<a name="5"></a>
+## 5. Setting Up a Project Using GAS
+Basic steps to set up a project using GAS:
+1. Enable GameplayAbilitySystem plugin in the Editor
+1. Edit `YourProjectName.Build.cs` to add `"GameplayAbilities", "GameplayTags", "GameplayTasks"` to your `PrivateDependencyModuleNames`
+1. Refresh/Regenerate your Visual Studio project files
+
+That's all that you have to do to enable GAS. From here, add an `ASC` and `AttributeSet` to your `Character` or `PlayerState` and start making `GameplayAbilities` and `GameplayEffects`!
 
 **[⬆ Back to Top](#table-of-contents)**
 
 <a name="debugging"></a>
-<a name="5"></a>
-## 5. Debugging GAS
-
-**[⬆ Back to Top](#table-of-contents)**
-
-<a name="ce"></a>
 <a name="6"></a>
-## 6. Commonly Implemented Effects
+## 6. Debugging GAS
+Often when debugging GAS related issues, you want to know things like "What are the values of my attributes?", "What gameplay tags do I have?", "What gameplay effects do I currently have?", and "What abilities do I have granted, which ones are running, and which ones are blocked from activating?". GAS comes with two techniques for answering these questions at runtime.
+
+<a name="debugging-sd"></a>
+<a name="6.1"></a>
+### 6.1 showdebug abilitysystem
+Type `showdebug abilitysystem` in the in-game console. This feature is split into three "pages". All three pages will show the `GameplayTags` that you currently have. Type `AbilitySystem.Debug.NextCategory` into the console to cycle between the pages.
+
+The first page shows the `CurrentValue` of all of your `Attributes`:
+(**PIC OF FIRST PAGE**)
+
+The second page shows all of the `Duration` and `Infinite` `GameplayEffects` on you, their number of stacks, what `GameplayTags` they give, and what `Modifiers` they give.
+(**PIC OF SECOND PAGE**)
+
+The third page shows all of the `GameplayAbilities` that have been granted to you, whether they are currently running, whether they are blocked from activating, and the status of currently running `AbilityTasks`.
+(** PIC OF THE THIRD PAGE**)
+
+While you can cycle between targets with `PageUp` and `PageDown`, the pages will only show data for the `ASC` on your locally controlled `Character`.
+
+<a name="debugging-gd"></a>
+<a name="6.2"></a>
+### 6.2 Gameplay Debugger
+GAS adds functionality to the Gameplay Debugger. Access the Gameplay Debugger with the Apostrophe (') key. Enable the Abilities category by pressing 3 on your numpad. The category may be different depending on what plugins you have. If your keyboard doesn't have a numpad like a laptop, then you can change the keybindings in the project settings.
+
+Use the Gameplay Debugger when you want to see the `GameplayTags`, `GameplayEffects`, and `GameplayAbilities` on **other** `Characters`. Unfortunately it does not show the `CurrentValue` of the target's `Attributes`. It will target whatever `Character` is in the center of your screen. Look at a different `Character` and press Apostrophe (') again to switch to inspecting its `ASC`. The currently inspected `Character` has the largest red circle above it.
+
+(**PIC OF GAMEPLAY DEBUGGER**)
 
 **[⬆ Back to Top](#table-of-contents)**
 
@@ -1414,10 +1485,31 @@ AbilitySystemGlobalsClassName="/Script/ParagonAssets.PAAbilitySystemGlobals"
 <a name="7"></a>
 ## 7. Common GAS Acronymns
 
+| Name                               | Acronyms            |
+|----------------------------------- | ------------------- |
+| AbilitySystemComponent             | ASC                 |
+| AbilityTask                        | AT                  |
+| Action RPG Sample Project by Epic  | ARPG, ARPG Sample   |
+| GameplayAbility                    | GA                  |
+| GameplayAbilitySystem              | GAS                 |
+| GameplayCue                        | GC                  |
+| GameplayEffect                     | GE                  |
+| GameplayEffectExecutionCalculation | ExecCalc, Execution |
+| GameplayTag                        | Tag, GT             |
+| ModiferMagnitudeCalculation        | ModMagCalc, MMC     |
+
 **[⬆ Back to Top](#table-of-contents)**
 
 <a name="resources"></a>
 <a name="8"></a>
 ## 8. Other Resources
+* [Official Documentation](https://docs.unrealengine.com/en-US/Gameplay/GameplayAbilitySystem/index.html)
+* Source Code!
+   * Especially `GameplayPrediction.h`
+* [Action RPG Sample Project by Epic](https://www.unrealengine.com/marketplace/en-US/slug/action-rpg)
+* [Dave Ratti from Epic's responses to community questions about GAS](https://epicgames.ent.box.com/s/m1egifkxv3he3u3xezb9hzbgroxyhx89)
+* [Unreal Slackers Discord](https://unrealslackers.org/) has a text channel dedicated to GAS `#gameplay-abilities-plugin`
+   * Check pinned messages
+* [GitHub repository of resources by Dan 'Pan'](https://github.com/Pantong51/GASContent)
 
 **[⬆ Back to Top](#table-of-contents)**
