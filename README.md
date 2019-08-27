@@ -1109,8 +1109,12 @@ These are not rules, just my recommendations. Your design and implementations ma
 
 All `GameplayAbilities` will have their `ActivateAbility()` function overriden with your gameplay logic. Additional logic can be added to `EndAbility()` that runs when the `GameplayAbility` completes or is canceled.
 
-**FLOW CHART OF EXAMPLE ABILITY** 
-- When prediction key becomes stale
+Flowchart of a simple `GameplayAbility`:
+![Simple GameplayAbility Flowchart](https://github.com/tranek/GASDocumentation/raw/master/Images/abilityflowchartsimple.png)
+
+
+Flowchart of a more complex `GameplayAbility`:
+![Complex GameplayAbility Flowchart](https://github.com/tranek/GASDocumentation/raw/master/Images/abilityflowchartcomplex.png)
 
 Complex abilities can be implemented using multiple `GameplayAbilities` that interact (activate, cancel, etc) with each other.
 
