@@ -718,6 +718,23 @@ The resultant float from an `MMC` can futher be modified in the `GameplayEffect'
 
 An example `MMC` that captures the `Target's` mana `Attribute` reduces it from a poison effect where the ammount reduced changes depending on how much mana the `Target` has and a tag that the `Target` might have:
 ```c++
+UPAMMC_PoisonMana::UPAMMC_PoisonMana()
+{
+
+	//ManaDef defined in header FGameplayEffectAttributeCaptureDefinition ManaDef;
+	ManaDef.AttributeToCapture = UPAAttributeSetBase::GetManaAttribute();
+	ManaDef.AttributeSource = EGameplayEffectAttributeCaptureSource::Target;
+	ManaDef.bSnapshot = false;
+
+	//MaxManaDef defined in header FGameplayEffectAttributeCaptureDefinition MaxManaDef;
+	MaxManaDef.AttributeToCapture = UPAAttributeSetBase::GetMaxManaAttribute();
+	MaxManaDef.AttributeSource = EGameplayEffectAttributeCaptureSource::Target;
+	MaxManaDef.bSnapshot = false;
+
+	RelevantAttributesToCapture.Add(ManaDef);
+	RelevantAttributesToCapture.Add(MaxManaDef);
+}
+
 float UPAMMC_PoisonMana::CalculateBaseMagnitude_Implementation(const FGameplayEffectSpec & Spec) const
 {
 	// Gather the tags from the source and target as that can affect which buffs should be used
@@ -727,16 +744,6 @@ float UPAMMC_PoisonMana::CalculateBaseMagnitude_Implementation(const FGameplayEf
 	FAggregatorEvaluateParameters EvaluationParameters;
 	EvaluationParameters.SourceTags = SourceTags;
 	EvaluationParameters.TargetTags = TargetTags;
-
-	FGameplayEffectAttributeCaptureDefinition ManaDef;
-	ManaDef.AttributeToCapture = UPAAttributeSetBase::GetManaAttribute();
-	ManaDef.AttributeSource = EGameplayEffectAttributeCaptureSource::Target;
-	ManaDef.bSnapshot = false;
-
-	FGameplayEffectAttributeCaptureDefinition MaxManaDef;
-	MaxManaDef.AttributeToCapture = UPAAttributeSetBase::GetMaxManaAttribute();
-	MaxManaDef.AttributeSource = EGameplayEffectAttributeCaptureSource::Target;
-	MaxManaDef.bSnapshot = false;
 
 	float Mana = 0.f;
 	GetCapturedAttributeMagnitude(ManaDef, Spec, EvaluationParameters, Mana);
@@ -762,6 +769,8 @@ float UPAMMC_PoisonMana::CalculateBaseMagnitude_Implementation(const FGameplayEf
 	return Reduction;
 }
 ```
+
+If you don't add the `FGameplayEffectAttributeCaptureDefinition` to `RelevantAttributesToCapture` in the `MMC's` constructor and try to capture `Attributes`, you will get an error about a missing Spec while capturing. If you don't need to capture `Attributes`, then you don't have to add anything to `RelevantAttributesToCapture`.
 
 **[⬆ Back to Top](#table-of-contents)**
 
