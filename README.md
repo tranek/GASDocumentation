@@ -3,7 +3,7 @@ My understanding of Unreal Engine 4's GameplayAbilitySystem plugin (GAS) with a 
 
 The goal of this documentation is to explain the major concepts and classes in GAS and provide some additional commentary based on my experience with it. There is a lot of 'tribal knowledge' of GAS among users in the community and I aim to share all of mine here.
 
-The Sample Project and documentation are current with Unreal Engine 4.22.
+The Sample Project and documentation are current with Unreal Engine 4.23.
 
 The best documentation will always be the plugin source code.
 
