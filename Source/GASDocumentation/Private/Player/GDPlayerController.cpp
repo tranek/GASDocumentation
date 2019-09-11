@@ -105,3 +105,11 @@ void AGDPlayerController::OnPossess(APawn * InPawn)
 		PS->GetAbilitySystemComponent()->InitAbilityActorInfo(PS, InPawn);
 	}
 }
+
+void AGDPlayerController::OnRep_PlayerState()
+{
+	Super::OnRep_PlayerState();
+
+	// For edge cases where the PlayerState is repped before the Hero is possessed.
+	CreateHUD();
+}
