@@ -43,4 +43,6 @@ protected:
 
 	// Server only
 	virtual void OnPossess(APawn* InPawn) override;
+
+	virtual void OnRep_PlayerState() override;
 };
