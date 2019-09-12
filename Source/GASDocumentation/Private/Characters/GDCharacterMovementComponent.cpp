@@ -59,7 +59,6 @@ void UGDCharacterMovementComponent::UpdateFromCompressedFlags(uint8 Flags)
 FNetworkPredictionData_Client * UGDCharacterMovementComponent::GetPredictionData_Client() const
 {
 	check(PawnOwner != NULL);
-	check(PawnOwner->Role < ROLE_Authority);
 
 	if (!ClientPredictionData)
 	{
