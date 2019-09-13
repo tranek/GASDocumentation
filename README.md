@@ -78,9 +78,10 @@ The best documentation will always be the plugin source code.
 >    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3.7.4 [Root Motion Source Ability Tasks](#concepts-at-rms)  
 >    3.8 [Gameplay Cues](#concepts-gc)  
 >    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3.8.1 [Gameplay Cue Definition](#concepts-gc-definition)  
->    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3.8.2 [Local Gameplay Cues](#concepts-gc-local)  
->    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3.8.3 [Gameplay Cue Manager](#concepts-gc-manager)  
->    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3.8.4 [Prevent Gameplay Cues from Firing](#concepts-gc-prevention)  
+>    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3.8.2 [Trigger Gameplay Cues](#concepts-gc-trigger)  
+>    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3.8.3 [Local Gameplay Cues](#concepts-gc-local)  
+>    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3.8.4 [Gameplay Cue Manager](#concepts-gc-manager)  
+>    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3.8.5 [Prevent Gameplay Cues from Firing](#concepts-gc-prevention)  
 >    3.9 [Ability System Globals](#concepts-asg)  
 >    3.10 [Prediction](#concepts-p)  
 >    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3.10.1 [Prediction Key](#concepts-p-key)  
@@ -1558,13 +1559,47 @@ There are two classes of `GameplayCueNotifies`, `Static` and `Actor`. They respo
 
 **Note:** When using `GameplayCueNotify_Actor`, check `Auto Destroy on Remove` otherwise subsequent calls to `Add` that `GameplayCueTag` won't work.
 
-The Sample Project does not include any `GameplayCues` soley because I don't have access to sounds and particles that I can distribute with the project.
+When using an `ASC` [Replication Mode](#concepts-asc-rm) other than `Full`, `Add` and `Remove` `GC` events will fire twice on Server players (listen server) - once for applying the `GE` and again from the "Minimal" `NetMultiCast` to the clients. However, `WhileActive` events will still only fire once. All events will only fire once on clients.
+
+The Sample Project includes a `GameplayCueNotify_Actor` for stun and sprint effects. It also has a `GameplayCueNotify_Static` for the FireGun's projectile impact. These `GCs` can be optimized further by [triggering them locally](#concepts-gc-local) instead of replicating them through a `GE`. I opted for showing the beginner way of using them in the Sample Project.
+
+**[⬆ Back to Top](#table-of-contents)**
+
+<a name="concepts-gc-trigger"></a>
+<a name="3.8.2"></a>
+#### 3.8.2 Triggering Gameplay Cues
+
+From inside of a `GameplayEffect` when it is successfully applied (not blocked by tags or immunity), fill in the `GameplayTags` of all the `GameplayCues` that should be triggered.
+
+![GameplayCue Triggered from a GameplayEffect](https://github.com/tranek/GASDocumentation/raw/master/Images/gcfromge.png)
+
+`UGameplayAbility` offers Blueprint nodes to `Execute`, `Add`, or `Remove` `GameplayCues`.
+
+![GameplayCue Triggered from a GameplayAbility](https://github.com/tranek/GASDocumentation/raw/master/Images/gcfromga.png)
+
+In C++, you can call functions directly on the `ASC` (or expose them to Blueprint in your `ASC` subclass):
+
+```c++
+/** GameplayCues can also come on their own. These take an optional effect context to pass through hit result, etc */
+void ExecuteGameplayCue(const FGameplayTag GameplayCueTag, FGameplayEffectContextHandle EffectContext = FGameplayEffectContextHandle());
+void ExecuteGameplayCue(const FGameplayTag GameplayCueTag, const FGameplayCueParameters& GameplayCueParameters);
+
+/** Add a persistent gameplay cue */
+void AddGameplayCue(const FGameplayTag GameplayCueTag, FGameplayEffectContextHandle EffectContext = FGameplayEffectContextHandle());
+void AddGameplayCue(const FGameplayTag GameplayCueTag, const FGameplayCueParameters& GameplayCueParameters);
+
+/** Remove a persistent gameplay cue */
+void RemoveGameplayCue(const FGameplayTag GameplayCueTag);
+	
+/** Removes any GameplayCue added on its own, i.e. not as part of a GameplayEffect. */
+void RemoveAllGameplayCues();
+```
 
 **[⬆ Back to Top](#table-of-contents)**
 
 <a name="concepts-gc-local"></a>
-<a name="3.8.2"></a>
-#### 3.8.2 Local Gameplay Cues
+<a name="3.8.3"></a>
+#### 3.8.3 Local Gameplay Cues
 The exposed functions for firing `GameplayCues` from `GameplayAbilities` and the `ASC` are replicated by default. Each `GameplayCue` event is a multicast RPC. This can cause a lot of RPCs. GAS also enforces a maximum of two of the same `GameplayCue` RPCs per net update. We avoid this by using local `GameplayCues` where we can. Local `GameplayCues` only `Execute`, `Add`, or `Remove` on the invidiual client.
 
 Scenarios where we can use local `GameplayCues`:
@@ -1595,8 +1630,8 @@ If a `GameplayCue` was `Added` locally, it should be `Removed` locally. If it wa
 **[⬆ Back to Top](#table-of-contents)**
 
 <a name="concepts-gc-manager"></a>
-<a name="3.8.3"></a>
-#### 3.8.3 Gameplay Cue Manager
+<a name="3.8.4"></a>
+#### 3.8.4 Gameplay Cue Manager
 By default, the `GameplayCueManager` will scan the entire game directory for `GameplayCueNotifies` and load them into memory on play. We can change the path where the `GameplayCueManager` scans by setting it in the `DefaultGame.ini`.
 
 ```
@@ -1611,9 +1646,11 @@ We do want the `GameplayCueManager` to scan and find all of the `GameplayCueNoti
 **[⬆ Back to Top](#table-of-contents)**
 
 <a name="concepts-gc-prevention"></a>
-<a name="3.8.4"></a>
-#### 3.8.4 Prevent Gameplay Cues from Firing
+<a name="3.8.5"></a>
+#### 3.8.5 Prevent Gameplay Cues from Firing
 Sometimes we don't want `GameplayCues` to fire. For example if we block an attack, we may not want to play the hit impact attached to the damage `GameplayEffect` or play a custom one instead. We can do this inside of [`GameplayEffectExecutionCalculations`](#concepts-ge-ec) by calling `OutExecutionOutput.MarkGameplayCuesHandledManually()` and then manually sending our `GameplayCue` event to the `Target` or `Source's` `ASC`.
+
+If you never want any `GameplayCues` to fire on a specific `ASC`, you can set `AbilitySystemComponent->bSuppressGameplayCues = true;`.
 
 **[⬆ Back to Top](#table-of-contents)**
 
