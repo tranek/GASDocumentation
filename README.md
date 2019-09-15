@@ -188,7 +188,8 @@ Minions do not come with any predefined `GameplayAbilities`. The Red Minions hav
 
 For `GameplayAbility` naming, I used the suffix `_BP` to denote the `GameplayAbility's` logic was created in Blueprint. The lack of suffix means the logic was created in C++.
 
-Blueprint Asset Naming Prefixes
+**Blueprint Asset Naming Prefixes**
+
 | Prefix      | Asset Type          |
 | ----------- | ------------------- |
 | GA_         | GameplayAbility     |
