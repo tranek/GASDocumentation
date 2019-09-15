@@ -167,6 +167,8 @@ Concepts demonstrated:
 * `GameplayAbilities` created in C++
 * Instanced per `Actor` `GameplayAbilities`
 * Non-Instanced `GameplayAbilities` (Jump)
+* Static `GameplayCues` (FireGun projectile impact particle effect)
+* Actor `GameplayCues` (Sprint and Stun particle effects)
 
 The hero class has the following abilities:
 
@@ -185,6 +187,13 @@ It does not matter if `GameplayAbilities` are created in C++ or Blueprint. A mix
 Minions do not come with any predefined `GameplayAbilities`. The Red Minions have more health regen while the Blue Minions have higher starting health.
 
 For `GameplayAbility` naming, I used the suffix `_BP` to denote the `GameplayAbility's` logic was created in Blueprint. The lack of suffix means the logic was created in C++.
+
+Blueprint Asset Naming Prefixes
+| Prefix      | Asset Type          |
+| ----------- | ------------------- |
+| GA_         | GameplayAbility     |
+| GC_         | GameplayCue         |
+| GE_         | GameplayEffect      |
 
 **[⬆ Back to Top](#table-of-contents)**
 
