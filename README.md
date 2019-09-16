@@ -1649,9 +1649,27 @@ By default, the `GameplayCueManager` will scan the entire game directory for `Ga
 GameplayCueNotifyPaths="/Game/GASDocumentation/Characters"
 ```
 
-We do want the `GameplayCueManager` to scan and find all of the `GameplayCueNotifies`; however, we don't want it to async load every single one on play. This will put every `GameplayCueNotify` and all of their referenced sounds and particles into memory regardless if they're even used in a level. In a large game like Paragon, this can be hundreds of megabytes of unneeded assets in memory. It is possible to only load the `GameplayCueNotifies` that we need by subclassing the `GameplayCueManager`, but I haven't put the time into figuring it out yet and no one else has offered a solution. My ideal scenario would be to load `GameplayCuesNotifies` based on common parent `GameplayCueTags` like `GameplayCue.Hero.HeroX.*`.
+We do want the `GameplayCueManager` to scan and find all of the `GameplayCueNotifies`; however, we don't want it to async load every single one on play. This will put every `GameplayCueNotify` and all of their referenced sounds and particles into memory regardless if they're even used in a level. In a large game like Paragon, this can be hundreds of megabytes of unneeded assets in memory and cause hitching and game freezes on startup.
 
-****This needs to be figured out at some point.**
+An alternative to async loading every `GameplayCue` on startup is to only async load `GameplayCues` as they're triggered in-game. This mitigates the unnecessary memory usage and potential game hard freezes while async loading every `GameplayCue` in exchange for minor game hitches and potentially delayed effects for the first time that a specific `GameplayCue` is triggered during play. As of now, this is my recommended solution until we figure out something better.
+
+First we must subclass `UGameplayCueManager` and tell the `AbilitySystemGlobals` class to use our `UGameplayCueManager` subclass in `DefaultGame.ini`.
+
+```
+[/Script/GameplayAbilities.AbilitySystemGlobals]
+GlobalGameplayCueManagerClass="/Script/ParagonAssets.PBGameplayCueManager"
+```
+
+In our `UGameplayCueManager` subclass, override `ShouldAsyncLoadRuntimeObjectLibraries()`.
+
+```c++
+virtual bool ShouldAsyncLoadRuntimeObjectLibraries() const override
+{
+	return false;
+}
+```
+
+I haven't figured out a solution yet to load all the `GameplayCues` that are used in a level on level start or during a transition/loading map.
 
 **[⬆ Back to Top](#table-of-contents)**
 
