@@ -45,6 +45,8 @@ void AGASDocumentationGameMode::HeroDied(AController* Controller)
 
 void AGASDocumentationGameMode::BeginPlay()
 {
+	Super::BeginPlay();
+
 	// Get the enemy hero spawn point
 	TArray<AActor*> Actors;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor::StaticClass(), Actors);
