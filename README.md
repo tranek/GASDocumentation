@@ -1353,7 +1353,7 @@ virtual void DestroyActiveState();
 <a name="concepts-ga-definition-activeability"></a>
 <a name="3.6.6"></a>
 #### 3.6.6 Getting Active Abilities
-Beginners often ask "How can I get the active ability?" perhaps to set variables on it or to cancel it. More than one `GameplayAbility` can be active at a time so there is no one "active ability". Instead, you must search through an `ASC's` list of `ActivatableAbilities` (granted `GameplayAbilities` that the `ASC` owns) and find the one matching the [`Asset` or `Granted` `GameplayTag`]((#concepts-ga-tags) that you are looking for.
+Beginners often ask "How can I get the active ability?" perhaps to set variables on it or to cancel it. More than one `GameplayAbility` can be active at a time so there is no one "active ability". Instead, you must search through an `ASC's` list of `ActivatableAbilities` (granted `GameplayAbilities` that the `ASC` owns) and find the one matching the [`Asset` or `Granted` `GameplayTag`](#concepts-ga-tags) that you are looking for.
 
 `UAbilitySystemComponent::GetActivatableAbilities()` returns a `TArray<FGameplayAbilitySpec>` for you to iterate over.
 
@@ -1702,8 +1702,6 @@ virtual bool ShouldAsyncLoadRuntimeObjectLibraries() const override
 	return false;
 }
 ```
-
-I haven't figured out a solution yet to load all the `GameplayCues` that are used in a level on level start or during a transition/loading map.
 
 **[⬆ Back to Top](#table-of-contents)**
 
