@@ -66,22 +66,22 @@ public:
 	// Current stamina, used to execute special abilities. Capped by MaxStamina.
 	UPROPERTY(BlueprintReadOnly, Category = "Stamina", ReplicatedUsing = OnRep_Stamina)
 	FGameplayAttributeData Stamina;
-	ATTRIBUTE_ACCESSORS(UGDAttributeSetBase, Stamina);
+	ATTRIBUTE_ACCESSORS(UGDAttributeSetBase, Stamina)
 
 	// MaxStamina is its own attribute since GameplayEffects may modify it
 	UPROPERTY(BlueprintReadOnly, Category = "Stamina", ReplicatedUsing = OnRep_MaxStamina)
 	FGameplayAttributeData MaxStamina;
-	ATTRIBUTE_ACCESSORS(UGDAttributeSetBase, MaxStamina);
+	ATTRIBUTE_ACCESSORS(UGDAttributeSetBase, MaxStamina)
 
 	// Stamina regen rate will passively increase Stamina every second
 	UPROPERTY(BlueprintReadOnly, Category = "Stamina", ReplicatedUsing = OnRep_StaminaRegenRate)
 	FGameplayAttributeData StaminaRegenRate;
-	ATTRIBUTE_ACCESSORS(UGDAttributeSetBase, StaminaRegenRate);
+	ATTRIBUTE_ACCESSORS(UGDAttributeSetBase, StaminaRegenRate)
 
 	// Armor reduces the amount of damage done by attackers
 	UPROPERTY(BlueprintReadOnly, Category = "Armor", ReplicatedUsing = OnRep_Armor)
 	FGameplayAttributeData Armor;
-	ATTRIBUTE_ACCESSORS(UGDAttributeSetBase, Armor);
+	ATTRIBUTE_ACCESSORS(UGDAttributeSetBase, Armor)
 
 	// Damage is a meta attribute used by the DamageExecution to calculate final damage, which then turns into -Health
 	// Temporary value that only exists on the Server. Not replicated.
@@ -96,27 +96,27 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, Category = "Character Level", ReplicatedUsing = OnRep_CharacterLevel)
 	FGameplayAttributeData CharacterLevel;
-	ATTRIBUTE_ACCESSORS(UGDAttributeSetBase, CharacterLevel);
+	ATTRIBUTE_ACCESSORS(UGDAttributeSetBase, CharacterLevel)
 
 	// Experience points gained from killing enemies. Used to level up (not implemented in this project).
 	UPROPERTY(BlueprintReadOnly, Category = "XP", ReplicatedUsing = OnRep_XP)
 	FGameplayAttributeData XP;
-	ATTRIBUTE_ACCESSORS(UGDAttributeSetBase, XP);
+	ATTRIBUTE_ACCESSORS(UGDAttributeSetBase, XP)
 
 	// Experience points awarded to the character's killers. Used to level up (not implemented in this project).
 	UPROPERTY(BlueprintReadOnly, Category = "XP", ReplicatedUsing = OnRep_XPBounty)
 	FGameplayAttributeData XPBounty;
-	ATTRIBUTE_ACCESSORS(UGDAttributeSetBase, XPBounty);
+	ATTRIBUTE_ACCESSORS(UGDAttributeSetBase, XPBounty)
 
 	// Gold gained from killing enemies. Used to purchase items (not implemented in this project).
 	UPROPERTY(BlueprintReadOnly, Category = "Gold", ReplicatedUsing = OnRep_Gold)
 	FGameplayAttributeData Gold;
-	ATTRIBUTE_ACCESSORS(UGDAttributeSetBase, Gold);
+	ATTRIBUTE_ACCESSORS(UGDAttributeSetBase, Gold)
 
 	// Gold awarded to the character's killer. Used to purchase items (not implemented in this project).
 	UPROPERTY(BlueprintReadOnly, Category = "Gold", ReplicatedUsing = OnRep_GoldBounty)
 	FGameplayAttributeData GoldBounty;
-	ATTRIBUTE_ACCESSORS(UGDAttributeSetBase, GoldBounty);
+	ATTRIBUTE_ACCESSORS(UGDAttributeSetBase, GoldBounty)
 
 protected:
 	// Helper function to proportionally adjust the value of an attribute when it's associated max attribute changes.
