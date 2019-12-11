@@ -154,7 +154,7 @@ USkeletalMeshComponent * AGDHeroCharacter::GetGunComponent() const
 
 void AGDHeroCharacter::FinishDying()
 {
-	if (Role == ROLE_Authority)
+	if (GetLocalRole() == ROLE_Authority)
 	{
 		AGASDocumentationGameMode* GM = Cast<AGASDocumentationGameMode>(GetWorld()->GetAuthGameMode());
 
@@ -184,7 +184,7 @@ void AGDHeroCharacter::BeginPlay()
 	GunComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, FName("GunSocket"));
 
 	StartingCameraBoomArmLength = CameraBoom->TargetArmLength;
-	StartingCameraBoomLocation = CameraBoom->RelativeLocation;
+	StartingCameraBoomLocation = CameraBoom->GetRelativeLocation();
 }
 
 void AGDHeroCharacter::LookUp(float Value)

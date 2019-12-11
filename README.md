@@ -3,7 +3,7 @@ My understanding of Unreal Engine 4's GameplayAbilitySystem plugin (GAS) with a 
 
 The goal of this documentation is to explain the major concepts and classes in GAS and provide some additional commentary based on my experience with it. There is a lot of 'tribal knowledge' of GAS among users in the community and I aim to share all of mine here.
 
-The Sample Project and documentation are current with Unreal Engine 4.23.
+The Sample Project and documentation are current with Unreal Engine 4.24.
 
 The best documentation will always be the plugin source code.
 
@@ -105,6 +105,8 @@ The best documentation will always be the plugin source code.
 >    6.2 [Gameplay Debugger](#debugging-gd)  
 > 1. [Common GAS Acronymns](#acronyms)
 > 1. [Other Resources](#resources)
+> 1. [GAS Changelog](#changelog)  
+>    [4.24](#changelog-4.24)
          
 <a name="intro"></a>
 ## 1. Intro to the GameplayAbilitySystem Plugin
@@ -127,7 +129,7 @@ In multiplayer games, GAS provides support for [client-side prediction](#concept
 * Changes to `Attributes`
 * Applying `GameplayTags`
 * Spawning `GameplayCues`
-* Movement via `RootMotionSource` functions connected to the `CharacterMovementComponent`. **Note:** Predicting movement with `RootMotionSource` broke in UE 4.20.
+* Movement via `RootMotionSource` functions connected to the `CharacterMovementComponent`. **Note:** Predicting movement with `RootMotionSource` broke in UE 4.20; however, [fixes for the `RootMotionSource` prediction issues](https://github.com/EpicGames/UnrealEngine/commit/94107438dd9f490e7b743f8e13da46927051bf33#diff-65f6196f9f28f560f95bd578e07e290c) are in UnrealEngine GitHub master possibly slated for 4.25.
 
 **GAS must be set up in C++**, but `GameplayAbilities` and `GameplayEffects` can be created in Blueprint by the designers.
 
@@ -238,6 +240,8 @@ The `ASC` defines three different replication modes for replicating `GameplayEff
 | `Minimal`          | Multiplayer, AI controlled `Actors`     | `GameplayEffects` are never replicated to anyone. Only `GameplayTags` and `GameplayCues` are replicated to everyone.           |
 
 **Note:** `Mixed` replication mode expects the `OwnerActor's` `Owner` to be the `Controller`. `PlayerState's` `Owner` is the `Controller` by default but `Character's` is not. If using `Mixed` replication mode with the `OwnerActor` not the `PlayerState`, then you need to call `SetOwner()` on the `OwnerActor` with a valid `Controller`.
+
+Starting with 4.24, `PossessedBy()` now sets the owner of the `Pawn` to the new `Controller`.
 
 **[⬆ Back to Top](#table-of-contents)**
 
@@ -1437,7 +1441,7 @@ GAS comes with many `AbilityTasks` out of the box:
 * Tasks for responding to player input
 * and more
 
-The [`AbilitySystemGlobals`](#concepts-asg) enforces a hardcoded game-wide maximum of 1000 concurrent `AbilityTasks` running at the same time. Keep this in mind when designing `GameplayAbilities` for games that can have hundreds of characters in the world at the same time like RTS games.
+The `UAbilityTask` constructor enforces a hardcoded game-wide maximum of 1000 concurrent `AbilityTasks` running at the same time. Keep this in mind when designing `GameplayAbilities` for games that can have hundreds of characters in the world at the same time like RTS games.
 
 **[⬆ Back to Top](#table-of-contents)**
 
@@ -1493,6 +1497,8 @@ For now if you need a truly predicted movement ability, you will need to manuall
 `RootMotionSource` `AbilityTasks` still work great in single player and are acceptable in low latency multiplayer games.
 
 The Sample Project uses a `AbilityTask_ApplyRootMotionConstantForce` for its Dash `GameplayAbility`.
+
+**Note:** Recent a [commit](https://github.com/EpicGames/UnrealEngine/commit/94107438dd9f490e7b743f8e13da46927051bf33#diff-65f6196f9f28f560f95bd578e07e290c) to Unreal Engine master on GitHub potentially fixes the prediction bugs and are possibly slated for UE 4.25 release. You should be able to cherry pick the changes now into your custom engine if you desire.
 
 **[⬆ Back to Top](#table-of-contents)**
 
@@ -1665,13 +1671,15 @@ If you never want any `GameplayCues` to fire on a specific `ASC`, you can set `A
 
 <a name="concepts-asg"></a>
 ### 3.9 Ability System Globals
-The [`AbilitySystemGlobals`](https://docs.unrealengine.com/en-US/API/Plugins/GameplayAbilities/UAbilitySystemGlobals/index.html) class holds global information about GAS. Most of the variables can be set from the `DefaultGame.ini`. Generally you won't have to interact with this class, but you should be aware of its existence. If you need to subclass things like the [`GameplayCueManager`](#concepts-gc-manager) or the [`GameplayEffectContext`](#concepts-ge-context), you have to do that through the `AbilitySystemGlobals`. The `AbilitySystemGlobals` is also responsible for other things like enforcing a maximum of 1000 concurrently running [`AbilityTasks`](#concepts-at).
+The [`AbilitySystemGlobals`](https://docs.unrealengine.com/en-US/API/Plugins/GameplayAbilities/UAbilitySystemGlobals/index.html) class holds global information about GAS. Most of the variables can be set from the `DefaultGame.ini`. Generally you won't have to interact with this class, but you should be aware of its existence. If you need to subclass things like the [`GameplayCueManager`](#concepts-gc-manager) or the [`GameplayEffectContext`](#concepts-ge-context), you have to do that through the `AbilitySystemGlobals`.
 
 To subclass `AbilitySystemGlobals`, set the class name in the `DefaultGame.ini`:
 ```
 [/Script/GameplayAbilities.AbilitySystemGlobals]
 AbilitySystemGlobalsClassName="/Script/ParagonAssets.PAAbilitySystemGlobals"
 ```
+
+Starting in UE 4.24, it is now necessary to call `UAbilitySystemGlobals::InitGlobalData()` to use `TargetData`, otherwise you will get errors related to `ScriptStructCache` and clients will be disconnected from the server. This function only needs to be called once in a project. I find that putting it in `UEngineSubsystem::Initialize()` is a good place as shown in the Sample Project. I would consider this boilerplate code that you should copy into your project to avoid issues with `TargetData`.
 
 **[⬆ Back to Top](#table-of-contents)**
 
@@ -1896,6 +1904,7 @@ Basic steps to set up a project using GAS:
 1. Enable GameplayAbilitySystem plugin in the Editor
 1. Edit `YourProjectName.Build.cs` to add `"GameplayAbilities", "GameplayTags", "GameplayTasks"` to your `PrivateDependencyModuleNames`
 1. Refresh/Regenerate your Visual Studio project files
+1. Starting with 4.24, it is now mandatory to call `UAbilitySystemGlobals::InitGlobalData()` to use `TargetData`. The Sample Project does this in `UEngineSubsystem::Initialize()`.
 
 That's all that you have to do to enable GAS. From here, add an `ASC` and `AttributeSet` to your `Character` or `PlayerState` and start making `GameplayAbilities` and `GameplayEffects`!
 
@@ -1970,5 +1979,25 @@ Use the Gameplay Debugger when you want to see the `GameplayTags`, `GameplayEffe
    * Check pinned messages
 * [GitHub repository of resources by Dan 'Pan'](https://github.com/Pantong51/GASContent)
 * [YouTube Videos by SabreDartStudios](https://www.youtube.com/channel/UCCFUhQ6xQyjXDZ_d6X_H_-A)
+
+**[⬆ Back to Top](#table-of-contents)**
+
+<a name="changelog"></a>
+## 9. GAS Changelog
+
+This is a list of notable changes (fixes, changes, and new features) to GAS compiled from the official Unreal Engine upgrade changelog and from undocumented changes that I've encountered. If you've found something that isn't listed here, please make an issue or pull request.
+
+<a name="changelog-4.24"></a>
+### 4.24
+* Fixed blueprint node `Attribute` variables resetting to `None` on compile
+* Need to call `UAbilitySystemGlobals::InitGlobalData()` to use `TargetData` otherwise you will get `ScriptStructCache` errors and clients will be disconnected from the server. My advice is to always call this in every project now whereas before 4.24 it was optional.
+* Fixed crash when copying a `GameplayTag` setter to a blueprint that didn't have the variable previously defined
+* `UGameplayAbility::MontageStop()` function now properly uses the `OverrideBlendOutTime` parameter
+* Fixed `GameplayTag` query variables on components not being modified when edited
+* Added the ability for `GameplayEffectExecutionCalculations` to support scoped modifiers against "temporary variables" that aren't required to be backed by an attribute capture.
+   * Implementation basically enables `GameplayTag`-identified aggregators to be created as a means for an execution to expose a temporary value to be manipulated with scoped modifiers; you can now build formulas that want manipulatable values that don't need to be captured from a source or target.
+   * To use, an execution has to add a tag to the new member variable `ValidTransientAggregatorIdentifiers`; those tags will show up in the calculation modifier array of scoped mods at the bottom, marked as temporary variables—with updated details customizations accordingly to support feature
+* Added restricted tag quality-of-life improvements. Removed the default option for restricted `GameplayTag` source. We no longer reset the source when adding restricted tags to make it easier to add several in a row. 
+* `APawn::PossessedBy()` now sets the owner of the `Pawn` to the new `Controller`. Useful because [Mixed Replication Mode](#concepts-asc-rm) expects the owner of the `Pawn` to be the `Controller` if the `ASC` lives on the `Pawn`.
 
 **[⬆ Back to Top](#table-of-contents)**
