@@ -1679,7 +1679,7 @@ To subclass `AbilitySystemGlobals`, set the class name in the `DefaultGame.ini`:
 AbilitySystemGlobalsClassName="/Script/ParagonAssets.PAAbilitySystemGlobals"
 ```
 
-Starting in UE 4.24, it is now necessary to call `UAbilitySystemGlobals::InitGlobalData()` to use `TargetData`, otherwise you will get errors related to `ScriptStructCache` and clients will be disconnected from the server. This function only needs to be called once in a project. I find that putting it in `UEngineSubsystem::Initialize()` is a good place as shown in the Sample Project. I would consider this boilerplate code that you should copy into your project to avoid issues with `TargetData`.
+Starting in UE 4.24, it is now necessary to call `UAbilitySystemGlobals::InitGlobalData()` to use `TargetData`, otherwise you will get errors related to `ScriptStructCache` and clients will be disconnected from the server. This function only needs to be called once in a project. Fortnite calls it from the AssetManager class's start initial loading function and Paragon called it from `UEngine::Init()`. I find that putting it in `UEngineSubsystem::Initialize()` is a good place as shown in the Sample Project. I would consider this boilerplate code that you should copy into your project to avoid issues with `TargetData`.
 
 **[⬆ Back to Top](#table-of-contents)**
 
