@@ -1,7 +1,7 @@
 // Copyright 2019 Dan Kestranek.
 
 
-#include "GDAbilitySystemComponent.h"
+#include "Characters/Abilities/GDAbilitySystemComponent.h"
 
 void UGDAbilitySystemComponent::ReceiveDamage(UGDAbilitySystemComponent * SourceASC, float UnmitigatedDamage, float MitigatedDamage)
 {

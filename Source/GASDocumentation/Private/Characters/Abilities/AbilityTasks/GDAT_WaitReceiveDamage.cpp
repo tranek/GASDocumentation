@@ -1,8 +1,8 @@
 // Copyright 2019 Dan Kestranek.
 
 
-#include "GDAT_WaitReceiveDamage.h"
-#include "GDAbilitySystemComponent.h"
+#include "Characters/Abilities/AbilityTasks/GDAT_WaitReceiveDamage.h"
+#include "Characters/Abilities/GDAbilitySystemComponent.h"
 
 UGDAT_WaitReceiveDamage::UGDAT_WaitReceiveDamage(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)

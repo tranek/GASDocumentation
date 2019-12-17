@@ -1,11 +1,11 @@
 // Copyright 2019 Dan Kestranek.
 
 
-#include "GDAT_PlayMontageAndWaitForEvent.h"
-#include "GASDocumentation.h"
-#include "GDAbilitySystemComponent.h"
+#include "Characters/Abilities/AbilityTasks/GDAT_PlayMontageAndWaitForEvent.h"
+#include "GASDocumentation/GASDocumentation.h"
+#include "Characters/Abilities/GDAbilitySystemComponent.h"
 #include "GameFramework/Character.h"
-#include "GDGameplayAbility.h"
+#include "Characters/Abilities/GDGameplayAbility.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
 #include "Animation/AnimInstance.h"

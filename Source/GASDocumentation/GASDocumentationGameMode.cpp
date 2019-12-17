@@ -1,10 +1,10 @@
 // Copyright 2019 Dan Kestranek.
 
-#include "GASDocumentationGameMode.h"
+#include "GASDocumentation/GASDocumentationGameMode.h"
 #include "Engine/World.h"
-#include "GDHeroCharacter.h"
-#include "GDPlayerController.h"
-#include "GDPlayerState.h"
+#include "Characters/Heroes/GDHeroCharacter.h"
+#include "Player/GDPlayerController.h"
+#include "Player/GDPlayerState.h"
 #include "GameFramework/SpectatorPawn.h"
 #include "Kismet/GameplayStatics.h"
 #include "TimerManager.h"

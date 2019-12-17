@@ -1,7 +1,7 @@
 // Copyright 2019 Dan Kestranek.
 
 
-#include "AsyncTaskAttributeChanged.h"
+#include "Characters/Abilities/AsyncTaskAttributeChanged.h"
 
 UAsyncTaskAttributeChanged* UAsyncTaskAttributeChanged::ListenForAttributeChange(UAbilitySystemComponent* AbilitySystemComponent, FGameplayAttribute Attribute)
 {

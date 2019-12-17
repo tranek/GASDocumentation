@@ -1,12 +1,12 @@
 // Copyright 2019 Dan Kestranek.
 
 
-#include "GDAttributeSetBase.h"
+#include "Characters/Abilities/AttributeSets/GDAttributeSetBase.h"
 #include "GameplayEffect.h"
 #include "GameplayEffectExtension.h"
-#include "GDCharacterBase.h"
-#include "GDPlayerController.h"
-#include "UnrealNetwork.h"
+#include "Characters/GDCharacterBase.h"
+#include "Player/GDPlayerController.h"
+#include "Net/UnrealNetwork.h"
 
 UGDAttributeSetBase::UGDAttributeSetBase()
 {

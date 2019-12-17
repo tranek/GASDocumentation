@@ -1,13 +1,13 @@
 // Copyright 2019 Dan Kestranek.
 
 
-#include "GDCharacterBase.h"
-#include "Abilities/AttributeSets/GDAttributeSetBase.h"
-#include "Abilities/GDGameplayAbility.h"
+#include "Characters/GDCharacterBase.h"
+#include "Characters/Abilities/AttributeSets/GDAttributeSetBase.h"
+#include "Characters/Abilities/GDGameplayAbility.h"
 #include "Components/CapsuleComponent.h"
-#include "GDAbilitySystemComponent.h"
-#include "GDCharacterMovementComponent.h"
-#include "GDDamageTextWidgetComponent.h"
+#include "Characters/Abilities/GDAbilitySystemComponent.h"
+#include "Characters/GDCharacterMovementComponent.h"
+#include "UI/GDDamageTextWidgetComponent.h"
 
 // Sets default values
 AGDCharacterBase::AGDCharacterBase(const class FObjectInitializer& ObjectInitializer) :
