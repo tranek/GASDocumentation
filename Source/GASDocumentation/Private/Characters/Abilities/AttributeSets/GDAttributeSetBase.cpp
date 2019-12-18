@@ -2,11 +2,11 @@
 
 
 #include "Characters/Abilities/AttributeSets/GDAttributeSetBase.h"
+#include "Characters/GDCharacterBase.h"
 #include "GameplayEffect.h"
 #include "GameplayEffectExtension.h"
-#include "Characters/GDCharacterBase.h"
-#include "Player/GDPlayerController.h"
 #include "Net/UnrealNetwork.h"
+#include "Player/GDPlayerController.h"
 
 UGDAttributeSetBase::UGDAttributeSetBase()
 {

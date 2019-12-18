@@ -3,9 +3,9 @@
 
 #include "Player/GDPlayerController.h"
 #include "AbilitySystemComponent.h"
-#include "UI/GDDamageTextWidgetComponent.h"
 #include "Characters/Heroes/GDHeroCharacter.h"
 #include "Player/GDPlayerState.h"
+#include "UI/GDDamageTextWidgetComponent.h"
 #include "UI/GDHUDWidget.h"
 
 void AGDPlayerController::CreateHUD()

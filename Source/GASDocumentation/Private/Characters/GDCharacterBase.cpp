@@ -3,10 +3,10 @@
 
 #include "Characters/GDCharacterBase.h"
 #include "Characters/Abilities/AttributeSets/GDAttributeSetBase.h"
-#include "Characters/Abilities/GDGameplayAbility.h"
-#include "Components/CapsuleComponent.h"
 #include "Characters/Abilities/GDAbilitySystemComponent.h"
+#include "Characters/Abilities/GDGameplayAbility.h"
 #include "Characters/GDCharacterMovementComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "UI/GDDamageTextWidgetComponent.h"
 
 // Sets default values

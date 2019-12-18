@@ -2,12 +2,12 @@
 
 
 #include "Characters/Minions/GDMinionCharacter.h"
-#include "Components/CapsuleComponent.h"
 #include "Characters/Abilities/GDAbilitySystemComponent.h"
 #include "Characters/Abilities/AttributeSets/GDAttributeSetBase.h"
-#include "UI/GDFloatingStatusBarWidget.h"
-#include "Kismet/GameplayStatics.h"
+#include "Components/CapsuleComponent.h"
 #include "Components/WidgetComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "UI/GDFloatingStatusBarWidget.h"
 
 AGDMinionCharacter::AGDMinionCharacter(const class FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {

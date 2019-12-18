@@ -3,9 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Kismet/BlueprintAsyncActionBase.h"
 #include "AbilitySystemComponent.h"
 #include "GameplayTagContainer.h"
-#include "Kismet/BlueprintAsyncActionBase.h"
 #include "AsyncTaskCooldownChanged.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnCooldownChanged, FGameplayTag, CooldownTag, float, TimeRemaining, float, Duration);

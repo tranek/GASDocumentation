@@ -3,8 +3,8 @@
 
 #include "Characters/GDCharacterMovementComponent.h"
 #include "AbilitySystemComponent.h"
-#include "GameplayTagContainer.h"
 #include "Characters/GDCharacterBase.h"
+#include "GameplayTagContainer.h"
 
 UGDCharacterMovementComponent::UGDCharacterMovementComponent()
 {

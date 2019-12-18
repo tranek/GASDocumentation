@@ -2,13 +2,13 @@
 
 
 #include "Characters/Abilities/AbilityTasks/GDAT_PlayMontageAndWaitForEvent.h"
-#include "GASDocumentation/GASDocumentation.h"
-#include "Characters/Abilities/GDAbilitySystemComponent.h"
-#include "GameFramework/Character.h"
-#include "Characters/Abilities/GDGameplayAbility.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
 #include "Animation/AnimInstance.h"
+#include "Characters/Abilities/GDAbilitySystemComponent.h"
+#include "Characters/Abilities/GDGameplayAbility.h"
+#include "GASDocumentation/GASDocumentation.h"
+#include "GameFramework/Character.h"
 
 UGDAT_PlayMontageAndWaitForEvent::UGDAT_PlayMontageAndWaitForEvent(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
