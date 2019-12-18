@@ -1,9 +1,9 @@
 // Copyright 2019 Dan Kestranek.
 
 
-#include "GDGA_CharacterJump.h"
-#include "GDCharacterBase.h"
-#include "GASDocumentation.h"
+#include "Characters/Abilities/GDGA_CharacterJump.h"
+#include "Characters/GDCharacterBase.h"
+#include "GASDocumentation/GASDocumentation.h"
 
 UGDGA_CharacterJump::UGDGA_CharacterJump()
 {

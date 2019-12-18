@@ -3,9 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Abilities/GDGameplayAbility.h"
-#include "Abilities/AbilityTasks/GDAT_PlayMontageAndWaitForEvent.h"
-#include "GDProjectile.h"
+#include "Characters/Abilities/GDGameplayAbility.h"
+#include "Characters/Abilities/AbilityTasks/GDAT_PlayMontageAndWaitForEvent.h"
+#include "Characters/GDProjectile.h"
 #include "GDGA_FireGun.generated.h"
 
 /**

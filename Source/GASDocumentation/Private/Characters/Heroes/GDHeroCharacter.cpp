@@ -1,22 +1,23 @@
 // Copyright 2019 Dan Kestranek.
 
 
-#include "GDHeroCharacter.h"
-#include "Abilities/AttributeSets/GDAttributeSetBase.h"
+#include "Characters/Heroes/GDHeroCharacter.h"
+#include "Characters/Abilities/AttributeSets/GDAttributeSetBase.h"
 #include "AI/GDHeroAIController.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/DecalComponent.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "GASDocumentationGameMode.h"
-#include "GDAbilitySystemComponent.h"
-#include "GDPlayerController.h"
-#include "GDPlayerState.h"
+#include "GASDocumentation/GASDocumentationGameMode.h"
+#include "Characters/Abilities/GDAbilitySystemComponent.h"
+#include "Player/GDPlayerController.h"
+#include "Player/GDPlayerState.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "UI/GDFloatingStatusBarWidget.h"
 #include "UObject/ConstructorHelpers.h"
-#include "WidgetComponent.h"
+#include "Components/WidgetComponent.h"
+
 
 AGDHeroCharacter::AGDHeroCharacter(const class FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {

@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Abilities/GameplayAbility.h"
-#include "GASDocumentation.h"
+#include "GASDocumentation/GASDocumentation.h"
 #include "GDGameplayAbility.generated.h"
 
 /**

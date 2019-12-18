@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
-#include "GDCharacterBase.h"
+#include "Characters/GDCharacterBase.h"
 #include "GDPlayerController.generated.h"
 
 /**

@@ -8,6 +8,7 @@ public class GASDocumentationEditorTarget : TargetRules
 	public GASDocumentationEditorTarget(TargetInfo Target) : base(Target)
 	{
 		Type = TargetType.Editor;
+		DefaultBuildSettings = BuildSettingsVersion.V2;
 		ExtraModuleNames.Add("GASDocumentation");
 	}
 }

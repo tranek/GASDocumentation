@@ -1,13 +1,13 @@
 // Copyright 2019 Dan Kestranek.
 
 
-#include "GDMinionCharacter.h"
+#include "Characters/Minions/GDMinionCharacter.h"
 #include "Components/CapsuleComponent.h"
-#include "GDAbilitySystemComponent.h"
-#include "GDAttributeSetBase.h"
-#include "GDFloatingStatusBarWidget.h"
+#include "Characters/Abilities/GDAbilitySystemComponent.h"
+#include "Characters/Abilities/AttributeSets/GDAttributeSetBase.h"
+#include "UI/GDFloatingStatusBarWidget.h"
 #include "Kismet/GameplayStatics.h"
-#include "WidgetComponent.h"
+#include "Components/WidgetComponent.h"
 
 AGDMinionCharacter::AGDMinionCharacter(const class FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {

@@ -1,11 +1,11 @@
 // Copyright 2019 Dan Kestranek.
 
 
-#include "GDGA_FireGun.h"
+#include "Characters/Heroes/Abilities/GDGA_FireGun.h"
 #include "AbilitySystemComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "GDHeroCharacter.h"
+#include "Characters/Heroes/GDHeroCharacter.h"
 #include "Kismet/KismetMathLibrary.h"
 
 UGDGA_FireGun::UGDGA_FireGun()

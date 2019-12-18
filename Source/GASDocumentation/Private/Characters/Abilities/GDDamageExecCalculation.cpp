@@ -1,9 +1,9 @@
 // Copyright 2019 Dan Kestranek.
 
 
-#include "GDDamageExecCalculation.h"
-#include "GDAbilitySystemComponent.h"
-#include "GDAttributeSetBase.h"
+#include "Characters/Abilities/GDDamageExecCalculation.h"
+#include "Characters/Abilities/GDAbilitySystemComponent.h"
+#include "Characters/Abilities/AttributeSets/GDAttributeSetBase.h"
 
 // Declare the attributes to capture and define how we want to capture them from the Source and Target.
 struct GDDamageStatics
