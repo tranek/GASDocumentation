@@ -62,9 +62,7 @@ void AGDHeroCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &AGDHeroCharacter::MoveForward);
-	PlayerInputComponent->BindAxis("MoveBackward", this, &AGDHeroCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AGDHeroCharacter::MoveRight);
-	PlayerInputComponent->BindAxis("MoveLeft", this, &AGDHeroCharacter::MoveRight);
 
 	PlayerInputComponent->BindAxis("LookUp", this, &AGDHeroCharacter::LookUp);
 	PlayerInputComponent->BindAxis("LookUpRate", this, &AGDHeroCharacter::LookUpRate);
