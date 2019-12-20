@@ -178,10 +178,18 @@ void AGDHeroCharacter::BeginPlay()
 	// When the player a client, the floating status bars are all set up in OnRep_PlayerState.
 	InitializeFloatingStatusBar();
 
-	GunComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, FName("GunSocket"));
-
 	StartingCameraBoomArmLength = CameraBoom->TargetArmLength;
 	StartingCameraBoomLocation = CameraBoom->GetRelativeLocation();
+}
+
+void AGDHeroCharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	if (GunComponent && GetMesh())
+	{
+		GunComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, FName("GunSocket"));
+	}
 }
 
 void AGDHeroCharacter::LookUp(float Value)
