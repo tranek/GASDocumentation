@@ -44,8 +44,6 @@ void UAsyncTaskAttributeChanged::EndTask()
 {
 	if (IsValid(ASC))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Cleaning up delegates"));
-
 		ASC->GetGameplayAttributeValueChangeDelegate(AttributeToListenFor).RemoveAll(this);
 
 		for (FGameplayAttribute Attribute : AttributesToListenFor)
