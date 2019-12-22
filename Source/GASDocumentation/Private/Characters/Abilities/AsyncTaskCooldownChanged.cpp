@@ -12,7 +12,7 @@ UAsyncTaskCooldownChanged * UAsyncTaskCooldownChanged::ListenForCooldownChange(U
 
 	if (!IsValid(AbilitySystemComponent) || InCooldownTags.Num() < 1)
 	{
-		ListenForCooldownChange->RemoveFromRoot();
+		ListenForCooldownChange->EndTask();
 		return nullptr;
 	}
 
@@ -29,7 +29,7 @@ UAsyncTaskCooldownChanged * UAsyncTaskCooldownChanged::ListenForCooldownChange(U
 	return ListenForCooldownChange;
 }
 
-void UAsyncTaskCooldownChanged::BeginDestroy()
+void UAsyncTaskCooldownChanged::EndTask()
 {
 	if (IsValid(ASC))
 	{
@@ -44,7 +44,8 @@ void UAsyncTaskCooldownChanged::BeginDestroy()
 		}
 	}
 
-	Super::BeginDestroy();
+	SetReadyToDestroy();
+	MarkPendingKill();
 }
 
 void UAsyncTaskCooldownChanged::OnActiveGameplayEffectAddedCallback(UAbilitySystemComponent * Target, const FGameplayEffectSpec & SpecApplied, FActiveGameplayEffectHandle ActiveHandle)

@@ -11,7 +11,7 @@ UAsyncTaskEffectStackChanged * UAsyncTaskEffectStackChanged::ListenForGameplayEf
 
 	if (!IsValid(AbilitySystemComponent) || !InEffectGameplayTag.IsValid())
 	{
-		ListenForGameplayEffectStackChange->RemoveFromRoot();
+		ListenForGameplayEffectStackChange->EndTask();
 		return nullptr;
 	}
 
@@ -19,6 +19,18 @@ UAsyncTaskEffectStackChanged * UAsyncTaskEffectStackChanged::ListenForGameplayEf
 	AbilitySystemComponent->OnAnyGameplayEffectRemovedDelegate().AddUObject(ListenForGameplayEffectStackChange, &UAsyncTaskEffectStackChanged::OnRemoveGameplayEffectCallback);
 
 	return ListenForGameplayEffectStackChange;
+}
+
+void UAsyncTaskEffectStackChanged::EndTask()
+{
+	if (IsValid(ASC))
+	{
+		ASC->OnActiveGameplayEffectAddedDelegateToSelf.RemoveAll(this);
+		ASC->OnAnyGameplayEffectRemovedDelegate().RemoveAll(this);
+	}
+
+	SetReadyToDestroy();
+	MarkPendingKill();
 }
 
 void UAsyncTaskEffectStackChanged::OnActiveGameplayEffectAddedCallback(UAbilitySystemComponent * Target, const FGameplayEffectSpec & SpecApplied, FActiveGameplayEffectHandle ActiveHandle)
