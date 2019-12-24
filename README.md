@@ -103,6 +103,7 @@ The best documentation will always be the plugin source code.
 > 1. [Debugging](#debugging)  
 >    6.1 [showdebug abilitysystem](#debugging-sd)  
 >    6.2 [Gameplay Debugger](#debugging-gd)  
+>    6.3 [GAS Logging](#debugging-log)  
 > 1. [Common GAS Acronymns](#acronyms)
 > 1. [Other Resources](#resources)
 > 1. [GAS Changelog](#changelog)  
@@ -1952,6 +1953,48 @@ GAS adds functionality to the Gameplay Debugger. Access the Gameplay Debugger wi
 Use the Gameplay Debugger when you want to see the `GameplayTags`, `GameplayEffects`, and `GameplayAbilities` on **other** `Characters`. Unfortunately it does not show the `CurrentValue` of the target's `Attributes`. It will target whatever `Character` is in the center of your screen. Look at a different `Character` and press Apostrophe (') again to switch to inspecting its `ASC`. The currently inspected `Character` has the largest red circle above it.
 
 ![Gameplay Debugger](https://github.com/tranek/GASDocumentation/raw/master/Images/gameplaydebugger.png)
+
+**[⬆ Back to Top](#table-of-contents)**
+
+<a name="debugging-log"></a>
+### 6.3 GAS Logging
+The GAS source code contains a lot of logging statements produced at varying verbosity levels. You will most likely see these as `ABILITY_LOG()` statements. The default verbosity level is `Display`. Anything higher will not be displayed in the console by default.
+
+To change the verbosity level of a log category, type into your console:
+
+```
+log [category] [verbosity]
+```
+
+For example, to turn on `ABILITY_LOG()` statements, you would type into your console:
+```
+log LogAbilitySystem VeryVerbose
+```
+
+To reset it back to default, type:
+```
+log LogAbilitySystem Display
+```
+
+To display all log categories, type:
+```
+log list
+```
+
+Notable GAS related logging categories:
+| Logging Category          | Default Verbosity Level |
+| ------------------------- | ----------------------- |
+| LogAbilitySystem          | Display                 |
+| LogAbilitySystemComponent | Log                     |
+| LogGameplayCueDetails     | Log                     |
+| LogGameplayCueTranslator  | Display                 |
+| LogGameplayEffectDetails  | Log                     |
+| LogGameplayEffects        | Display                 |
+| LogGameplayTags           | Log                     |
+| LogGameplayTasks          | Log                     |
+| VLogAbilitySystem         | Display                 |
+
+See the [Wiki on Logging](https://wiki.unrealengine.com/Logs,_Printing_Messages_To_Yourself_During_Runtime) for more information.
 
 **[⬆ Back to Top](#table-of-contents)**
 
