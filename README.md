@@ -1982,6 +1982,7 @@ log list
 ```
 
 Notable GAS related logging categories:
+
 | Logging Category          | Default Verbosity Level |
 | ------------------------- | ----------------------- |
 | LogAbilitySystem          | Display                 |
