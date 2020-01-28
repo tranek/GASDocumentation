@@ -309,6 +309,8 @@ virtual void StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
 
 `Attributes` are defined by and live in an [`AttributeSet`](#concepts-as). The `AttributeSet` is reponsible for replicating `Attributes` that are marked for replication. See the section on [`AttributeSets`](#concepts-as) for how to define `Attributes`.
 
+**Tip:** If you don't want an `Attribute` to show up in the Editor's list of `Attributes`, you can use the `Meta = (HideInDetailsView)` `property specifier`.
+
 **[⬆ Back to Top](#table-of-contents)**
 
 <a name="concepts-a-value"></a>
