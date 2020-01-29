@@ -840,27 +840,32 @@ When starting out, you will most likely have one unique `Cooldown GE` per `GA` t
 
 Two techniques for reusing the `Cooldown GE`:
 
-1. **Use a [`SetByCaller`](#concepts-ge-spec-setbycaller).** This is the easiest method. Set the duration of your shared `Cooldown GE` to `SetByCaller` with a `GameplayTag`. On your `GameplayAbility` subclass, define a float / `FScalableFloat` for the duration and a `FGameplayTagContainer` for the unique `Cooldown Tag`.
+1. **Use a [`SetByCaller`](#concepts-ge-spec-setbycaller).** This is the easiest method. Set the duration of your shared `Cooldown GE` to `SetByCaller` with a `GameplayTag`. On your `GameplayAbility` subclass, define a float / `FScalableFloat` for the duration, a `FGameplayTagContainer` for the unique `Cooldown Tag`, and a temporary `FGameplayTagContainer` that we will use as the return pointer of the union of our `Cooldown Tag` and the `Cooldown GE's` tags.
 ```c++
 UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Cooldown")
 FScalableFloat CooldownDuration;
 
 UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Cooldown")
 FGameplayTagContainer CooldownTags;
+
+// Temp container that we will return the pointer to in GetCooldownTags().
+// This will be a union of our CooldownTags and the Cooldown GE's cooldown tags.
+UPROPERTY()
+FGameplayTagContainer TempCooldownTags;
 ```
 
-Then override `UGameplayAbility::GetCooldownTags()` to inject our `Cooldown Tags` into the cooldown's `GameplayEffectSpec`.
+Then override `UGameplayAbility::GetCooldownTags()` to return the union of our `Cooldown Tags` and any existing `Cooldown GE's` tags.
 ```c++
 const FGameplayTagContainer * UPGGameplayAbility::GetCooldownTags() const
 {
-	FGameplayTagContainer* Tags = new FGameplayTagContainer();
+	FGameplayTagContainer* MutableTags = const_cast<FGameplayTagContainer*>(&TempCooldownTags);
 	const FGameplayTagContainer* ParentTags = Super::GetCooldownTags();
 	if (ParentTags)
 	{
-		Tags->AppendTags(*ParentTags);
+		MutableTags->AppendTags(*ParentTags);
 	}
-	Tags->AppendTags(CooldownTags);
-	return Tags;
+	MutableTags->AppendTags(CooldownTags);
+	return MutableTags;
 }
 ```
 
@@ -890,20 +895,25 @@ FScalableFloat CooldownDuration;
 
 UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Cooldown")
 FGameplayTagContainer CooldownTags;
+
+// Temp container that we will return the pointer to in GetCooldownTags().
+// This will be a union of our CooldownTags and the Cooldown GE's cooldown tags.
+UPROPERTY()
+FGameplayTagContainer TempCooldownTags;
 ```
 
-Override `UGameplayAbility::GetCooldownTags()` to inject our `Cooldown Tags` into the cooldown's `GameplayEffectSpec`.
+Then override `UGameplayAbility::GetCooldownTags()` to return the union of our `Cooldown Tags` and any existing `Cooldown GE's` tags.
 ```c++
 const FGameplayTagContainer * UPGGameplayAbility::GetCooldownTags() const
 {
-	FGameplayTagContainer* Tags = new FGameplayTagContainer();
+	FGameplayTagContainer* MutableTags = const_cast<FGameplayTagContainer*>(&TempCooldownTags);
 	const FGameplayTagContainer* ParentTags = Super::GetCooldownTags();
 	if (ParentTags)
 	{
-		Tags->AppendTags(*ParentTags);
+		MutableTags->AppendTags(*ParentTags);
 	}
-	Tags->AppendTags(CooldownTags);
-	return Tags;
+	MutableTags->AppendTags(CooldownTags);
+	return MutableTags;
 }
 ```
 
