@@ -3,7 +3,7 @@ My understanding of Unreal Engine 4's GameplayAbilitySystem plugin (GAS) with a 
 
 The goal of this documentation is to explain the major concepts and classes in GAS and provide some additional commentary based on my experience with it. There is a lot of 'tribal knowledge' of GAS among users in the community and I aim to share all of mine here.
 
-The Sample Project and documentation are current with Unreal Engine 4.24.
+The Sample Project and documentation are current with Unreal Engine 4.25.
 
 The best documentation will always be the plugin source code.
 
@@ -108,6 +108,7 @@ The best documentation will always be the plugin source code.
 > 1. [Common GAS Acronymns](#acronyms)
 > 1. [Other Resources](#resources)
 > 1. [GAS Changelog](#changelog)  
+>    [4.25](#changelog-4.25)  
 >    [4.24](#changelog-4.24)
          
 <a name="intro"></a>
@@ -131,12 +132,11 @@ In multiplayer games, GAS provides support for [client-side prediction](#concept
 * Changes to `Attributes`
 * Applying `GameplayTags`
 * Spawning `GameplayCues`
-* Movement via `RootMotionSource` functions connected to the `CharacterMovementComponent`. **Note:** Predicting movement with `RootMotionSource` broke in UE 4.20; however, [fixes for the `RootMotionSource` prediction issues](https://github.com/EpicGames/UnrealEngine/commit/94107438dd9f490e7b743f8e13da46927051bf33#diff-65f6196f9f28f560f95bd578e07e290c) are in UnrealEngine GitHub master possibly slated for 4.25.
+* Movement via `RootMotionSource` functions connected to the `CharacterMovementComponent`.
 
 **GAS must be set up in C++**, but `GameplayAbilities` and `GameplayEffects` can be created in Blueprint by the designers.
 
 Current issues with GAS:
-* Predicting `RootMotionSource` `AbilityTasks` broke in UE 4.20. This may not get fixed until the new Network Prediction plugin is integrated into GAS.
 * `GameplayEffect` latency reconciliation (can't predict ability cooldowns resulting in players with higher latencies having lower rate of fire for low cooldown abilities compared to players with lower latencies).
 * Cannot predict the removal of `GameplayEffects`. We can however predict adding `GameplayEffects` with the inverse effects, effectively removing them. This is not always appropriate or feasible and still remains an issue.
 * Lack of boilerplate templates, multiplayer examples, and documentation. Hopefully this helps with that!
@@ -181,7 +181,7 @@ The hero class has the following abilities:
 | Gun                        | Left Mouse Button   | No         | C++             | Fires a projectile from the hero's gun. The animation is predicted but the projectile is not.                                                                                |
 | Aim Down Sights            | Right Mouse Button  | Yes        | Blueprint       | While the button is held, the hero will walk slower and the camera will zoom in to allow more precise shots with the gun.                                                    |
 | Sprint                     | Left Shift          | Yes        | Blueprint       | While the button is held, the hero will run faster draining stamina.                                                                                                         |
-| Forward Dash               | Q                   | No*        | Blueprint       | The hero dashes forward. _*While this ability is set up to be predicted, GAS's [`RootMotionSource` `AbilityTasks`](#concepts-at-rms) are bugged._                            |
+| Forward Dash               | Q                   | Yes        | Blueprint       | The hero dashes forward at the cost of stamina.                                                                                                                              |
 | Passive Armor Stacks       | Passive             | No         | Blueprint       | Every 4 seconds the hero gains a stack of armor up to a maximum of 4 stacks. Receiving damage removes one stack of armor.                                                    |
 | Meteor                     | R                   | No         | Blueprint       | Player targets a location to drop a meteor on the enemies causing damage and stunning them. The targeting is predicted while spawning the meteor is not.                     |
 
@@ -403,14 +403,14 @@ ATTRIBUTE_ACCESSORS(UGDAttributeSetBase, Health)
 Also define the `OnRep` function in the header:
 ```c++
 UFUNCTION()
-virtual void OnRep_Health();
+virtual void OnRep_Health(const FGameplayAttributeData& OldHealth);
 ```
 
 The .cpp file for the `AttributeSet` should fill in the `OnRep` function with the `GAMEPLAYATTRIBUTE_REPNOTIFY` macro used by the prediction system:
 ```c++
-void UGDAttributeSetBase::OnRep_Health()
+void UGDAttributeSetBase::OnRep_Health(const FGameplayAttributeData& OldHealth)
 {
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UGDAttributeSetBase, Health);
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UGDAttributeSetBase, Health, OldHealth);
 }
 ```
 
@@ -1514,15 +1514,7 @@ Some `AbilityTasks` don't automatically end when the `GameplayAbility` ends like
 ### 3.7.4 Root Motion Source Ability Tasks
 GAS comes with `AbilityTasks` for moving `Characters` over time for things like knockbacks, complex jumps, pulls, and dashes using `Root Motion Sources` hooked into the `CharacterMovementComponent`.
 
-Prior to UE 4.20, these `RootMotionSource` `AbilityTasks` worked predictively with the `CharacterMovementComponent`. Something changed in UE 4.20 that broke `Root Motion Source` `AbilityTasks's` prediction or changed it in a way that we don't know how to use to use it correctly. We've reached out to Epic but they haven't responded yet. I fear that we will have to wait for the completion of the new [Network Prediction plugin](#concepts-p-npp) before this functionality is restored to GAS.
-
-For now if you need a truly predicted movement ability, you will need to manually implement it in the `CharacterMovementComponent`.
-
-`RootMotionSource` `AbilityTasks` still work great in single player and are acceptable in low latency multiplayer games.
-
-The Sample Project uses a `AbilityTask_ApplyRootMotionConstantForce` for its Dash `GameplayAbility`.
-
-**Note:** Recent a [commit](https://github.com/EpicGames/UnrealEngine/commit/94107438dd9f490e7b743f8e13da46927051bf33#diff-65f6196f9f28f560f95bd578e07e290c) to Unreal Engine master on GitHub potentially fixes the prediction bugs and are possibly slated for UE 4.25 release. You should be able to cherry pick the changes now into your custom engine if you desire.
+**Note:** Predicting `RootMotionSource` `AbilityTasks` works up to engine version 4.19 and 4.25+. Prediction is bugged for engine versions 4.20-4.24; however, the `AbilityTasks` still perform their function in multiplayer with minor net corrections and work perfectly in single player. It is possible to cherry pick the [prediction fix](https://github.com/EpicGames/UnrealEngine/commit/94107438dd9f490e7b743f8e13da46927051bf33#diff-65f6196f9f28f560f95bd578e07e290c) from 4.25 into a custom 4.20-4.24 engine.
 
 **[⬆ Back to Top](#table-of-contents)**
 
@@ -1825,9 +1817,7 @@ The new [`Network Prediction` plugin](#concepts-p-npp) by Epic is expected to be
 
 <a name="concepts-p-npp"></a>
 #### 3.10.5 Network Prediction Plugin
-Epic recently started an initiative to replace the `CharacterMovementComponent` with a new `Network Prediction` plugin. This plugin is still in its very early stages but is available to very early access on the Unreal Engine GitHub. Epic mentioned that they would like to have the plugin working by the end of 2019 but that is not a hard deadline, just a goal. It's too soon to tell which future version of the Engine that it will make its experimental beta debut in.
-
-Hopefully this will fix the broken prediction in [`RootMotionSource` `AbilityTasks`](#concepts-at-rms).
+Epic recently started an initiative to replace the `CharacterMovementComponent` with a new `Network Prediction` plugin. This plugin is still in its very early stages but is available to very early access on the Unreal Engine GitHub. It's too soon to tell which future version of the Engine that it will make its experimental beta debut in.
 
 **[⬆ Back to Top](#table-of-contents)**
 
@@ -2069,17 +2059,23 @@ See the [Wiki on Logging](https://wiki.unrealengine.com/Logs,_Printing_Messages_
 
 This is a list of notable changes (fixes, changes, and new features) to GAS compiled from the official Unreal Engine upgrade changelog and from undocumented changes that I've encountered. If you've found something that isn't listed here, please make an issue or pull request.
 
+<a name="changelog-4.25"></a>
+### 4.25
+* Fixed prediction of `RootMotionSource` `AbilityTasks`
+* `GAMEPLAYATTRIBUTE_REPNOTIFY()` now additionally takes in the old `Attribute` value. We must supply that as the optional parameter to our OnRep functions.
+
 <a name="changelog-4.24"></a>
 ### 4.24
-* Fixed blueprint node `Attribute` variables resetting to `None` on compile
+* Fixed blueprint node `Attribute` variables resetting to `None` on compile.
 * Need to call `UAbilitySystemGlobals::InitGlobalData()` to use `TargetData` otherwise you will get `ScriptStructCache` errors and clients will be disconnected from the server. My advice is to always call this in every project now whereas before 4.24 it was optional.
-* Fixed crash when copying a `GameplayTag` setter to a blueprint that didn't have the variable previously defined
-* `UGameplayAbility::MontageStop()` function now properly uses the `OverrideBlendOutTime` parameter
-* Fixed `GameplayTag` query variables on components not being modified when edited
+* Fixed crash when copying a `GameplayTag` setter to a blueprint that didn't have the variable previously defined.
+* `UGameplayAbility::MontageStop()` function now properly uses the `OverrideBlendOutTime` parameter.
+* Fixed `GameplayTag` query variables on components not being modified when edited.
 * Added the ability for `GameplayEffectExecutionCalculations` to support scoped modifiers against "temporary variables" that aren't required to be backed by an attribute capture.
    * Implementation basically enables `GameplayTag`-identified aggregators to be created as a means for an execution to expose a temporary value to be manipulated with scoped modifiers; you can now build formulas that want manipulatable values that don't need to be captured from a source or target.
    * To use, an execution has to add a tag to the new member variable `ValidTransientAggregatorIdentifiers`; those tags will show up in the calculation modifier array of scoped mods at the bottom, marked as temporary variables—with updated details customizations accordingly to support feature
 * Added restricted tag quality-of-life improvements. Removed the default option for restricted `GameplayTag` source. We no longer reset the source when adding restricted tags to make it easier to add several in a row. 
 * `APawn::PossessedBy()` now sets the owner of the `Pawn` to the new `Controller`. Useful because [Mixed Replication Mode](#concepts-asc-rm) expects the owner of the `Pawn` to be the `Controller` if the `ASC` lives on the `Pawn`.
+* Fixed bug with POD (Plain Old Data) in `FAttributeSetInittterDiscreteLevels`.
 
 **[⬆ Back to Top](#table-of-contents)**

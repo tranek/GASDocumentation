@@ -128,52 +128,52 @@ protected:
 	**/
 
 	UFUNCTION()
-	virtual void OnRep_Health();
+	virtual void OnRep_Health(const FGameplayAttributeData& OldHealth);
 
 	UFUNCTION()
-	virtual void OnRep_MaxHealth();
+	virtual void OnRep_MaxHealth(const FGameplayAttributeData& OldMaxHealth);
 
 	UFUNCTION()
-	virtual void OnRep_HealthRegenRate();
+	virtual void OnRep_HealthRegenRate(const FGameplayAttributeData& OldHealthRegenRate);
 
 	UFUNCTION()
-	virtual void OnRep_Mana();
+	virtual void OnRep_Mana(const FGameplayAttributeData& OldMana);
 
 	UFUNCTION()
-	virtual void OnRep_MaxMana();
+	virtual void OnRep_MaxMana(const FGameplayAttributeData& OldMaxMana);
 
 	UFUNCTION()
-	virtual void OnRep_ManaRegenRate();
+	virtual void OnRep_ManaRegenRate(const FGameplayAttributeData& OldManaRegenRate);
 
 	UFUNCTION()
-	virtual void OnRep_Stamina();
+	virtual void OnRep_Stamina(const FGameplayAttributeData& OldStamina);
 
 	UFUNCTION()
-	virtual void OnRep_MaxStamina();
+	virtual void OnRep_MaxStamina(const FGameplayAttributeData& OldMaxStamina);
 
 	UFUNCTION()
-	virtual void OnRep_StaminaRegenRate();
+	virtual void OnRep_StaminaRegenRate(const FGameplayAttributeData& OldStaminaRegenRate);
 
 	UFUNCTION()
-	virtual void OnRep_Armor();
+	virtual void OnRep_Armor(const FGameplayAttributeData& OldArmor);
 
 	UFUNCTION()
-	virtual void OnRep_MoveSpeed();
+	virtual void OnRep_MoveSpeed(const FGameplayAttributeData& OldMoveSpeed);
 
 	UFUNCTION()
-	virtual void OnRep_CharacterLevel();
+	virtual void OnRep_CharacterLevel(const FGameplayAttributeData& OldCharacterLevel);
 
 	UFUNCTION()
-	virtual void OnRep_XP();
+	virtual void OnRep_XP(const FGameplayAttributeData& OldXP);
 
 	UFUNCTION()
-	virtual void OnRep_XPBounty();
+	virtual void OnRep_XPBounty(const FGameplayAttributeData& OldXPBounty);
 
 	UFUNCTION()
-	virtual void OnRep_Gold();
+	virtual void OnRep_Gold(const FGameplayAttributeData& OldGold);
 
 	UFUNCTION()
-	virtual void OnRep_GoldBounty();
+	virtual void OnRep_GoldBounty(const FGameplayAttributeData& OldGoldBounty);
 
 private:
 	FGameplayTag HitDirectionFrontTag;
