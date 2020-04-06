@@ -18,7 +18,7 @@ void AGDPlayerController::CreateHUD()
 
 	if (!UIHUDWidgetClass)
 	{
-		UE_LOG(LogTemp, Error, TEXT("%s() Missing UIHUDWidgetClass. Please fill in on the Blueprint of the PlayerController."), TEXT(__FUNCTION__));
+		UE_LOG(LogTemp, Error, TEXT("%s() Missing UIHUDWidgetClass. Please fill in on the Blueprint of the PlayerController."), *FString(__FUNCTION__));
 		return;
 	}
 
@@ -58,7 +58,7 @@ void AGDPlayerController::CreateHUD()
 	DamageNumberClass = StaticLoadClass(UObject::StaticClass(), nullptr, TEXT("/Game/GASDocumentation/UI/WC_DamageText.WC_DamageText_C"));
 	if (!DamageNumberClass)
 	{
-		UE_LOG(LogTemp, Error, TEXT("%s() Failed to find DamageNumberClass. If it was moved, please update the reference location in C++."), TEXT(__FUNCTION__));
+		UE_LOG(LogTemp, Error, TEXT("%s() Failed to find DamageNumberClass. If it was moved, please update the reference location in C++."), *FString(__FUNCTION__));
 	}
 }
 
