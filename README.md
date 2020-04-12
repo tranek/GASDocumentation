@@ -3,7 +3,9 @@ My understanding of Unreal Engine 4's GameplayAbilitySystem plugin (GAS) with a 
 
 The goal of this documentation is to explain the major concepts and classes in GAS and provide some additional commentary based on my experience with it. There is a lot of 'tribal knowledge' of GAS among users in the community and I aim to share all of mine here.
 
-The Sample Project and documentation are current with Unreal Engine 4.25.
+The Sample Project and documentation are current with Unreal Engine 4.25. There are branches of this documentation for older versions of Unreal Engine, but they are no longer supported and are liable to have bugs or out of date information.
+
+[GASShooter](https://github.com/tranek/GASShooter) is a sister Sample Project demonstrating advanced techniques with GAS for a multiplayer FPS/TPS. Documentation and commentary for GASShooter is included here to keep everything in one central location.
 
 The best documentation will always be the plugin source code.
 
@@ -423,6 +425,8 @@ void UGDAttributeSetBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 	DOREPLIFETIME_CONDITION_NOTIFY(UGDAttributeSetBase, Health, COND_None, REPNOTIFY_Always);
 }
 ```
+
+`REPTNOTIFY_Always` tells the `OnRep` function to trigger if the local value is already equal to the value being repped down from the Server (due to prediction). By default it won't trigger the `OnRep` function if the local value is the same as the value being repped down from the Server.
 
 If the `Attribute` is not replicated like a `Meta Attribute`, then the `OnRep` and `GetLifetimeReplicatedProps` steps can be skipped.
 
@@ -1971,7 +1975,7 @@ The second page shows all of the `Duration` and `Infinite` `GameplayEffects` on 
 The third page shows all of the `GameplayAbilities` that have been granted to you, whether they are currently running, whether they are blocked from activating, and the status of currently running `AbilityTasks`.
 ![Third Page of showdebug abilitysystem](https://github.com/tranek/GASDocumentation/raw/master/Images/showdebugpage3.png)
 
-While you can cycle between targets with `PageUp` and `PageDown`, the pages will only show data for the `ASC` on your locally controlled `Character`.
+While you can cycle between targets with `PageUp` and `PageDown`, the pages will only show data for the `ASC` on your locally controlled `Character`. However, using `AbilitySystem.Debug.NextTarget` and `AbilitySystem.Debug.PrevTarget` will show data for other `ASCs`, but it will not update the top half of the debug information nor will it update the green targeting rectangular prism so there is no way to know which `ASC` is currently being targeted. This bug has been reported https://issues.unrealengine.com/issue/UE-90437.
 
 **[⬆ Back to Top](#table-of-contents)**
 
@@ -2069,7 +2073,7 @@ This is a list of notable changes (fixes, changes, and new features) to GAS comp
 <a name="changelog-4.25"></a>
 ### 4.25
 * Fixed prediction of `RootMotionSource` `AbilityTasks`
-* `GAMEPLAYATTRIBUTE_REPNOTIFY()` now additionally takes in the old `Attribute` value. We must supply that as the optional parameter to our OnRep functions.
+* [`GAMEPLAYATTRIBUTE_REPNOTIFY()`](#concepts-as-attributes) now additionally takes in the old `Attribute` value. We must supply that as the optional parameter to our `OnRep` functions.
 
 <a name="changelog-4.24"></a>
 ### 4.24
