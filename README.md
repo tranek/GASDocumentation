@@ -711,7 +711,7 @@ To subclass the `GameplayEffectContext`:
 1. Override `FGameplayEffectContext::GetScriptStruct()`
 1. Override `FGameplayEffectContext::Duplicate()`
 1. Override `FGameplayEffectContext::NetSerialize()` if your new data needs to be replicated
-1. If you overrode `FGameplayEffectContext::NetSerialize()`, be sure to make the `TStructOpsTypeTraits` like the parent struct `FGameplayEffectContext` has
+1. Implement `TStructOpsTypeTraits` for your subclass, like the parent struct `FGameplayEffectContext` has
 1. Override `AllocGameplayEffectContext()` in your [`AbilitySystemGlobals`](#concepts-asg) class to return a new object of your subclass
 
 **[⬆ Back to Top](#table-of-contents)**
