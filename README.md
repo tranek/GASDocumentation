@@ -17,6 +17,7 @@ The best documentation will always be the plugin source code.
 > 1. [Concepts](#concepts)  
 >    3.1 [Ability System Component](#concepts-asc)  
 >    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3.1.1 [Replication Mode](#concepts-asc-rm)  
+>    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3.1.2 [Setup and Initialization](#concepts-asc-setup)  
 >    3.2 [Gameplay Tags](#concepts-gt)  
 >    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3.2.1 [Responding to Changes in Gameplay Tags](#concepts-gt-change)  
 >    3.3 [Attributes](#concepts-a)  
@@ -231,8 +232,6 @@ The `Actor` with the `ASC` attached to it is referred to as the `OwnerActor` of 
 
 Both, the `OwnerActor` and the `AvatarActor` if different `Actors`, should implement the `IAbilitySystemInterface`. This interface has one function that must be overriden, `UAbilitySystemComponent* GetAbilitySystemComponent() const`, which returns a pointer to its `ASC`. `ASCs` interact with each other internally to the system by looking for this interface function.
 
-`ASCs` are typically constructed in the `OwnerActor's` constructor and marked replicated. **This must be done in C++**.
-
 The `ASC` holds its current active `GameplayEffects` in `FActiveGameplayEffectsContainer ActiveGameplayEffects`.
 
 The `ASC` holds its granted `Gameplay Abilities` in `FGameplayAbilitySpecContainer ActivatableAbilities`. Any time that you plan to iterate over `ActivatableAbilities.Items`, be sure to add `ABILITYLIST_SCOPE_LOCK();` above your loop to lock the list from changing (due to removing an ability). Every `ABILITYLIST_SCOPE_LOCK();` in scope increments `AbilityScopeLockCount` and then decrements when it falls out of scope. Do not try to remove an ability inside the scope of `ABILITYLIST_SCOPE_LOCK();` (the clear ability functions check `AbilityScopeLockCount` internally to prevent removing abilities if the list is locked).
@@ -250,6 +249,100 @@ The `ASC` defines three different replication modes for replicating `GameplayEff
 **Note:** `Mixed` replication mode expects the `OwnerActor's` `Owner` to be the `Controller`. `PlayerState's` `Owner` is the `Controller` by default but `Character's` is not. If using `Mixed` replication mode with the `OwnerActor` not the `PlayerState`, then you need to call `SetOwner()` on the `OwnerActor` with a valid `Controller`.
 
 Starting with 4.24, `PossessedBy()` now sets the owner of the `Pawn` to the new `Controller`.
+
+**[⬆ Back to Top](#table-of-contents)**
+
+<a name="concepts-asc-setup"></a>
+### 3.1.2 Setup and Initialization
+`ASCs` are typically constructed in the `OwnerActor's` constructor and explicitly marked replicated. **This must be done in C++**.
+
+```c++
+AGDPlayerState::AGDPlayerState()
+{
+	// Create ability system component, and set it to be explicitly replicated
+	AbilitySystemComponent = CreateDefaultSubobject<UGDAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
+	AbilitySystemComponent->SetIsReplicated(true);
+	//...
+}
+```
+
+The `ASC` needs to be initialized with its `OwnerActor` and `AvatarActor` on both the server and the client. You want to initialize after the `Pawn's` `Controller` has been set (after possession). Single player games only need to worry about the server path.
+
+For player controlled characters where the `ASC` lives on the `Pawn`, I typically initialize on the server in the `Pawn's` `PossessedBy()` function and initialize on the client in the `PlayerController's` `AcknowledgePawn()` function.
+
+```c++
+void APACharacterBase::PossessedBy(AController * NewController)
+{
+	Super::PossessedBy(NewController);
+
+	if (AbilitySystemComponent)
+	{
+		AbilitySystemComponent->InitAbilityActorInfo(this, this);
+	}
+
+	// ASC MixedMode replication requires that the ASC Owner's Owner be the Controller.
+	SetOwner(NewController);
+}
+```
+
+```c++
+void APAPlayerControllerBase::AcknowledgePossession(APawn* P)
+{
+	Super::AcknowledgePossession(P);
+
+	APACharacterBase* CharacterBase = Cast<APACharacterBase>(P);
+	if (CharacterBase)
+	{
+		CharacterBase->GetAbilitySystemComponent()->InitAbilityActorInfo(CharacterBase, CharacterBase);
+	}
+
+	//...
+}
+```
+
+For player controlled characters where the `ASC` lives on the `PlayerState`, I typically initialize the server in the `Pawn's` `PossessedBy()` function and initialize on the client in the `Pawn's` `OnRep_PlayerState()` function. This ensures that the `PlayerState` exists on the client.
+
+```c++
+// Server only
+void AGDHeroCharacter::PossessedBy(AController * NewController)
+{
+	Super::PossessedBy(NewController);
+
+	AGDPlayerState* PS = GetPlayerState<AGDPlayerState>();
+	if (PS)
+	{
+		// Set the ASC on the Server. Clients do this in OnRep_PlayerState()
+		AbilitySystemComponent = Cast<UGDAbilitySystemComponent>(PS->GetAbilitySystemComponent());
+
+		// AI won't have PlayerControllers so we can init again here just to be sure. No harm in initing twice for heroes that have PlayerControllers.
+		PS->GetAbilitySystemComponent()->InitAbilityActorInfo(PS, this);
+	}
+	
+	//...
+}
+```
+
+```c++
+// Client only
+void AGDHeroCharacter::OnRep_PlayerState()
+{
+	Super::OnRep_PlayerState();
+
+	AGDPlayerState* PS = GetPlayerState<AGDPlayerState>();
+	if (PS)
+	{
+		// Set the ASC for clients. Server does this in PossessedBy.
+		AbilitySystemComponent = Cast<UGDAbilitySystemComponent>(PS->GetAbilitySystemComponent());
+
+		// Init ASC Actor Info for clients. Server will init its ASC when it possesses a new Actor.
+		AbilitySystemComponent->InitAbilityActorInfo(PS, this);
+	}
+
+	// ...
+}
+```
+
+If you get the error message `LogAbilitySystem: Warning: Can't activate LocalOnly or LocalPredicted ability %s when not local!` then you did not initialize your `ASC` on the client.
 
 **[⬆ Back to Top](#table-of-contents)**
 
