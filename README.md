@@ -98,6 +98,7 @@ The best documentation will always be the plugin source code.
 >    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3.10.5 [Network Prediction Plugin](#concepts-p-npp)  
 >    3.11 [Targeting](#concepts-targeting)  
 >    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3.11.1 [Target Actors](#concepts-targeting-actors)  
+>    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3.11.2 [Target Data](#concepts-targeting-data)  
 > 1. [Commonly Implemented Abilities and Effects](#cae)  
 >    4.1 [Stun](#cae-stun)  
 >    4.2 [Sprint](#cae-sprint)  
@@ -1256,7 +1257,7 @@ Source->ApplyGameplayEffectToSelf(GEBounty, 1.0f, Source->MakeEffectContext());
 
 <a name="concepts-ge-containers"></a>
 #### 3.5.18 Gameplay Effect Containers
-Epic's [Action RPG Sample Project](https://www.unrealengine.com/marketplace/en-US/slug/action-rpg) implements a structure called `FGameplayEffectContainer`. These are not in vanilla GAS but are extremely handy for containing `GameplayEffects` and `TargetData`. It automates a some of the effort like creating `GameplayEffectSpecs` from `GameplayEffects` and setting default values in its `GameplayEffectContext`. Making a `GameplayEffectContainer` in a `GameplayAbility` and passing it to spawned projectiles is very easy and straightforward. I opted not to implement the `GameplayEffectContainers` in the included Sample Project to show how you would work without them in vanilla GAS, but I highly recommend looking into them and considering adding them to your project.
+Epic's [Action RPG Sample Project](https://www.unrealengine.com/marketplace/en-US/slug/action-rpg) implements a structure called `FGameplayEffectContainer`. These are not in vanilla GAS but are extremely handy for containing `GameplayEffects` and [`TargetData`](#concepts-targeting-data). It automates a some of the effort like creating `GameplayEffectSpecs` from `GameplayEffects` and setting default values in its `GameplayEffectContext`. Making a `GameplayEffectContainer` in a `GameplayAbility` and passing it to spawned projectiles is very easy and straightforward. I opted not to implement the `GameplayEffectContainers` in the included Sample Project to show how you would work without them in vanilla GAS, but I highly recommend looking into them and considering adding them to your project.
 
 To access the `GESpecs` inside of the `GameplayEffectContainers` to do things like adding `SetByCallers`, break the `FGameplayEffectContainer` and access the `GESpec` reference by its index in the array of `GESpecs`. This requires that you know the index ahead of time of the `GESpec` that you want to access.
 
@@ -1326,7 +1327,7 @@ UAbilitySystemComponent::ServerSetInputPressed()
 #### 3.6.2 Binding Input to the ASC
 The `ASC` allows you to directly bind input actions to it and assign those inputs to `GameplayAbilities` when you grant them. Input actions assigned to `GameplayAbilities` automatically activate those `GameplayAbilities` when pressed if the `GameplayTag` requirements are met. Assigned input actions are required to use the built-in `AbilityTasks` that respond to input.
 
-In addition to input actions assigned to activate `GameplayAbilities`, the `ASC` also accepts generic `Confirm` and `Cancel` inputs. These special inputs are used by `AbilityTasks` for confirming things like `TargetData` or canceling them.
+In addition to input actions assigned to activate `GameplayAbilities`, the `ASC` also accepts generic `Confirm` and `Cancel` inputs. These special inputs are used by `AbilityTasks` for confirming things like [`Target Actors`](#concepts-targeting-actors) or canceling them.
 
 To bind input to an `ASC`, you must first create an enum that translates the input action name to a byte. The enum name must match exactly to the name used for the input action in the project settings. The `DisplayName` does not matter.
 
@@ -1621,7 +1622,7 @@ Traditional `Gameplay Ability` lifecycle involves a minimum of two or three RPCs
 1. `ServerSetReplicatedTargetData()` (Optional)
 1. `ServerEndAbility()`
 
-If a `GameplayAbility` performs all of these actions in one atomic grouping in a frame, we can optimize this workflow to batch (combine) all two or three RPCs into one RPC. `GAS` refers to this RPC optimization as `Ability Batching`. The common example of when to use `Ability Batching` is for hitscan guns. Hitscan guns activate, do a line trace, send the `TargetData` to the server, and end the ability all in one atomic group in one frame. The [GASShooter](https://github.com/tranek/GASShooter) sample project demonstrates this technique for its hitscan guns.
+If a `GameplayAbility` performs all of these actions in one atomic grouping in a frame, we can optimize this workflow to batch (combine) all two or three RPCs into one RPC. `GAS` refers to this RPC optimization as `Ability Batching`. The common example of when to use `Ability Batching` is for hitscan guns. Hitscan guns activate, do a line trace, send the [`TargetData`](#concepts-targeting-data) to the server, and end the ability all in one atomic group in one frame. The [GASShooter](https://github.com/tranek/GASShooter) sample project demonstrates this technique for its hitscan guns.
 
 Semi-Automatic guns are the best case scenario and batch the `CallServerTryActivateAbility()`, `ServerSetReplicatedTargetData()` (the bullet hit result), and `ServerEndAbility()` into one RPC instead of three RPCs.
 
@@ -1922,7 +1923,7 @@ AbilitySystemGlobalsClassName="/Script/ParagonAssets.PAAbilitySystemGlobals"
 
 <a name="concepts-asg-initglobaldata"></a>
 #### 3.9.1 InitGlobalData()
-Starting in UE 4.24, it is now necessary to call `UAbilitySystemGlobals::InitGlobalData()` to use `TargetData`, otherwise you will get errors related to `ScriptStructCache` and clients will be disconnected from the server. This function only needs to be called once in a project. Fortnite calls it from the AssetManager class's start initial loading function and Paragon called it from `UEngine::Init()`. I find that putting it in `UEngineSubsystem::Initialize()` is a good place as shown in the Sample Project. I would consider this boilerplate code that you should copy into your project to avoid issues with `TargetData`.
+Starting in UE 4.24, it is now necessary to call `UAbilitySystemGlobals::InitGlobalData()` to use [`TargetData`](#concepts-targeting-data), otherwise you will get errors related to `ScriptStructCache` and clients will be disconnected from the server. This function only needs to be called once in a project. Fortnite calls it from the AssetManager class's start initial loading function and Paragon called it from `UEngine::Init()`. I find that putting it in `UEngineSubsystem::Initialize()` is a good place as shown in the Sample Project. I would consider this boilerplate code that you should copy into your project to avoid issues with `TargetData`.
 
 If you run into a crash while using the `AbilitySystemGlobals` `GlobalAttributeSetDefaultsTableNames`, you may need to call `UAbilitySystemGlobals::InitGlobalData()` later like Fortnite in the `AssetManager` or in the `GameInstance` instead of in `UEngineSubsystem::Initialize()`. This crash is likely due to the order in which the `Subsystems` are created and the `GlobalAttributeDefaultsTables` requires the `EditorSubsystem` to be loaded to bind a delegate in `UAbilitySystemGlobals::InitGlobalData()`.
 
@@ -2052,7 +2053,7 @@ Epic recently started an initiative to replace the `CharacterMovementComponent` 
 
 <a name="concepts-targeting-actors"></a>
 #### 3.11.1 Target Actors
-`GameplayAbilities` spawn [`TargetActors`](https://docs.unrealengine.com/en-US/API/Plugins/GameplayAbilities/Abilities/AGameplayAbilityTargetActor/index.html) with the `WaitTargetData` `AbilityTask` to visualize and capture targeting information from the world. `TargetActors` may optionally use `GameplayAbilityWorldReticles` to display current targets. Upon confirmation, the targeting information is returned as `TargetData` which can then be passed into `GameplayEffects`.
+`GameplayAbilities` spawn [`TargetActors`](https://docs.unrealengine.com/en-US/API/Plugins/GameplayAbilities/Abilities/AGameplayAbilityTargetActor/index.html) with the `WaitTargetData` `AbilityTask` to visualize and capture targeting information from the world. `TargetActors` may optionally use `GameplayAbilityWorldReticles` to display current targets. Upon confirmation, the targeting information is returned as [`TargetData`](#concepts-targeting-data) which can then be passed into `GameplayEffects`.
  
 `TargetActors` are based on `AActor` so they can have any kind of visible component to represent what they are targeting such as static meshes or decals. Static meshes may be used to visualize placement of an object that your character will build. Decals may be used to show an area of effect on the ground. The Sample Project uses [`AGameplayAbilityTargetActor_GroundTrace`](https://docs.unrealengine.com/en-US/API/Plugins/GameplayAbilities/Abilities/AGameplayAbilityTargetActor_Grou-/index.html) with a decal on the ground to represent the damage area of effect for the Meteor ability. They also don't need to display anything either. For example it wouldn't make sense to display anything for a hitscan gun that instantly traces a line to its target as used in [GASShooter](https://github.com/tranek/GASShooter).
 
@@ -2080,6 +2081,16 @@ Depending on the particular subclass of `AGameplayAbilityTargetActor` that you u
 | Reticle Class                   | [Optional] Subclass of `AGameplayAbilityWorldReticle` that the `TargetActor` will spawn.                                                                                                                                                                                                                                 |
 | Reticle Parameters              | [Optional] Subclass `FWorldReticleParameters` if you need to configure your `AGameplayAbilityWorldReticle` class.                                                                                                                                                                                                        |
 | Start Location                  | A special struct for where tracing should start from. Typically this will be the player's viewpoint, a weapon muzzle, or the `Pawn`'s location.                                                                                                                                                                          |
+
+**[⬆ Back to Top](#table-of-contents)**
+
+<a name="concepts-targeting-data"></a>
+#### 3.11.2 Target Data
+[`FGameplayAbilityTargetData`](https://docs.unrealengine.com/en-US/API/Plugins/GameplayAbilities/Abilities/FGameplayAbilityTargetData/index.html) is a generic structure for targeting data meant to be passed across the network. `TargetData` will typically hold `AActor`/`UObject` references, `FHitResults`, and other generic location/direction/origin information. However, you can subclass it to put essentially anything that you want inside of them as a simple means to [pass data between the client and server in `GameplayAbilities`](#concepts-ga-data). The base struct `FGameplayAbilityTargetData` is not meant to be used directly but instead subclassed. `GAS` comes with a few subclassed `FGameplayAbilityTargetData` structs out of the box located in `GameplayAbilityTargetTypes.h`.
+
+`TargetData` is typically produced by [`Target Actors`](#concepts-targeting-actors) or created manually and consumed by [`AbilityTasks`](##concepts-at) and [`GameplayEffects`](#concepts-ge) via the [`EffectContext`](#concepts-ge-context). As a result of being in the `EffectContext`, [`Executions`](#concepts-ge-ec), [`MMCs`](#concepts-ge-mmc), [`GameplayCues`](#concepts-gc), and the functions on the backend of the [`AttributeSet`](#concepts-as) can access the `TargetData`.
+
+We don't typically pass around the `FGameplayAbilityTargetData` directly, instead we use a [`FGameplayAbilityTargetDataHandle`](https://docs.unrealengine.com/en-US/API/Plugins/GameplayAbilities/Abilities/FGameplayAbilityTargetDataHandle/index.html) which has an internal TArray of pointers to `FGameplayAbilityTargetData`. This intermediate struct provides support for polymorphism of the `TargetData`.
 
 **[⬆ Back to Top](#table-of-contents)**
 
@@ -2176,7 +2187,7 @@ You can think of the `GameplayEffects` changing the dummy movespeed `Attribute` 
 
 <a name="cae-paused"></a>
 ### 4.8 Generate Target Data While Game is Paused
-If you need to pause the game while waiting to generate `TargetData` from a `WaitTargetData` `AbilityTask` from your player, I suggest instead of pausing to use `slomo 0`.
+If you need to pause the game while waiting to generate [`TargetData`](#concepts-targeting-data) from a `WaitTargetData` `AbilityTask` from your player, I suggest instead of pausing to use `slomo 0`.
 
 **[⬆ Back to Top](#table-of-contents)**
 
@@ -2186,7 +2197,7 @@ Basic steps to set up a project using GAS:
 1. Enable GameplayAbilitySystem plugin in the Editor
 1. Edit `YourProjectName.Build.cs` to add `"GameplayAbilities", "GameplayTags", "GameplayTasks"` to your `PrivateDependencyModuleNames`
 1. Refresh/Regenerate your Visual Studio project files
-1. Starting with 4.24, it is now mandatory to call `UAbilitySystemGlobals::InitGlobalData()` to use `TargetData`. The Sample Project does this in `UEngineSubsystem::Initialize()`. See [`InitGlobalData()`](#concepts-asg-initglobaldata) for more information.
+1. Starting with 4.24, it is now mandatory to call `UAbilitySystemGlobals::InitGlobalData()` to use [`TargetData`](#concepts-targeting-data). The Sample Project does this in `UEngineSubsystem::Initialize()`. See [`InitGlobalData()`](#concepts-asg-initglobaldata) for more information.
 
 That's all that you have to do to enable GAS. From here, add an `ASC` and `AttributeSet` to your `Character` or `PlayerState` and start making `GameplayAbilities` and `GameplayEffects`!
 
@@ -2331,7 +2342,7 @@ This is a list of notable changes (fixes, changes, and new features) to GAS comp
 <a name="changelog-4.24"></a>
 ### 4.24
 * Fixed blueprint node `Attribute` variables resetting to `None` on compile.
-* Need to call `UAbilitySystemGlobals::InitGlobalData()` to use `TargetData` otherwise you will get `ScriptStructCache` errors and clients will be disconnected from the server. My advice is to always call this in every project now whereas before 4.24 it was optional.
+* Need to call [`UAbilitySystemGlobals::InitGlobalData()`](#concepts-asg-initglobaldata) to use [`TargetData`](#concepts-targeting-data) otherwise you will get `ScriptStructCache` errors and clients will be disconnected from the server. My advice is to always call this in every project now whereas before 4.24 it was optional.
 * Fixed crash when copying a `GameplayTag` setter to a blueprint that didn't have the variable previously defined.
 * `UGameplayAbility::MontageStop()` function now properly uses the `OverrideBlendOutTime` parameter.
 * Fixed `GameplayTag` query variables on components not being modified when edited.
