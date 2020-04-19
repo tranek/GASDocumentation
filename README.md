@@ -100,6 +100,7 @@ The best documentation will always be the plugin source code.
 >    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3.11.1 [Target Data](#concepts-targeting-data)  
 >    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3.11.2 [Target Actors](#concepts-targeting-actors)  
 >    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3.11.3 [Gameplay Ability World Reticles](#concepts-targeting-reticles)  
+>    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3.11.4 [Gameplay Effect Containers Targeting](#concepts-targeting-containers)  
 > 1. [Commonly Implemented Abilities and Effects](#cae)  
 >    4.1 [Stun](#cae-stun)  
 >    4.2 [Sprint](#cae-sprint)  
@@ -1266,6 +1267,8 @@ To access the `GESpecs` inside of the `GameplayEffectContainers` to do things li
 
 ![SetByCaller with a GameplayEffectContainer](https://github.com/tranek/GASDocumentation/raw/master/Images/gecontainersetbycaller.png)
 
+`GameplayEffectContainers` also contain an optional efficient means of [targeting](#concepts-targeting-containers).
+
 **[⬆ Back to Top](#table-of-contents)**
 
 <a name="concepts-ga"></a>
@@ -2059,7 +2062,7 @@ Epic recently started an initiative to replace the `CharacterMovementComponent` 
 #### 3.11.1 Target Data
 [`FGameplayAbilityTargetData`](https://docs.unrealengine.com/en-US/API/Plugins/GameplayAbilities/Abilities/FGameplayAbilityTargetData/index.html) is a generic structure for targeting data meant to be passed across the network. `TargetData` will typically hold `AActor`/`UObject` references, `FHitResults`, and other generic location/direction/origin information. However, you can subclass it to put essentially anything that you want inside of them as a simple means to [pass data between the client and server in `GameplayAbilities`](#concepts-ga-data). The base struct `FGameplayAbilityTargetData` is not meant to be used directly but instead subclassed. `GAS` comes with a few subclassed `FGameplayAbilityTargetData` structs out of the box located in `GameplayAbilityTargetTypes.h`.
 
-`TargetData` is typically produced by [`Target Actors`](#concepts-targeting-actors) or created manually and consumed by [`AbilityTasks`](##concepts-at) and [`GameplayEffects`](#concepts-ge) via the [`EffectContext`](#concepts-ge-context). As a result of being in the `EffectContext`, [`Executions`](#concepts-ge-ec), [`MMCs`](#concepts-ge-mmc), [`GameplayCues`](#concepts-gc), and the functions on the backend of the [`AttributeSet`](#concepts-as) can access the `TargetData`.
+`TargetData` is typically produced by [`Target Actors`](#concepts-targeting-actors) or **created manually** and consumed by [`AbilityTasks`](##concepts-at) and [`GameplayEffects`](#concepts-ge) via the [`EffectContext`](#concepts-ge-context). As a result of being in the `EffectContext`, [`Executions`](#concepts-ge-ec), [`MMCs`](#concepts-ge-mmc), [`GameplayCues`](#concepts-gc), and the functions on the backend of the [`AttributeSet`](#concepts-as) can access the `TargetData`.
 
 We don't typically pass around the `FGameplayAbilityTargetData` directly, instead we use a [`FGameplayAbilityTargetDataHandle`](https://docs.unrealengine.com/en-US/API/Plugins/GameplayAbilities/Abilities/FGameplayAbilityTargetDataHandle/index.html) which has an internal TArray of pointers to `FGameplayAbilityTargetData`. This intermediate struct provides support for polymorphism of the `TargetData`.
 
@@ -2133,6 +2136,12 @@ void SetReticleMaterialParamVector(FName ParamName, FVector value);
 `Reticles` are not replicated by default, but can be made replicated if it makes sense for your game to show other players who the local player is targeting.
 
 `Reticles` will only display on the current valid target with the default `TargetActors`. For example, if you're using a `AGameplayAbilityTargetActor_SingleLineTrace` to trace for a target, the `Reticle` will only appear when the enemy is directly in the trace path. If you look away, the enemy is no longer a valid target and the `Reticle` will disappear. If you want the `Reticle` to stay on the last valid target, you will want to customize your `TargetActor` to remember the last valid target and keep the `Reticle` on them. I refer to these as persistent targets as they persist until the `TargetActor` receives confirmation or cancellation, the `TargetActor` finds a new valid target in its trace/overlap, or the target is no longer valid (destroyed).  GASShooter uses persistent targets for its rocket launcher's secondary ability's homing rockets targeting.
+
+**[⬆ Back to Top](#table-of-contents)**
+
+<a name="concepts-targeting-containers"></a>
+#### 3.11.4 Gameplay Effect Containers Targeting
+[`GameplayEffectContainers`](#concepts-ge-containers) come with an optional, efficient means of producing [`TargetData`](#concepts-targeting-data). This targeting takes places instantly when the `EffectContainer` is applied on the client and the server. It's more efficient than [`TargetActors`](#concepts-targeting-actors) because it runs on the CDO of the targeting object (no spawning and destroying of `Actors`), but it lacks player input, happens instantly without needing confirmation, cannot be canceled, and cannot send data from the client to the server (produces data on both). It works well for instant traces and collision overlaps. Epic's [Action RPG Sample Project](https://www.unrealengine.com/marketplace/en-US/slug/action-rpg) includes two example types of targeting with its containers - target the ability owner and pull `TargetData` from an event. It also implements one in Blueprint to do instant sphere traces at some offset (set by child Blueprint classes) from the player. You can subclass `URPGTargetType` in C++ or Blueprint to make your own targeting types.
 
 **[⬆ Back to Top](#table-of-contents)**
 
