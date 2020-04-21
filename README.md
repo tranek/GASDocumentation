@@ -118,7 +118,12 @@ The best documentation will always be the plugin source code.
 >    6.1 [showdebug abilitysystem](#debugging-sd)  
 >    6.2 [Gameplay Debugger](#debugging-gd)  
 >    6.3 [GAS Logging](#debugging-log)  
-> 1. [Optimizations](#optimizations)
+> 1. [Optimizations](#optimizations)  
+>    7.1 [Ability Batching](#optimizations-abilitybatching)  
+>    7.2 [Gameplay Cue Batching](#optimizations-gameplaycuebatching)  
+>    7.3 [AbilitySystemComponent Replication Mode](#optimizations-ascreplicationmode)  
+>    7.4 [Attribute Proxy Replication](#optimizations-attributeproxyreplication)  
+>    7.5 [ASC Lazy Loading](#optimizations-asclazyloading)  
 > 1. [Quality of Life Suggestions](#qol)
 > 1. [Common GAS Acronymns](#acronyms)
 > 1. [Other Resources](#resources)
@@ -250,7 +255,7 @@ The `AbilitySystemComponent` (`ASC`) is the heart of GAS. It's a `USceneComponen
 
 The `Actor` with the `ASC` attached to it is referred to as the `OwnerActor` of the `ASC`. The physical representation `Actor` of the `ASC` is called the `AvatarActor`. The `OwnerActor` and the `AvatarActor` can be the same `Actor` as in the case of a simple AI minion in a MOBA game. They can also be different `Actors` as in the case of a player controlled hero in a MOBA game where the `OwnerActor` is the `PlayerState` and the `AvatarActor` is the hero's `Character` class. Most `Actors` will have the `ASC` on themselves. If your `Actor` will respawn and need persistence of `Attributes` or `GameplayEffects` between spawns (like a hero in a MOBA), then the ideal location for the `ASC` is on the `PlayerState`.
 
-**Note:** If your `ASC` is on your `PlayerState`, then you will need to increase the `NetUpdateFrequency` of your `PlayerState`. It defaults to a very low value on the `PlayerState` and can cause delays or perceived lag before changes to things like `Attributes` and `GameplayTags` happen on the clients.
+**Note:** If your `ASC` is on your `PlayerState`, then you will need to increase the `NetUpdateFrequency` of your `PlayerState`. It defaults to a very low value on the `PlayerState` and can cause delays or perceived lag before changes to things like `Attributes` and `GameplayTags` happen on the clients. Be sure to enable [`Adaptive Network Update Frequency`](https://docs.unrealengine.com/en-US/Gameplay/Networking/Actors/Properties/index.html#adaptivenetworkupdatefrequency), Fortnite uses it.
 
 Both, the `OwnerActor` and the `AvatarActor` if different `Actors`, should implement the `IAbilitySystemInterface`. This interface has one function that must be overriden, `UAbilitySystemComponent* GetAbilitySystemComponent() const`, which returns a pointer to its `ASC`. `ASCs` interact with each other internally to the system by looking for this interface function.
 
@@ -2437,13 +2442,36 @@ See the [Wiki on Logging](https://wiki.unrealengine.com/Logs,_Printing_Messages_
 
 <a name="optimizations"></a>
 ## 7. Optimizations
-Optional optimizations for GAS
+
+<a name="optimizations-abilitybatching"></a>
+### 7.1 Ability Batching
+[`GameplayAbilities`](#concepts-ga) that activate, optionally send `TargetData` to the server, and end all in one frame can be [batched](#concepts-ga-batching) to condense two-three RPCs into one RPC. These types of abilities are commonly used for hitscan guns.
+
+<a name="optimizations-gameplaycuebatching"></a>
+### 7.2 Gameplay Cue Batching
+If you're sending many [`GameplayCues`](#concepts-gc) at the same time, consider condensing them into one RPC. Alternatively, manually pack the data into a custom struct, RPC it to the clients, and unpack it into one or more [`GameplayCues` played locally on the clients](#concepts-gc-local). The goal is to reduce the number of RPCs (`GameplayCues` are unreliable NetMulticasts) and send as little data as possible.
+
+<a name="optimizations-ascreplicationmode"></a>
+### 7.3 AbilitySystemComponent Replication Mode
+By default, the [`ASC`](#concepts-asc) is in [`Full Replication Mode`](#concepts-asc-rm). This will replicate all [`GameplayEffects`](#concepts-ge) to every client (which is fine for a single player game). In a multiplayer game, set the player owned `ASCs` to `Mixed Replication Mode` and AI controlled characters to `Minimal Replication Mode`. This will replicate `GEs` applied on a player character to only replicate to the owner of that character and `GEs` applied on AI controlled characters will never replicate `GEs` to clients. [`GameplayTags`](#concepts-gt) will still replicate and [`GameplayCues`](#concepts-gc) will still unreliable NetMulticast to all clients, regardless of the `Replication Mode`. This will cut down on network data from `GEs` being replicated when all clients don't need to see them.
+
+<a name="optimizations-attributeproxyreplication"></a>
+### 7.4 Attribute Proxy Replication
+In large games with many players like Fortnite Battle Royale (FNBR), there will be a lot of [`ASCs`](#concepts-asc) living on always-relevant `PlayerStates` replicating a lot of [`Attributes`](#concepts-a). To optimize this bottleneck, Fortnite disables the `ASC` and its [`AttributeSets`](#concepts-as) from replicating altogether on **simulated player-controlled proxies** in the `PlayerState::ReplicateSubobjects()`. Autonomous proxies and AI controlled `Pawns` still fully replicate according to their [`Replication Mode`](#concepts-asc-rm). Instead of replicating `Attributes` on the `ASC` on the always-relevant `PlayerStates`, FNBR uses a replicated proxy structure on the player's `Pawn`. When `Attributes` change on the server's `ASC`, they are changed on the proxy struct too. The client receives the replicated `Attributes` from the proxy struct and pushes the changes back into its local `ASC`. This allows `Attribute` replication to use the `Pawn`'s relevancy and `NetUpdateFrequency`. This proxy struct also replicates a small white-listed set of `GameplayTags` in a bitmask. This optimization reduces the amount of data over the network and allows us to take advantage of pawn relevancy. AI controlled `Pawns` have their `ASC` on the `Pawn` which already uses its relevancy so this optimization is not needed for them.
+
+> I’m not sure if it is still necessary with other server side optimizations that have been done since then (Replication Graph, etc) and it is not the most maintainable pattern.
+
+*Dave Ratti from Epic's answer to [community questions #3](https://epicgames.ent.box.com/s/m1egifkxv3he3u3xezb9hzbgroxyhx89)*
+
+<a name="optimizations-asclazyloading"></a>
+### 7.5 ASC Lazy Loading
+Fortnite Battle Royale (FNBR) has a lot of damageable `AActors` (trees, buildings, etc) in the world, each with an [`ASC`](#concepts-asc). This can add up in memory cost. FNBR optimizes this by lazily loading `ASCs` only when they're needed (when they first take damage by a player). This reduces overall memory usage since some `AActors` may never be damaged in a match.
 
 **[⬆ Back to Top](#table-of-contents)**
 
 <a name="qol"></a>
 ## 8. Quality of Life Suggestions
-[GameplayEffectContainers](#concepts-ge-containers) combine `GameplayEffectSpecs`, `TargetData`, simple targeting, and related functionality into easier to use structures. These are great for transfering `GameplayEffectSpecs` to projectiles spawned from an ability that will then apply them on collision at a later time.
+[GameplayEffectContainers](#concepts-ge-containers) combine [`GameplayEffectSpecs`](#concepts-ge-spec), [`TargetData`](#concepts-targeting-data), [simple targeting](#concepts-targeting-containers), and related functionality into easy to use structures. These are great for transfering `GameplayEffectSpecs` to projectiles spawned from an ability that will then apply them on collision at a later time.
 
 **[⬆ Back to Top](#table-of-contents)**
 
