@@ -37,6 +37,7 @@ The best documentation will always be the plugin source code.
 >    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.4.4 [Initializing Attributes](#concepts-as-init)  
 >    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.4.5 [PreAttributeChange()](#concepts-as-preattributechange)  
 >    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.4.6 [PostGameplayEffectExecute()](#concepts-as-postgameplayeffectexecute)  
+>    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.4.7 [OnAttributeAggregatorCreated()](#concepts-as-onattributeaggregatorcreated)  
 >    4.5 [Gameplay Effects](#concepts-ge)  
 >    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.1 [Gameplay Effect Definition](#concepts-ge-definition)  
 >    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.2 [Applying Gameplay Effects](#concepts-ge-applying)  
@@ -112,7 +113,7 @@ The best documentation will always be the plugin source code.
 >    5.4 [Lifesteal](#cae-ls)  
 >    5.5 [Generating a Random Number on Client and Server](#cae-random)  
 >    5.6 [Critical Hits](#cae-crit)  
->    5.7 [Non-Stacking Gameplay Effects but Only the Highest Magnitude is Actually Affects the Target](#cae-nonstackingge)  
+>    5.7 [Non-Stacking Gameplay Effects but Only the Greatest Magnitude Actually Affects the Target](#cae-nonstackingge)  
 >    5.8 [Generate Target Data While Game is Paused](#cae-paused)  
 > 1. [Debugging](#debugging)  
 >    6.1 [showdebug abilitysystem](#debugging-sd)  
@@ -719,6 +720,37 @@ For example, in the Sample Project we subtract the final damage `Meta Attribute`
 Other `Attributes` that will only have their `BaseValue` changed from instant `GameplayEffects` like mana and stamina can also be clamped to their maximum value counterpart `Attributes` here.
 
 **Note:** When `PostGameplayEffectExecute()` is called, changes to the `Attribute` have already happened, but they have not replicated back to clients yet so clamping values here will not cause two network updates to clients. Clients will only receive the update after clamping.
+
+**[⬆ Back to Top](#table-of-contents)**
+
+<a name="concepts-as-onattributeaggregatorcreated"></a>
+#### 4.4.7 OnAttributeAggregatorCreated()
+`OnAttributeAggregatorCreated(const FGameplayAttribute& Attribute, FAggregator* NewAggregator)` triggers when an `Aggregator` is created for an `Attribute` in this set. It allows custom setup of [`FAggregatorEvaluateMetaData`](https://docs.unrealengine.com/en-US/API/Plugins/GameplayAbilities/FAggregatorEvaluateMetaData/index.html). `AggregatorEvaluateMetaData` is used by the `Aggregator` in evaluating the `CurrentValue` of an `Attribute` based on all the [`Modifiers`](#concepts-ge-mods) applied to it. By default, `AggregatorEvaluateMetaData` is only used by the `Aggregator` to determine which `Modifiers` qualify with the example of `MostNegativeMod_AllPositiveMods` which allows all positive `Modifiers` but restricts negative `Modifiers` to only the most negative one. This was used by Paragon to only allow the most negative move speed slow effect to apply to a player regardless of how many slow effects where on them at any one time while applying all positive move speed buffs. `Modifiers` that don't qualify still exist on the `ASC`, they just aren't aggregated into the final `CurrentValue`. They can potentially qualify later once conditions change, like in the case if the most negative `Modifier` expires, the next most negative `Modifier` (if one exists) then qualifies.
+
+To use AggregatorEvaluateMetaData in the example of only allowing the most negative `Modifier` and all positive `Modifiers`:
+
+```c++
+virtual void OnAttributeAggregatorCreated(const FGameplayAttribute& Attribute, FAggregator* NewAggregator) const override;
+```
+
+```c++
+void UGSAttributeSetBase::OnAttributeAggregatorCreated(const FGameplayAttribute& Attribute, FAggregator* NewAggregator) const
+{
+	Super::OnAttributeAggregatorCreated(Attribute, NewAggregator);
+
+	if (!NewAggregator)
+	{
+		return;
+	}
+
+	if (Attribute == GetMoveSpeedAttribute())
+	{
+		NewAggregator->EvaluationMetaData = &FAggregatorEvaluateMetaDataLibrary::MostNegativeMod_AllPositiveMods;
+	}
+}
+```
+
+Your custom `AggregatorEvaluateMetaData` for qualifiers should be added to `FAggregatorEvaluateMetaDataLibrary` as static variables.
 
 **[⬆ Back to Top](#table-of-contents)**
 
@@ -2332,12 +2364,8 @@ See how [GASShooter](https://github.com/tranek/GASShooter) does headshots. It's 
 **[⬆ Back to Top](#table-of-contents)**
 
 <a name="cae-nonstackingge"></a>
-### 5.7 Non-Stacking Gameplay Effects but Only the Highest Magnitude is Actually Affects the Target
-Slow effects in Paragon did not stack. Each slow instance applied and kept track of their lifetimes as normal, but only the greatest magnitude slow effect actually affected the `Character`.
-
-I achieved this effect by using a dummy movespeed `Attribute` that all slow effects modify. The real movespeed `Attribute` is changed inside of `AbilitySystemComponent->OnActiveGameplayEffectAddedDelegateToSelf()` and `AbilitySystemComponent->OnAnyGameplayEffectRemovedDelegate()` by a [dynamically created `Infinite` `GameplayEffect`](#concepts-ge-dynamic) tied to the lifetime of the `GameplayEffect` with the highest magnitude slow or changing it when a new slow comes in with a higher magnitude.
-
-You can think of the `GameplayEffects` changing the dummy movespeed `Attribute` as like a priority queue that is updated every time a slow `GameplayEffect` is added or removed where the highest magnitude slow effect gets copied into a dynamically created `GameplayEffect` that affects the real movespeed.
+### 5.7 Non-Stacking Gameplay Effects but Only the Greatest Magnitude Actually Affects the Target
+Slow effects in Paragon did not stack. Each slow instance applied and kept track of their lifetimes as normal, but only the greatest magnitude slow effect actually affected the `Character`. GAS provides for this scenario out of the box with `AggregatorEvaluateMetaData`. See [`AggregatorEvaluateMetaData()`](#concepts-as-onattributeaggregatorcreated) for details and implementation.
 
 **[⬆ Back to Top](#table-of-contents)**
 
