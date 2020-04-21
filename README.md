@@ -126,6 +126,9 @@ The best documentation will always be the plugin source code.
 >    7.4 [Attribute Proxy Replication](#optimizations-attributeproxyreplication)  
 >    7.5 [ASC Lazy Loading](#optimizations-asclazyloading)  
 > 1. [Quality of Life Suggestions](#qol)
+> 1. [Troubleshooting](#troubleshooting)  
+>    [`LogAbilitySystem: Warning: Can't activate LocalOnly or LocalPredicted ability %s when not local!`](#troubleshooting-notlocal)  
+>    [`ScriptStructCache` errors](#troubleshooting-scriptstructcache)  
 > 1. [Common GAS Acronymns](#acronyms)
 > 1. [Other Resources](#resources)
 > 1. [GAS Changelog](#changelog)  
@@ -2503,8 +2506,23 @@ Fortnite Battle Royale (FNBR) has a lot of damageable `AActors` (trees, building
 
 **[⬆ Back to Top](#table-of-contents)**
 
+<a name="troubleshooting"></a>
+## 9. Troubleshooting
+
+<a name="troubleshooting-notlocal"></a>
+### `LogAbilitySystem: Warning: Can't activate LocalOnly or LocalPredicted ability %s when not local!`
+You need to [initialize the `ASC` on the client](#concepts-asc-setup).
+
+**[⬆ Back to Top](#table-of-contents)**
+
+<a name="troubleshooting-scriptstructcache"></a>
+### `ScriptStructCache` errors
+You need to call [`UAbilitySystemGlobals::InitGlobalData()`](#concepts-asg-initglobaldata).
+
+**[⬆ Back to Top](#table-of-contents)**
+
 <a name="acronyms"></a>
-## 9. Common GAS Acronymns
+## 10. Common GAS Acronymns
 
 | Name                               | Acronyms            |
 |----------------------------------- | ------------------- |
@@ -2523,7 +2541,7 @@ Fortnite Battle Royale (FNBR) has a lot of damageable `AActors` (trees, building
 **[⬆ Back to Top](#table-of-contents)**
 
 <a name="resources"></a>
-## 10. Other Resources
+## 11. Other Resources
 * [Official Documentation](https://docs.unrealengine.com/en-US/Gameplay/GameplayAbilitySystem/index.html)
 * Source Code!
    * Especially `GameplayPrediction.h`
@@ -2537,7 +2555,7 @@ Fortnite Battle Royale (FNBR) has a lot of damageable `AActors` (trees, building
 **[⬆ Back to Top](#table-of-contents)**
 
 <a name="changelog"></a>
-## 11. GAS Changelog
+## 12. GAS Changelog
 
 This is a list of notable changes (fixes, changes, and new features) to GAS compiled from the official Unreal Engine upgrade changelog and from undocumented changes that I've encountered. If you've found something that isn't listed here, please make an issue or pull request.
 
