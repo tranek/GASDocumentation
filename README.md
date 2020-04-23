@@ -2504,7 +2504,7 @@ See the [Wiki on Logging](https://wiki.unrealengine.com/Logs,_Printing_Messages_
 
 <a name="optimizations-abilitybatching"></a>
 ### 7.1 Ability Batching
-[`GameplayAbilities`](#concepts-ga) that activate, optionally send `TargetData` to the server, and end all in one frame can be [batched](#concepts-ga-batching) to condense two-three RPCs into one RPC. These types of abilities are commonly used for hitscan guns.
+[`GameplayAbilities`](#concepts-ga) that activate, optionally send `TargetData` to the server, and end all in one frame can be [batched to condense two-three RPCs into one RPC](#concepts-ga-batching). These types of abilities are commonly used for hitscan guns.
 
 <a name="optimizations-gameplaycuebatching"></a>
 ### 7.2 Gameplay Cue Batching
