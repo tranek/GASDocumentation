@@ -2495,7 +2495,7 @@ Notable GAS related logging categories:
 | LogGameplayTasks          | Log                     |
 | VLogAbilitySystem         | Display                 |
 
-See the [Wiki on Logging](https://wiki.unrealengine.com/Logs,_Printing_Messages_To_Yourself_During_Runtime) for more information.
+See the [Wiki on Logging](https://www.ue4community.wiki/Legacy/Logs,_Printing_Messages_To_Yourself_During_Runtime) for more information.
 
 **[⬆ Back to Top](#table-of-contents)**
 
