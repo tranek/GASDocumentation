@@ -2611,6 +2611,7 @@ This is a list of notable changes (fixes, changes, and new features) to GAS comp
 * Fixed prediction of `RootMotionSource` `AbilityTasks`
 * [`GAMEPLAYATTRIBUTE_REPNOTIFY()`](#concepts-as-attributes) now additionally takes in the old `Attribute` value. We must supply that as the optional parameter to our `OnRep` functions. Previously, it was reading the attribute value to try to get the old value. However, if called from a replication function, the old value had already been discarded before reaching SetBaseAttributeValueFromReplication so we'd get the new value instead.
 * Crash Fix: Fixed a crash when adding a gameplay tag without a valid tag source selection.
+* Crash Fix: Removed a few ways for attackers to crash a server through the ability system.
 * Crash Fix: We now make sure we have a GamplayEffect definition before checking tag requirements.
 * Bug Fix: Fixed an issue with gameplay tag categories not applying to function parameters in Blueprints if they were part of a function terminator node.
 * Bug Fix: Fixed an issue with gameplay effects' tags not being replicated with multiple viewports.
