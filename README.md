@@ -2630,6 +2630,7 @@ This is a list of notable changes (fixes, changes, and new features) to GAS comp
 * New: When root motion movement related ability tasks end they now return the movement component's movement mode to the movement mode it was in before the task started.
 * New: Made SpawnedAttributes transient so it won't save data that can become stale and incorrect. Added null checks to prevent any currently saved stale data from propagating. This prevents problems related to bad data getting stored in SpawnedAttributes.
 * API Change: AddDefaultSubobjectSet has been deprecated. AddAttributeSetSubobject should be used instead.
+* New: Gameplay Abilities can now specify the Anim Instance on which to play a montage.
 
 <a name="changelog-4.24"></a>
 ### 4.24
