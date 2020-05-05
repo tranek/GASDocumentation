@@ -1590,7 +1590,7 @@ Activation sequence for **locally predicted** `GameplayAbilities`:
 
 **Server** receives `CallServerTryActivateAbility()`
 1. Calls `ServerTryActivateAbility()`
-1. Calls `InternalServerTryActiveAbility()` 
+1. Calls `InternalServerTryActivateAbility()` 
 1. Calls `InternalTryActivateAbility()`
 1. Calls `CanActivateAbility()` and returns whether `GameplayTag` requirements are met, if the `ASC` can afford the cost, if the `GameplayAbility` is not on cooldown, and if no other instances are currently active
 1. Calls `ClientActivateAbilitySucceed()` if successful telling it to update its `ActivationInfo` that its activation was confirmed by the server and broadcasting the `OnConfirmDelegate` delegate. This is not the same as input confirmation.
@@ -2609,7 +2609,27 @@ This is a list of notable changes (fixes, changes, and new features) to GAS comp
 <a name="changelog-4.25"></a>
 ### 4.25
 * Fixed prediction of `RootMotionSource` `AbilityTasks`
-* [`GAMEPLAYATTRIBUTE_REPNOTIFY()`](#concepts-as-attributes) now additionally takes in the old `Attribute` value. We must supply that as the optional parameter to our `OnRep` functions.
+* [`GAMEPLAYATTRIBUTE_REPNOTIFY()`](#concepts-as-attributes) now additionally takes in the old `Attribute` value. We must supply that as the optional parameter to our `OnRep` functions. Previously, it was reading the attribute value to try to get the old value. However, if called from a replication function, the old value had already been discarded before reaching SetBaseAttributeValueFromReplication so we'd get the new value instead.
+* Crash Fix: Fixed a crash when adding a gameplay tag without a valid tag source selection.
+* Crash Fix: We now make sure we have a GamplayEffect definition before checking tag requirements.
+* Bug Fix: Fixed an issue with gameplay tag categories not applying to function parameters in Blueprints if they were part of a function terminator node.
+* Bug Fix: Fixed an issue with gameplay effects' tags not being replicated with multiple viewports.
+* Bug Fix: Fixed a bug where a gameplay ability spec could be invalidated by the InternalTryActivateAbility function while looping through triggered abilities.
+* Bug Fix: Changed how we handle updating gameplay tags inside of tag count containers. When deferring the update of parent tags while removing gameplay tags, we will now call the change-related delegates after the parent tags have updated. This ensures that the tag table is in a consistent state when the delegates broadcast.
+* Bug Fix: We now make a copy of the spawned target actor array before iterating over it inside when confirming targets because some callbacks may modify the array.
+* Bug Fix: Fixed a bug where stacking GamplayEffects that did not reset the duration on additional instances of the effect being applied and with set by caller durations would only have the duration correctly set for the first instance on the stack. All other GE specs in the stack would have a duration of 1 second. Added automation tests to detect this case.
+* Bug Fix: Fixed a bug that could occur if handling gameplay event delegates modified the list of gameplay event delegates.
+* Bug Fix: Fixed a bug causing GiveAbilityAndActivateOnce to behave inconsistently.
+* Bug Fix: Reordered some operations inside FGameplayEffectSpec::Initialize to deal with a potential ordering dependency.
+* New: UGameplayAbility now has an OnRemoveAbility function. It follows the same pattern as OnGiveAbility and is only called on the primary instance of the ability or the class default object.
+* New: When displaying blocked ability tags, the debug text now includes the total number of blocked tags.
+* New: Renamed UAbilitySystemComponent::InternalServerTryActiveAbility to UAbilitySystemComponent::InternalServerTryActivateAbility.Code that was calling InternalServerTryActiveAbility should now call InternalServerTryActivateAbility.
+* New: Continue to use the filter text for displaying gameplay tags when a tag is added or deleted. The previous behaviour cleared the filter.
+* New: Don't reset the tag source when we add a new tag in the editor.
+* New: Added the ability to query an ability system component for all active gameplay effects that have a specified set of tags. The new function is called GetActiveEffectsWithAllTags and can be accessed through code or blueprints.
+* New: When root motion movement related ability tasks end they now return the movement component's movement mode to the movement mode it was in before the task started.
+* New: Made SpawnedAttributes transient so it won't save data that can become stale and incorrect. Added null checks to prevent any currently saved stale data from propagating. This prevents problems related to bad data getting stored in SpawnedAttributes.
+* API Change: AddDefaultSubobjectSet has been deprecated. AddAttributeSetSubobject should be used instead.
 
 <a name="changelog-4.24"></a>
 ### 4.24
