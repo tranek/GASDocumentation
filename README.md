@@ -81,6 +81,7 @@ The best documentation will always be the plugin source code.
 >    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.6.13 [Leveling Up Abilities](#concepts-ga-leveling)  
 >    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.6.14 [Ability Sets](#concepts-ga-sets)  
 >    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.6.15 [Ability Batching](#concepts-ga-batching)  
+>    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.6.16 [Net Security Policy](#concepts-ga-netsecuritypolicy)  
 >    4.7 [Ability Tasks](#concepts-at)  
 >    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.7.1 [Ability Task Definition](#concepts-at-definition)  
 >    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.7.2 [Custom Ability Tasks](#concepts-at-definition)  
@@ -1826,6 +1827,19 @@ GASShooter exposes a Blueprint node to allow batching abilities which the aforem
 
 **[⬆ Back to Top](#table-of-contents)**
 
+<a name="concepts-ga-netsecuritypolicy"></a>
+#### 4.6.15 Net Security Policy
+A `GameplayAbility`'s `NetSecurityPolicy` determines where should an ability execute on the network. It provides protection from clients attempting to execute restricted abilities.
+
+| `NetSecurityPolicy`     | Description                                                                                                                                        |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ClientOrServer`        | No security requirements. Client or server can trigger execution and termination of this ability freely.                                           |
+| `ServerOnlyExecution`   | A client requesting execution of this ability will be ignored by the server. Clients can still request that the server cancel or end this ability. |
+| `ServerOnlyTermination` | A client requesting cancellation or ending of this ability will be ignored by the server. Clients can still request execution of the ability.      |
+| `ServerOnly`            | Server controls both execution and termination of this ability. A client making any requests will be ignored.                                      |
+
+**[⬆ Back to Top](#table-of-contents)**
+
 <a name="concepts-at"></a>
 ### 4.7 Ability Tasks
 
@@ -2612,6 +2626,7 @@ This is a list of notable changes (fixes, changes, and new features) to GAS comp
 ### 4.25
 * Fixed prediction of `RootMotionSource` `AbilityTasks`
 * [`GAMEPLAYATTRIBUTE_REPNOTIFY()`](#concepts-as-attributes) now additionally takes in the old `Attribute` value. We must supply that as the optional parameter to our `OnRep` functions. Previously, it was reading the attribute value to try to get the old value. However, if called from a replication function, the old value had already been discarded before reaching SetBaseAttributeValueFromReplication so we'd get the new value instead.
+* Added [`NetSecurityPolicy`](#concepts-ga-netsecuritypolicy) to `UGameplayAbility`.
 * Crash Fix: Fixed a crash when adding a gameplay tag without a valid tag source selection.
 * Crash Fix: Removed a few ways for attackers to crash a server through the ability system.
 * Crash Fix: We now make sure we have a GamplayEffect definition before checking tag requirements.
