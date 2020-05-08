@@ -27,7 +27,7 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
 	EGDAbilityInputID AbilityID = EGDAbilityInputID::None;
 
-	// Tells an ability to activate immediately when its granted. Used for passive abilities and abilites forced on others.
+	// Tells an ability to activate immediately when its granted. Used for passive abilities and abilities forced on others.
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability")
 	bool ActivateAbilityOnGranted = false;
 
