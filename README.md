@@ -138,6 +138,7 @@ The best documentation will always be the plugin source code.
 > 1. [Common GAS Acronymns](#acronyms)
 > 1. [Other Resources](#resources)
 > 1. [GAS Changelog](#changelog)  
+>    [4.25.1](#changelog-4.25.1)  
 >    [4.25](#changelog-4.25)  
 >    [4.24](#changelog-4.24)
          
@@ -2621,6 +2622,11 @@ You need to call [`UAbilitySystemGlobals::InitGlobalData()`](#concepts-asg-initg
 ## 12. GAS Changelog
 
 This is a list of notable changes (fixes, changes, and new features) to GAS compiled from the official Unreal Engine upgrade changelog and from undocumented changes that I've encountered. If you've found something that isn't listed here, please make an issue or pull request.
+
+<a name="changelog-4.25.1"></a>
+### 4.25.1
+* Fixed! UE-92787 Crash saving blueprint with a Get Float Attribute node and the attribute pin is set inline
+* Fixed! UE-92810 Crash spawning actor with instance editable gameplay tag property that was changed inline
 
 <a name="changelog-4.25"></a>
 ### 4.25
