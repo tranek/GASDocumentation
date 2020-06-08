@@ -123,6 +123,7 @@ The best documentation will always be the plugin source code.
 >    5.6 [Critical Hits](#cae-crit)  
 >    5.7 [Non-Stacking Gameplay Effects but Only the Greatest Magnitude Actually Affects the Target](#cae-nonstackingge)  
 >    5.8 [Generate Target Data While Game is Paused](#cae-paused)  
+>    5.9 [One Button Interaction System](#cae-onebuttoninteractionsystem)  
 > 1. [Debugging](#debugging)  
 >    6.1 [showdebug abilitysystem](#debugging-sd)  
 >    6.2 [Gameplay Debugger](#debugging-gd)  
@@ -2484,6 +2485,12 @@ Slow effects in Paragon did not stack. Each slow instance applied and kept track
 <a name="cae-paused"></a>
 ### 5.8 Generate Target Data While Game is Paused
 If you need to pause the game while waiting to generate [`TargetData`](#concepts-targeting-data) from a `WaitTargetData` `AbilityTask` from your player, I suggest instead of pausing to use `slomo 0`.
+
+**[⬆ Back to Top](#table-of-contents)**
+
+<a name="cae-onebuttoninteractionsystem"></a>
+### 5.9 One Button Interaction System
+[GASShooter](https://github.com/tranek/GASShooter) implements a one button interaction system where the player can press or hold 'E' to interact with interactable objects like reviving a player, opening a weapon chest, and opening or closing a sliding door.
 
 **[⬆ Back to Top](#table-of-contents)**
 
