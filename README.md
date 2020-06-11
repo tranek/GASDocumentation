@@ -46,6 +46,7 @@ The best documentation will always be the plugin source code.
 >    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.2 [Applying Gameplay Effects](#concepts-ge-applying)  
 >    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.3 [Removing Gameplay Effects](#concepts-ga-removing)  
 >    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.4 [Gameplay Effect Modifiers](#concepts-ge-mods)  
+>    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.4.1 [Multiply and Divide Modifiers](#concepts-ge-mods-multiplydivide)  
 >    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.5 [Stacking Gameplay Effects](#concepts-ge-stacking)  
 >    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.6 [Granted Abilities](#concepts-ge-ga)  
 >    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5.7 [Gameplay Effect Tags](#concepts-ge-tags)  
@@ -878,6 +879,98 @@ There are four types of `Modifiers`: Scalable Float, Attribute Based, Custom Cal
 | `Attribute Based`          | `Attribute Based` `Modifiers` take the `CurrentValue` or `BaseValue` of a backing `Attribute` on the `Source` (who created the `GameplayEffectSpec`) or `Target` (who received the `GameplayEffectSpec`) and further modifies it with a coefficient and pre and post coefficient additions. `Snapshotting` means the backing `Attribute` is captured when the `GameplayEffectSpec` is created whereas no snapshotting means the `Attribute` is captured when the `GameplayEffectSpec` is applied.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 | `Custom Calculation Class` | `Custom Calculation Class` provides the most flexibility for complex `Modifiers`. This `Modifier` takes a [`ModifierMagnitudeCalculation`](#concepts-ge-mmc) class and can further manipulate the resulting float value with a coefficient and pre and post coefficient additions.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | `Set By Caller`            | `SetByCaller` `Modifiers` are values that are set outside of the `GameplayEffect` at runtime by the ability or whoever made the `GameplayEffectSpec` on the `GameplayEffectSpec`. For example, you would use a `SetByCaller` if you want to set the damage to be based on how long the player held down a button to charge the ability. `SetByCallers` are essentially `TMap<FGameplayTag, float>` that live on the `GameplayEffectSpec`. The `Modifier` is just telling the `Aggregator` to look for a `SetByCaller` value associated with the supplied `GameplayTag`. The `SetByCallers` used by `Modifiers` can only use the `GameplayTag` version of the concept. The `FName` version is disabled here. If the `Modifier` is set to `SetByCaller` but a `SetByCaller` with the correct `GameplayTag` does not exist on the `GameplayEffectSpec`, the game will throw a runtime error and return a value of 0. This might cause issues in the case of a `Divide` operation. See [`SetByCallers`](#concepts-ge-spec-setbycaller) for more information on how to use `SetByCallers`. |
+
+**[⬆ Back to Top](#table-of-contents)**
+
+<a name="concepts-ge-mods-multiplydivide"></a>
+##### 4.5.4.1 Multiply and Divide Modifiers
+By default, all `Multiply` and `Divide` `Modifiers` are added together before multiplying or dividing them into the `Attribute`'s `BaseValue`.
+
+```c++
+float FAggregatorModChannel::EvaluateWithBase(float InlineBaseValue, const FAggregatorEvaluateParameters& Parameters) const
+{
+	...
+	float Additive = SumMods(Mods[EGameplayModOp::Additive], GameplayEffectUtilities::GetModifierBiasByModifierOp(EGameplayModOp::Additive), Parameters);
+	float Multiplicitive = SumMods(Mods[EGameplayModOp::Multiplicitive], GameplayEffectUtilities::GetModifierBiasByModifierOp(EGameplayModOp::Multiplicitive), Parameters);
+	float Division = SumMods(Mods[EGameplayModOp::Division], GameplayEffectUtilities::GetModifierBiasByModifierOp(EGameplayModOp::Division), Parameters);
+	...
+	return ((InlineBaseValue + Additive) * Multiplicitive) / Division;
+	...
+}
+```
+
+```c++
+float FAggregatorModChannel::SumMods(const TArray<FAggregatorMod>& InMods, float Bias, const FAggregatorEvaluateParameters& Parameters)
+{
+	float Sum = Bias;
+
+	for (const FAggregatorMod& Mod : InMods)
+	{
+		if (Mod.Qualifies())
+		{
+			Sum += (Mod.EvaluatedMagnitude - Bias);
+		}
+	}
+
+	return Sum;
+}
+```
+*from `GameplayEffectAggregator.cpp`*
+
+Both `Multiply` and `Divide` `Modifiers` have a `Bias` value of 1 in this formula (`Addition` has a `Bias` of 0). So it would look something like:
+
+```
+1 + (Mod1.Magnitude - 1) + (Mod2.Magnitude - 1) + ...
+```
+
+This formula leads to some unexpected results. Firstly, this formula adds all the modifiers together before multiplying or dividing them into the `BaseValue`. Most people would expect it to multiply or divide them together. For example, if you have two `Multiply` modifiers of 1.5, most people would expect the `BaseValue` to be multiplied by 1.5 x 1.5 = 2.25. Instead, this adds the 1.5s together to multiply the `BaseValue` by 3. Secondly, this formula has some undocumented rules about what values can be used as it was designed with Paragon in mind.
+
+Rules for `Multiply` and `Divide` multiplication addition formula:
+* (No more than one value < 1) AND (Any number of values [1,2))
+* OR (One value >= 2)
+
+Some examples with `Multiply`:  
+Multipliers: 0.5  
+1 + (0.5 - 1) = 0.5, correct
+
+Multipliers: 0.5, 0.5  
+1 + (0.5 - 1) + (0.5 - 1) = 0, incorrect expected 1? Multiple values less than 1 don't make sense for adding multipliers. Paragon was designed to only use the [greatest negative value for `Multiply` `Modifiers`](#cae-nonstackingge) so there would only ever be at most one value less than 1 multiplying into the `BaseValue`.
+
+Multipliers: 1.1, 0.5  
+1 + (0.5 - 1) + (1.1 - 1) = 0.6, correct
+
+Multipliers: 5, 5  
+1 + (5 - 1) + (5 - 1) = 9, incorrect expected 10. Will always be the sum of the `Modifiers` - number of `Modifiers` + 1.
+
+Many games will want their `Modify` and `Divide` `Modifiers` to multiply and divide together before applying to the `BaseValue`. To achieve this, you will need to **change the engine code** for `FAggregatorModChannel::EvaluateWithBase()`.
+
+```c++
+float FAggregatorModChannel::EvaluateWithBase(float InlineBaseValue, const FAggregatorEvaluateParameters& Parameters) const
+{
+	...
+	float Multiplicitive = MultiplyMods(Mods[EGameplayModOp::Multiplicitive], Parameters);
+	...
+
+	return ((InlineBaseValue + Additive) * Multiplicitive) / Division;
+}
+```
+
+```c++
+float FAggregatorModChannel::MultiplyMods(const TArray<FAggregatorMod>& InMods, const FAggregatorEvaluateParameters& Parameters)
+{
+	float Multiplier = 1.0f;
+
+	for (const FAggregatorMod& Mod : InMods)
+	{
+		if (Mod.Qualifies())
+		{
+			Multiplier *= Mod.EvaluatedMagnitude;
+		}
+	}
+
+	return Multiplier;
+}
+```
 
 **[⬆ Back to Top](#table-of-contents)**
 
