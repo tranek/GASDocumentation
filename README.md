@@ -917,30 +917,32 @@ float FAggregatorModChannel::SumMods(const TArray<FAggregatorMod>& InMods, float
 ```
 *from `GameplayEffectAggregator.cpp`*
 
-Both `Multiply` and `Divide` `Modifiers` have a `Bias` value of 1 in this formula (`Addition` has a `Bias` of 0). So it would look something like:
+Both `Multiply` and `Divide` `Modifiers` have a `Bias` value of `1` in this formula (`Addition` has a `Bias` of `0`). So it would look something like:
 
 ```
 1 + (Mod1.Magnitude - 1) + (Mod2.Magnitude - 1) + ...
 ```
 
-This formula leads to some unexpected results. Firstly, this formula adds all the modifiers together before multiplying or dividing them into the `BaseValue`. Most people would expect it to multiply or divide them together. For example, if you have two `Multiply` modifiers of 1.5, most people would expect the `BaseValue` to be multiplied by 1.5 x 1.5 = 2.25. Instead, this adds the 1.5s together to multiply the `BaseValue` by 3. Secondly, this formula has some undocumented rules about what values can be used as it was designed with Paragon in mind.
+This formula leads to some unexpected results. Firstly, this formula adds all the modifiers together before multiplying or dividing them into the `BaseValue`. Most people would expect it to multiply or divide them together. For example, if you have two `Multiply` modifiers of `1.5`, most people would expect the `BaseValue` to be multiplied by `1.5 x 1.5 = 2.25`. Instead, this adds the `1.5`s together to multiply the `BaseValue` by `3`. This was for the example from `GameplayPrediction.h` of a `10%` speed buff on `500` base speed would be `550`. Add another `10%` speed buff and it will be `600`.
+
+Secondly, this formula has some undocumented rules about what values can be used as it was designed with Paragon in mind.
 
 Rules for `Multiply` and `Divide` multiplication addition formula:
-* (No more than one value < 1) AND (Any number of values [1,2))
-* OR (One value >= 2)
+* (No more than one value < `1`) AND (Any number of values `[1,2)`)
+* OR (One value >= `2`)
 
 Some examples with `Multiply`:  
-Multipliers: 0.5  
-1 + (0.5 - 1) = 0.5, correct
+Multipliers: `0.5`  
+`1 + (0.5 - 1) = 0.5`, correct
 
-Multipliers: 0.5, 0.5  
-1 + (0.5 - 1) + (0.5 - 1) = 0, incorrect expected 1? Multiple values less than 1 don't make sense for adding multipliers. Paragon was designed to only use the [greatest negative value for `Multiply` `Modifiers`](#cae-nonstackingge) so there would only ever be at most one value less than 1 multiplying into the `BaseValue`.
+Multipliers: `0.5, 0.5`  
+`1 + (0.5 - 1) + (0.5 - 1) = 0`, incorrect expected `1`? Multiple values less than `1` don't make sense for adding multipliers. Paragon was designed to only use the [greatest negative value for `Multiply` `Modifiers`](#cae-nonstackingge) so there would only ever be at most one value less than `1` multiplying into the `BaseValue`.
 
-Multipliers: 1.1, 0.5  
-1 + (0.5 - 1) + (1.1 - 1) = 0.6, correct
+Multipliers: `1.1, 0.5`  
+`1 + (0.5 - 1) + (1.1 - 1) = 0.6`, correct
 
-Multipliers: 5, 5  
-1 + (5 - 1) + (5 - 1) = 9, incorrect expected 10. Will always be the sum of the `Modifiers` - number of `Modifiers` + 1.
+Multipliers: `5, 5`  
+`1 + (5 - 1) + (5 - 1) = 9`, incorrect expected `10`. Will always be the `sum of the Modifiers - number of Modifiers + 1`.
 
 Many games will want their `Modify` and `Divide` `Modifiers` to multiply and divide together before applying to the `BaseValue`. To achieve this, you will need to **change the engine code** for `FAggregatorModChannel::EvaluateWithBase()`.
 
