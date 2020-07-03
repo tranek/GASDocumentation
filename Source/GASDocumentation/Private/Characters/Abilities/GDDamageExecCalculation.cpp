@@ -20,7 +20,7 @@ struct GDDamageStatics
 		// Capture optional Damage set on the damage GE as a CalculationModifier under the ExecutionCalculation
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UGDAttributeSetBase, Damage, Source, true);
 
-		// Capture the Target's Armor. Don't snapshot (the false).
+		// Capture the Target's Armor. Don't snapshot.
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UGDAttributeSetBase, Armor, Target, false);
 	}
 };
