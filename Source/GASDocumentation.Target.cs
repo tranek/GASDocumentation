@@ -8,6 +8,7 @@ public class GASDocumentationTarget : TargetRules
 	public GASDocumentationTarget(TargetInfo Target) : base(Target)
 	{
 		Type = TargetType.Game;
+		DefaultBuildSettings = BuildSettingsVersion.V2;
 		ExtraModuleNames.Add("GASDocumentation");
 	}
 }
