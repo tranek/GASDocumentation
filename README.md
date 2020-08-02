@@ -2530,7 +2530,7 @@ With the default `TargetActor` classes, `Actors` are only valid targets when the
 
 <a name="concepts-target-data-filters"></a>
 #### 4.11.3 Target Data Filters
-Using both the `Make GameplayTargetDataFilter` and `Make Filter Handle` nodes, you can filter out the players's `Pawn` or select only a specific class. If you need more advanced filtering, you can subclass `FGameplayTargetDataFilter` and override the `FilterPassesForActor` function. 
+Using both the `Make GameplayTargetDataFilter` and `Make Filter Handle` nodes, you can filter out the player's `Pawn` or select only a specific class. If you need more advanced filtering, you can subclass `FGameplayTargetDataFilter` and override the `FilterPassesForActor` function. 
 ```c++
 USTRUCT(BlueprintType)
 struct GASDOCUMENTATION_API FGDNameTargetDataFilter : public FGameplayTargetDataFilter
