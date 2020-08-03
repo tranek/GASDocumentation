@@ -1563,7 +1563,13 @@ bool UPAAbilitySystemComponent::SetGameplayEffectDurationHandle(FActiveGameplayE
 #### 4.5.17 Creating Dynamic Gameplay Effects at Runtime
 Creating Dynamic `GameplayEffects` at runtime is an advanced topic. You shouldn't have to do this too often.
 
-Only `Instant` `GameplayEffects` can be created at runtime from scratch in C++. The Sample Project creates one to send the gold and experience points back to the killer of a character when it takes the killing blow in its `AttributeSet`.
+Only `Instant` `GameplayEffects` can be created at runtime from scratch in C++. `Duration` and `Infinite` `GameplayEffects` cannot be created dynamically at runtime because when they replicate they look for the `GameplayEffect` class definition that does not exist. To achieve this functionality, you should instead make an archetype `GameplayEffect` class like you would normally do in the Editor. Then customize the `GameplayEffectSpec` instance with what you need at runtime.
+
+`Instant` `GameplayEffects` created at runtime can also be called from within a [local predicted](#concepts-p) `GameplayAbility`. However, it is unknown yet if the dynamic creation can have side effects.
+
+##### Examples
+
+The Sample Project creates one to send the gold and experience points back to the killer of a character when it takes the killing blow in its `AttributeSet`.
 
 ```c++
 // Create a dynamic instant Gameplay Effect to give the bounties
@@ -1586,7 +1592,48 @@ InfoGold.Attribute = UGDAttributeSetBase::GetGoldAttribute();
 Source->ApplyGameplayEffectToSelf(GEBounty, 1.0f, Source->MakeEffectContext());
 ```
 
-`Duration` and `Infinite` `GameplayEffects` cannot be created dynamically at runtime because when they replicate they look for the `GameplayEffect` class definition that does not exist. To achieve this functionality, you should instead make an archetype `GameplayEffect` class like you would normally do in the Editor. Then customize the `GameplayEffectSpec` instance with what you need at runtime.
+A second example shows a runtime `GameplayEffect` created within a local predicted `GameplayAbility`. Use at your own risk (see comments in code)!
+
+```c++
+UGameplayAbilityRuntimeGE::UGameplayAbilityRuntimeGE()
+{
+	NetExecutionPolicy = EGameplayAbilityNetExecutionPolicy::LocalPredicted;
+}
+
+void UGameplayAbilityRuntimeGE::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
+{
+	if (HasAuthorityOrPredictionKey(ActorInfo, &ActivationInfo))
+	{
+		if (!CommitAbility(Handle, ActorInfo, ActivationInfo))
+		{
+			EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
+		}
+
+		// Create the GE at runtime.
+		auto ge = NewObject<UGameplayEffect>(GetTransientPackage(), TEXT("RuntimeInstantGE"));
+		ge->DurationPolicy = EGameplayEffectDurationType::Instant; // Only instant works with runtime GE.
+
+		// Add a simple scalable float modifier, which overrides MyAttribute with 42.
+		// In real world applications, consume information passed via TriggerEventData.
+		const auto Idx = Effect->Modifiers.Num();
+		Effect->Modifiers.SetNum(Idx + 1);
+		auto& ModifierInfo = Effect->Modifiers[Idx];
+		ModifierInfo.Attribute.SetUProperty(UMyAttributeSet::GetMyModifiedAttribute());
+		ModifierInfo.ModifierMagnitude = 42.f;
+		ModifierInfo.ModifierOp = EGameplayModOp::Override;
+
+		// Apply the GE.
+
+		// Create the GESpec here to avoid the behaviour of ASC to create GESpecs from the GE class default object.
+		// Since we have a dynamic GE here, this would create a GESpec with the base GameplayEffect class, so we
+		// would loose our modifiers. Attention: It is unknown, if this "hack" done here can have drawbacks!
+		// The spec prevents the GE object being collected by the GarbageCollector, since the GE is a UPROPERTY on the spec.
+		auto geSpec = new FGameplayEffectSpec(ge, {}, 0.f); // "new", since lifetime is managed by a shared ptr within the handle
+		ApplyGameplayEffectSpecToOwner(Handle, ActorInfo, ActivationInfo, FGameplayEffectSpecHandle(geSpec));
+	}
+	EndAbility(Handle, ActorInfo, ActivationInfo, false, false);
+}
+```
 
 **[⬆ Back to Top](#table-of-contents)**
 
