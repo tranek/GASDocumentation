@@ -1060,7 +1060,7 @@ Notable `GameplayEffectSpec` Contents:
 * The [`GameplayEffectContextHandle`](#concepts-ge-context) tells us who created this `GameplayEffectSpec`.
 * `Attributes` that were captured at the time of the `GameplayEffectSpec`'s creation due to snapshotting.
 * `DynamicGrantedTags` that the `GameplayEffectSpec` grants to the Target in addition to the `GameplayTags` that the `GameplayEffect` grants.
-* `DynamicAssetTags` that the `GameplayEffectSpect` has in addition to the `AssetTags` that the `GameplayEffect` has.
+* `DynamicAssetTags` that the `GameplayEffectSpec` has in addition to the `AssetTags` that the `GameplayEffect` has.
 * `SetByCaller` `TMaps`.
 
 **[⬆ Back to Top](#table-of-contents)**
