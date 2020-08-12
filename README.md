@@ -1248,11 +1248,17 @@ ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().Damag
 
 <a name="concepts-ge-ec-senddata-backingdatatempvariable"></a>
 ###### 4.5.12.1.3 Backing Data Temporary Variable Calculation Modifier
-If you want to hardcode values to a `GameplayEffect`, you can pass them in using a `CalculationModifier` that uses a `Temporary Variable` or `Transient Aggregator` as its called in C++.
+If you want to hardcode values to a `GameplayEffect`, you can pass them in using a `CalculationModifier` that uses a `Temporary Variable` or `Transient Aggregator` as it's called in C++. The `Temporary Variable` is associated with a `GameplayTag`.
 
 In this screenshot example, we're adding 50 to a `Temporary Variable` using the `Data.Damage` `GameplayTag`.
 
 ![Backing Data Temporary Variable Calculation Modifier](https://github.com/tranek/GASDocumentation/raw/master/Images/calculationmodifierbackingdatatempvariable.png)
+
+Add backing `Temporary Variables` to your `ExecutionCalculation`'s constructor:
+
+```c++
+ValidTransientAggregatorIdentifiers.AddTag(FGameplayTag::RequestGameplayTag("Data.Damage"));
+```
 
 The `ExecutionCalculation` reads this value in using special capture functions similar to the `Attribute` capture functions.
 
