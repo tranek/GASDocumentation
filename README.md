@@ -1616,14 +1616,14 @@ void UGameplayAbilityRuntimeGE::ActivateAbility(const FGameplayAbilitySpecHandle
 		}
 
 		// Create the GE at runtime.
-		auto ge = NewObject<UGameplayEffect>(GetTransientPackage(), TEXT("RuntimeInstantGE"));
-		ge->DurationPolicy = EGameplayEffectDurationType::Instant; // Only instant works with runtime GE.
+		UGameplayEffect GameplayEffect = NewObject<UGameplayEffect>(GetTransientPackage(), TEXT("RuntimeInstantGE"));
+		GameplayEffect->DurationPolicy = EGameplayEffectDurationType::Instant; // Only instant works with runtime GE.
 
 		// Add a simple scalable float modifier, which overrides MyAttribute with 42.
 		// In real world applications, consume information passed via TriggerEventData.
-		const auto Idx = Effect->Modifiers.Num();
+		const int32 Idx = Effect->Modifiers.Num();
 		Effect->Modifiers.SetNum(Idx + 1);
-		auto& ModifierInfo = Effect->Modifiers[Idx];
+		FGameplayModifierInfo& ModifierInfo = Effect->Modifiers[Idx];
 		ModifierInfo.Attribute.SetUProperty(UMyAttributeSet::GetMyModifiedAttribute());
 		ModifierInfo.ModifierMagnitude = 42.f;
 		ModifierInfo.ModifierOp = EGameplayModOp::Override;
@@ -1634,8 +1634,8 @@ void UGameplayAbilityRuntimeGE::ActivateAbility(const FGameplayAbilitySpecHandle
 		// Since we have a dynamic GE here, this would create a GESpec with the base GameplayEffect class, so we
 		// would loose our modifiers. Attention: It is unknown, if this "hack" done here can have drawbacks!
 		// The spec prevents the GE object being collected by the GarbageCollector, since the GE is a UPROPERTY on the spec.
-		auto geSpec = new FGameplayEffectSpec(ge, {}, 0.f); // "new", since lifetime is managed by a shared ptr within the handle
-		ApplyGameplayEffectSpecToOwner(Handle, ActorInfo, ActivationInfo, FGameplayEffectSpecHandle(geSpec));
+		FGameplayEffectSpec GESpec = new FGameplayEffectSpec(GameplayEffect, {}, 0.f); // "new", since lifetime is managed by a shared ptr within the handle
+		ApplyGameplayEffectSpecToOwner(Handle, ActorInfo, ActivationInfo, FGameplayEffectSpecHandle(GESpec));
 	}
 	EndAbility(Handle, ActorInfo, ActivationInfo, false, false);
 }
