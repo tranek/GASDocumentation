@@ -2801,6 +2801,8 @@ The third page shows all of the `GameplayAbilities` that have been granted to yo
 
 While you can cycle between targets with `PageUp` and `PageDown`, the pages will only show data for the `ASC` on your locally controlled `Character`. However, using `AbilitySystem.Debug.NextTarget` and `AbilitySystem.Debug.PrevTarget` will show data for other `ASCs`, but it will not update the top half of the debug information nor will it update the green targeting rectangular prism so there is no way to know which `ASC` is currently being targeted. This bug has been reported https://issues.unrealengine.com/issue/UE-90437.
 
+**Note:** For `showdebug abilitysystem` to work an actual HUD class must be selected in the GameMode. Otherwise the command is not found an "Unknown Command" is returned.
+
 **[⬆ Back to Top](#table-of-contents)**
 
 <a name="debugging-gd"></a>
