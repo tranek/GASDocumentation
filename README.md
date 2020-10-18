@@ -319,7 +319,7 @@ AGDPlayerState::AGDPlayerState()
 
 The `ASC` needs to be initialized with its `OwnerActor` and `AvatarActor` on both the server and the client. You want to initialize after the `Pawn's` `Controller` has been set (after possession). Single player games only need to worry about the server path.
 
-For player controlled characters where the `ASC` lives on the `Pawn`, I typically initialize on the server in the `Pawn's` `PossessedBy()` function and initialize on the client in the `PlayerController's` `AcknowledgePawn()` function.
+For player controlled characters where the `ASC` lives on the `Pawn`, I typically initialize on the server in the `Pawn's` `PossessedBy()` function and initialize on the client in the `PlayerController's` `AcknowledgePossession()` function.
 
 ```c++
 void APACharacterBase::PossessedBy(AController * NewController)
@@ -2203,9 +2203,7 @@ In Blueprint, we just use the Blueprint node that we create for the `AbilityTask
 
 ![Blueprint WaitTargetData AbilityTask](https://github.com/tranek/GASDocumentation/raw/master/Images/abilitytask.png)
 
-To manually cancel an `AbilityTask`, just call `EndTask()` on the `AbilityTask` object in Blueprint (called `Async Task Proxy`) or C++.
-
-Some `AbilityTasks` don't automatically end when the `GameplayAbility` ends like `WaitTargetData`. These should be manually ended in the `GameplayAbility's` `OnEndAbility` if they're still running (`WaitTargetData` naturally ends when the user presses `Confirm` or `Cancel` inputs).
+To manually cancel an `AbilityTask`, just call `EndTask()` on the `AbilityTask` object in Blueprint (called `Async Task Proxy`) or in C++.
 
 **[⬆ Back to Top](#table-of-contents)**
 
