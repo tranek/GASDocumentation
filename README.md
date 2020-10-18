@@ -2203,7 +2203,7 @@ In Blueprint, we just use the Blueprint node that we create for the `AbilityTask
 
 ![Blueprint WaitTargetData AbilityTask](https://github.com/tranek/GASDocumentation/raw/master/Images/abilitytask.png)
 
-To manually cancel an `AbilityTask`, just call `EndTask()` on the `AbilityTask` object in Blueprint (called `Async Task Proxy`) or C++.
+To manually cancel an `AbilityTask`, just call `EndTask()` on the `AbilityTask` object in Blueprint (called `Async Task Proxy`) or in C++.
 
 **[⬆ Back to Top](#table-of-contents)**
 
