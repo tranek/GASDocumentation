@@ -2205,8 +2205,6 @@ In Blueprint, we just use the Blueprint node that we create for the `AbilityTask
 
 To manually cancel an `AbilityTask`, just call `EndTask()` on the `AbilityTask` object in Blueprint (called `Async Task Proxy`) or C++.
 
-Some `AbilityTasks` don't automatically end when the `GameplayAbility` ends like `WaitTargetData`. These should be manually ended in the `GameplayAbility's` `OnEndAbility` if they're still running (`WaitTargetData` naturally ends when the user presses `Confirm` or `Cancel` inputs).
-
 **[⬆ Back to Top](#table-of-contents)**
 
 <a name="concepts-at-rms"></a>
