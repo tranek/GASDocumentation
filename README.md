@@ -1628,25 +1628,25 @@ void UGameplayAbilityRuntimeGE::ActivateAbility(const FGameplayAbilitySpecHandle
 		}
 
 		// Create the GE at runtime.
-		UGameplayEffect GameplayEffect = NewObject<UGameplayEffect>(GetTransientPackage(), TEXT("RuntimeInstantGE"));
+		UGameplayEffect* GameplayEffect = NewObject<UGameplayEffect>(GetTransientPackage(), TEXT("RuntimeInstantGE"));
 		GameplayEffect->DurationPolicy = EGameplayEffectDurationType::Instant; // Only instant works with runtime GE.
 
 		// Add a simple scalable float modifier, which overrides MyAttribute with 42.
 		// In real world applications, consume information passed via TriggerEventData.
-		const int32 Idx = Effect->Modifiers.Num();
-		Effect->Modifiers.SetNum(Idx + 1);
-		FGameplayModifierInfo& ModifierInfo = Effect->Modifiers[Idx];
+		const int32 Idx = GameplayEffect->Modifiers.Num();
+		GameplayEffect->Modifiers.SetNum(Idx + 1);
+		FGameplayModifierInfo& ModifierInfo = GameplayEffect->Modifiers[Idx];
 		ModifierInfo.Attribute.SetUProperty(UMyAttributeSet::GetMyModifiedAttribute());
-		ModifierInfo.ModifierMagnitude = 42.f;
+		ModifierInfo.ModifierMagnitude = FScalableFloat(42.f);
 		ModifierInfo.ModifierOp = EGameplayModOp::Override;
 
 		// Apply the GE.
 
-		// Create the GESpec here to avoid the behaviour of ASC to create GESpecs from the GE class default object.
+		// Create the GESpec here to avoid the behavior of ASC to create GESpecs from the GE class default object.
 		// Since we have a dynamic GE here, this would create a GESpec with the base GameplayEffect class, so we
-		// would loose our modifiers. Attention: It is unknown, if this "hack" done here can have drawbacks!
+		// would lose our modifiers. Attention: It is unknown, if this "hack" done here can have drawbacks!
 		// The spec prevents the GE object being collected by the GarbageCollector, since the GE is a UPROPERTY on the spec.
-		FGameplayEffectSpec GESpec = new FGameplayEffectSpec(GameplayEffect, {}, 0.f); // "new", since lifetime is managed by a shared ptr within the handle
+		FGameplayEffectSpec* GESpec = new FGameplayEffectSpec(GameplayEffect, {}, 0.f); // "new", since lifetime is managed by a shared ptr within the handle
 		ApplyGameplayEffectSpecToOwner(Handle, ActorInfo, ActivationInfo, FGameplayEffectSpecHandle(GESpec));
 	}
 	EndAbility(Handle, ActorInfo, ActivationInfo, false, false);
