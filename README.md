@@ -3,7 +3,7 @@ My understanding of Unreal Engine 4's GameplayAbilitySystem plugin (GAS) with a 
 
 The goal of this documentation is to explain the major concepts and classes in GAS and provide some additional commentary based on my experience with it. There is a lot of 'tribal knowledge' of GAS among users in the community and I aim to share all of mine here.
 
-The Sample Project and documentation are current with **Unreal Engine 4.25**. There are branches of this documentation for older versions of Unreal Engine, but they are no longer supported and are liable to have bugs or out of date information.
+The Sample Project and documentation are current with **Unreal Engine 4.26**. There are branches of this documentation for older versions of Unreal Engine, but they are no longer supported and are liable to have bugs or out of date information.
 
 [GASShooter](https://github.com/tranek/GASShooter) is a sister Sample Project demonstrating advanced techniques with GAS for a multiplayer FPS/TPS.
 
@@ -151,6 +151,7 @@ The best documentation will always be the plugin source code.
 > 1. [Common GAS Acronymns](#acronyms)
 > 1. [Other Resources](#resources)
 > 1. [GAS Changelog](#changelog)  
+>    * [4.26](#changelog-4.26)  
 >    * [4.25.1](#changelog-4.25.1)  
 >    * [4.25](#changelog-4.25)  
 >    * [4.24](#changelog-4.24)
@@ -2962,6 +2963,22 @@ You need to call [`UAbilitySystemGlobals::InitGlobalData()`](#concepts-asg-initg
 ## 12. GAS Changelog
 
 This is a list of notable changes (fixes, changes, and new features) to GAS compiled from the official Unreal Engine upgrade changelog and from undocumented changes that I've encountered. If you've found something that isn't listed here, please make an issue or pull request.
+
+<a name="changelog-4.26"></a>
+### 4.26
+* GAS plugin is no longer flagged as beta.
+* Crash Fix: Fixed a crash when adding a gameplay tag without a valid tag source selection.
+* Crash Fix: Added the path string arg to a message to fix a crash in UGameplayCueManager::VerifyNotifyAssetIsInValidPath.
+* Crash Fix: Fixed an access violation crash in AbilitySystemComponent_Abilities when using a ptr without checking it.
+* Bug Fix: Fixed a bug where stacking GEs that did not reset the duration on additional instances of the effect being applied.
+* Bug Fix: Fixed an issue that caused CancelAllAbilities to only cancel non-instanced abilities.
+* New: Added optional tag parameters to gameplay ability commit functions.
+* New: Added StartTimeSeconds to PlayMontageAndWait ability task and improved comments.
+* New: Added tag container "DynamicAbilityTags" to FGameplayAbilitySpec. These are optional ability tags that are replicated with the spec. They are also captured as source tags by applied gameplay effects.
+* New: GameplayAbility IsLocallyControlled and HasAuthority functions are now callable from Blueprint.
+* New: Visual logger will now only collect and store info about instant GEs if we're currently recording visual logging data.
+* New: Added support for redirectors on gameplay attribute pins in blueprint nodes.
+* New: Added new functionality for when root motion movement related ability tasks end they will return the movement component's movement mode to the movement mode it was in before the task started.
 
 <a name="changelog-4.25.1"></a>
 ### 4.25.1
