@@ -148,6 +148,7 @@ The best documentation will always be the plugin source code.
 > 1. [Troubleshooting](#troubleshooting)  
 >    9.1 [`LogAbilitySystem: Warning: Can't activate LocalOnly or LocalPredicted ability %s when not local!`](#troubleshooting-notlocal)  
 >    9.2 [`ScriptStructCache` errors](#troubleshooting-scriptstructcache)  
+>    9.3 [Animation Montages are not replicating to clients](#troubleshooting-replicatinganimmontages)  
 > 1. [Common GAS Acronymns](#acronyms)
 > 1. [Other Resources](#resources)
 > 1. [GAS Changelog](#changelog)  
@@ -2923,6 +2924,12 @@ You need to [initialize the `ASC` on the client](#concepts-asc-setup).
 <a name="troubleshooting-scriptstructcache"></a>
 ### 9.2 `ScriptStructCache` errors
 You need to call [`UAbilitySystemGlobals::InitGlobalData()`](#concepts-asg-initglobaldata).
+
+**[⬆ Back to Top](#table-of-contents)**
+
+<a name="troubleshooting-replicatinganimmontages"></a>
+### 9.3 Animation Montages are not replicating to clients
+Make sure that you're using the `PlayMontageAndWait` Blueprint node instead of `PlayMontage` in your [GameplayAbilities](#concepts-ga). This [AbilityTask](#concepts-at) replicates the montage through the `ASC` automatically whereas the `PlayMontage` node does not.
 
 **[⬆ Back to Top](#table-of-contents)**
 
