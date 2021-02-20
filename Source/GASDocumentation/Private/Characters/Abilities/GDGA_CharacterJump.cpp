@@ -19,7 +19,7 @@ void UGDGA_CharacterJump::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 	{
 		if (!CommitAbility(Handle, ActorInfo, ActivationInfo))
 		{
-			EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+			EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
 		}
 
 		ACharacter * Character = CastChecked<ACharacter>(ActorInfo->AvatarActor.Get());
