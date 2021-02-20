@@ -67,15 +67,18 @@ UGDHUDWidget * AGDPlayerController::GetHUD()
 	return UIHUDWidget;
 }
 
-void AGDPlayerController::ShowDamageNumber_Implementation(float DamageAmount, AGDCharacterBase * TargetCharacter)
+void AGDPlayerController::ShowDamageNumber_Implementation(float DamageAmount, AGDCharacterBase* TargetCharacter)
 {
-	UGDDamageTextWidgetComponent* DamageText = NewObject<UGDDamageTextWidgetComponent>(TargetCharacter, DamageNumberClass);
-	DamageText->RegisterComponent();
-	DamageText->AttachToComponent(TargetCharacter->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
-	DamageText->SetDamageText(DamageAmount);
+	if (TargetCharacter)
+	{
+		UGDDamageTextWidgetComponent* DamageText = NewObject<UGDDamageTextWidgetComponent>(TargetCharacter, DamageNumberClass);
+		DamageText->RegisterComponent();
+		DamageText->AttachToComponent(TargetCharacter->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
+		DamageText->SetDamageText(DamageAmount);
+	}
 }
 
-bool AGDPlayerController::ShowDamageNumber_Validate(float DamageAmount, AGDCharacterBase * TargetCharacter)
+bool AGDPlayerController::ShowDamageNumber_Validate(float DamageAmount, AGDCharacterBase* TargetCharacter)
 {
 	return true;
 }
@@ -94,7 +97,7 @@ bool AGDPlayerController::SetRespawnCountdown_Validate(float RespawnTimeRemainin
 }
 
 // Server only
-void AGDPlayerController::OnPossess(APawn * InPawn)
+void AGDPlayerController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 
