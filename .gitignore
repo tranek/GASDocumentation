@@ -79,3 +79,6 @@ DerivedDataCache/*
 # Visual Studio Code files
 .vscode
 *.code-workspace
+
+# Rider user specific files
+.idea/
