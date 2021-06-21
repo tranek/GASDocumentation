@@ -3078,7 +3078,7 @@ activated and tasks executed instead of prediction keys) ?
 
 3. Is there a plan to move Network Prediction development toward the
 main branch ? Not gonna lie, I'd really like to check the latest code.
-Regardless of it's
+Regardless of it's state.
 
 4. For some time on Main there was a plugin for sending Gameplay
 Messages (Looked like Event/Message Bus), but it was removed. Any
