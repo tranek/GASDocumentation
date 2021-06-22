@@ -94,6 +94,20 @@ void AGDHeroCharacter::PossessedBy(AController * NewController)
 		// For now assume possession = spawn/respawn.
 		InitializeAttributes();
 
+		
+		// Respawn specific things that won't affect first possession.
+
+		// Forcibly set the DeadTag count to 0
+		AbilitySystemComponent->SetTagMapCount(DeadTag, 0);
+
+		// Set Health/Mana/Stamina to their max. This is only necessary for *Respawn*.
+		SetHealth(GetMaxHealth());
+		SetMana(GetMaxMana());
+		SetStamina(GetMaxStamina());
+
+		// End respawn specific things
+
+
 		AddStartupEffects();
 
 		AddCharacterAbilities();
@@ -105,17 +119,6 @@ void AGDHeroCharacter::PossessedBy(AController * NewController)
 		}
 
 		InitializeFloatingStatusBar();
-
-
-		// Respawn specific things that won't affect first possession.
-
-		// Forcibly set the DeadTag count to 0
-		AbilitySystemComponent->SetTagMapCount(DeadTag, 0);
-
-		// Set Health/Mana/Stamina to their max. This is only necessary for *Respawn*.
-		SetHealth(GetMaxHealth());
-		SetMana(GetMaxMana());
-		SetStamina(GetMaxStamina());
 	}
 }
 
