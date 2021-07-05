@@ -562,13 +562,13 @@ If your subcomponents need many `Attributes` each, there's potentially an unboun
 
 On weapon add to inventory:
 ```c++
-AbilitySystemComponent->SpawnedAttributes.AddUnique(WeaponAttributeSetPointer);
+AbilitySystemComponent->GetSpawnedAttributes_Mutable().AddUnique(WeaponAttributeSetPointer);
 AbilitySystemComponent->ForceReplication();
 ```
 
 On weapon remove from inventory:
 ```c++
-AbilitySystemComponent->SpawnedAttributes.Remove(WeaponAttributeSetPointer);
+AbilitySystemComponent->GetSpawnedAttributes_Mutable().Remove(WeaponAttributeSetPointer);
 AbilitySystemComponent->ForceReplication();
 ```
 <a name="concepts-as-design-itemattributes"></a>
