@@ -2142,7 +2142,7 @@ GASShooter exposes a Blueprint node to allow batching abilities which the aforem
 **[⬆ Back to Top](#table-of-contents)**
 
 <a name="concepts-ga-netsecuritypolicy"></a>
-#### 4.6.15 Net Security Policy
+#### 4.6.16 Net Security Policy
 A `GameplayAbility`'s `NetSecurityPolicy` determines where should an ability execute on the network. It provides protection from clients attempting to execute restricted abilities.
 
 | `NetSecurityPolicy`     | Description                                                                                                                                        |
