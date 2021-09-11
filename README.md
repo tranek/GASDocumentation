@@ -1381,7 +1381,7 @@ FGameplayTagContainer CooldownTags;
 
 // Temp container that we will return the pointer to in GetCooldownTags().
 // This will be a union of our CooldownTags and the Cooldown GE's cooldown tags.
-UPROPERTY()
+UPROPERTY(Transient)
 FGameplayTagContainer TempCooldownTags;
 ```
 
@@ -1390,6 +1390,7 @@ Then override `UGameplayAbility::GetCooldownTags()` to return the union of our `
 const FGameplayTagContainer * UPGGameplayAbility::GetCooldownTags() const
 {
 	FGameplayTagContainer* MutableTags = const_cast<FGameplayTagContainer*>(&TempCooldownTags);
+	MutableTags->Reset(); // MutableTags writes to the TempCooldownTags on the CDO so clear it in case the ability cooldown tags change (moved to a different slot)
 	const FGameplayTagContainer* ParentTags = Super::GetCooldownTags();
 	if (ParentTags)
 	{
@@ -1429,7 +1430,7 @@ FGameplayTagContainer CooldownTags;
 
 // Temp container that we will return the pointer to in GetCooldownTags().
 // This will be a union of our CooldownTags and the Cooldown GE's cooldown tags.
-UPROPERTY()
+UPROPERTY(Transient)
 FGameplayTagContainer TempCooldownTags;
 ```
 
@@ -1438,6 +1439,7 @@ Then override `UGameplayAbility::GetCooldownTags()` to return the union of our `
 const FGameplayTagContainer * UPGGameplayAbility::GetCooldownTags() const
 {
 	FGameplayTagContainer* MutableTags = const_cast<FGameplayTagContainer*>(&TempCooldownTags);
+	MutableTags->Reset(); // MutableTags writes to the TempCooldownTags on the CDO so clear it in case the ability cooldown tags change (moved to a different slot)
 	const FGameplayTagContainer* ParentTags = Super::GetCooldownTags();
 	if (ParentTags)
 	{
