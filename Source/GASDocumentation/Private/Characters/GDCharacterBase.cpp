@@ -308,7 +308,22 @@ void AGDCharacterBase::InitializeAttributes()
 	FGameplayEffectSpecHandle NewHandle = AbilitySystemComponent->MakeOutgoingSpec(DefaultAttributes, GetCharacterLevel(), EffectContext);
 	if (NewHandle.IsValid())
 	{
-		FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*NewHandle.Data.Get(), AbilitySystemComponent.Get());
+		FGameplayEffectSpec Spec = *NewHandle.Data.Get();
+		float AppliedMagnitude = 0.f;
+		for (const FGameplayModifierInfo& ModifierInfo : Spec.Def->Modifiers)
+		{
+			if (Spec.Def->DurationPolicy == EGameplayEffectDurationType::Instant)
+			{
+				if (ModifierInfo.ModifierMagnitude.AttemptCalculateMagnitude(Spec, AppliedMagnitude))
+				{
+					AbilitySystemComponent->SetNumericAttributeBase(ModifierInfo.Attribute, AppliedMagnitude);
+				}
+			}
+			else
+			{
+				UE_LOG(LogTemp, Error, TEXT("Initializer %s does not apply an Instant Duration Policy."), *Spec.Def->GetName());
+			}
+		}
 	}
 }
 
