@@ -473,6 +473,8 @@ virtual void StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
 
 **Tip:** If you don't want an `Attribute` to show up in the Editor's list of `Attributes`, you can use the `Meta = (HideInDetailsView)` `property specifier`.
 
+**Note:** Set the `AttributeSet` to be a `Transient` property. Because it is not a Component it's creation inside an actor's constructor is not safe. Having it not Transient might lead to hard to track issues when duplicating character's Blueprints.
+
 **[⬆ Back to Top](#table-of-contents)**
 
 <a name="concepts-a-value"></a>
