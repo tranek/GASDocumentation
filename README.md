@@ -2308,33 +2308,27 @@ void RemoveGameplayCueLocal(const FGameplayTag GameplayCueTag, const FGameplayCu
 ```
 
 ```c++
-void UPAAbilitySystemComponent::ExecuteGameplayCueLocal(const FGameplayTag GameplayCueTag, const FGameplayCueParameters & GameplayCueParameters)
+void UPAAbilitySystemComponent::ExecuteGameplayCueLocal(AActor* TargetActor, const FGameplayTag GameplayCueTag, const FGameplayCueParameters & GameplayCueParameters)
 {
-	AActor* ActorAvatar = AbilityActorInfo->AvatarActor.Get();
-
-	if (ActorAvatar != nullptr && !bSuppressGameplayCues)
+	if (TargetActor != nullptr && !bSuppressGameplayCues)
 	{
-		UGameplayCueManager::ExecuteGameplayCue_NonReplicated(ActorAvatar, GameplayCueTag, GameplayCueParameters);
+		UGameplayCueManager::ExecuteGameplayCue_NonReplicated(TargetActor, GameplayCueTag, GameplayCueParameters);
 	}
 }
 
-void UPAAbilitySystemComponent::AddGameplayCueLocal(const FGameplayTag GameplayCueTag, const FGameplayCueParameters & GameplayCueParameters)
+void UPAAbilitySystemComponent::AddGameplayCueLocal(AActor* TargetActor, const FGameplayTag GameplayCueTag, const FGameplayCueParameters & GameplayCueParameters)
 {
-	AActor* ActorAvatar = AbilityActorInfo->AvatarActor.Get();
-
-	if (ActorAvatar != nullptr && !bSuppressGameplayCues)
+	if (TargetActor != nullptr && !bSuppressGameplayCues)
 	{
-		UGameplayCueManager::AddGameplayCue_NonReplicated(ActorAvatar, GameplayCueTag, GameplayCueParameters);
+		UGameplayCueManager::AddGameplayCue_NonReplicated(TargetActor, GameplayCueTag, GameplayCueParameters);
 	}
 }
 
-void UPAAbilitySystemComponent::RemoveGameplayCueLocal(const FGameplayTag GameplayCueTag, const FGameplayCueParameters & GameplayCueParameters)
+void UPAAbilitySystemComponent::RemoveGameplayCueLocal(AActor* TargetActor, const FGameplayCueParameters & GameplayCueParameters)
 {
-	AActor* ActorAvatar = AbilityActorInfo->AvatarActor.Get();
-
-	if (ActorAvatar != nullptr && !bSuppressGameplayCues)
+	if (TargetActor != nullptr && !bSuppressGameplayCues)
 	{
-		UGameplayCueManager::RemoveGameplayCue_NonReplicated(ActorAvatar, GameplayCueTag, GameplayCueParameters);
+		UGameplayCueManager::RemoveGameplayCue_NonReplicated(TargetActor, GameplayCueTag, GameplayCueParameters);
 	}
 }
 ```
