@@ -3313,7 +3313,7 @@ This is a list of notable changes (fixes, changes, and new features) to GAS comp
 * Change: Changed the GameplayCueInterface to pass GameplayCueParameters struct by reference.
 * Optimization: Made several performance improvements to loading and regenerating the GameplayTag table were implemented so that this option would be optimized.
 
-https://docs.unrealengine.com/en-US/WhatsNew/Builds/ReleaseNotes/4_27/](https://docs.unrealengine.com/en-US/WhatsNew/Builds/ReleaseNotes/4_27/
+https://docs.unrealengine.com/en-US/WhatsNew/Builds/ReleaseNotes/4_27/
 
 <a name="changelog-4.26"></a>
 ### 4.26
