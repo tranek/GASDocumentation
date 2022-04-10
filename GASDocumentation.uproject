@@ -36,6 +36,7 @@
 				"Mac",
 				"Win64"
 			]
+		},
 		{
 			"Name": "Bridge",
 			"Enabled": true,
