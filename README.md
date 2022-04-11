@@ -152,6 +152,7 @@ The best documentation will always be the plugin source code.
 >    9.2 [`ScriptStructCache` errors](#troubleshooting-scriptstructcache)  
 >    9.3 [Animation Montages are not replicating to clients](#troubleshooting-replicatinganimmontages)  
 >    9.4 [Duplicating Blueprint Actors is setting AttributeSets to nullptr](#troubleshooting-duplicatingblueprintactors)  
+>    9.5 [unresolved external symbol UEPushModelPrivate::MarkPropertyDirty(int,int)](#troubleshooting-unresolvedexternalsymbolmarkpropertydirty)  
 > 1. [Common GAS Acronyms](#acronyms)
 > 1. [Other Resources](#resources)  
 >    11.1 [Q&A With Epic Game's Dave Ratti](#resources-daveratti)  
@@ -3032,6 +3033,27 @@ if (AbilitySystemComponent)
 ```
 
 As a reminder, the `ASC` only ever expects at most one `AttributeSet` object per `AttributeSet` class.
+
+**[⬆ Back to Top](#table-of-contents)**
+
+<a name="troubleshooting-unresolvedexternalsymbolmarkpropertydirty"></a>
+### 9.5 unresolved external symbol UEPushModelPrivate::MarkPropertyDirty(int,int)
+
+If you get a compiler error like:
+
+```
+error LNK2019: unresolved external symbol "__declspec(dllimport) void __cdecl UEPushModelPrivate::MarkPropertyDirty(int,int)" (__imp_?MarkPropertyDirty@UEPushModelPrivate@@YAXHH@Z) referenced in function "public: void __cdecl FFastArraySerializer::IncrementArrayReplicationKey(void)" (?IncrementArrayReplicationKey@FFastArraySerializer@@QEAAXXZ)
+```
+
+This is from trying to call `MarkItemDirty()` on a `FFastArraySerializer`. I've encountered this from updating an `ActiveGameplayEffect` such as when updating the cooldown duration.
+
+```c++
+ActiveGameplayEffects.MarkItemDirty(*AGE);
+```
+
+What's happening is that `WITH_PUSH_MODEL` is getting defined in more than one place. `PushModelMacros.h` is defining it as 0 while it's defined as 1 in multiple places. `PushModel.h` is seeing it as 1 but `PushModel.cpp` is seeing it as 0.
+
+The solution is to add `NetCore` to your project's `PublicDependencyModuleNames` in the `Build.cs`.
 
 **[⬆ Back to Top](#table-of-contents)**
 
