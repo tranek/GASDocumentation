@@ -3081,6 +3081,7 @@ The solution is to add `NetCore` to your project's `PublicDependencyModuleNames`
 * [Official Documentation](https://docs.unrealengine.com/en-US/Gameplay/GameplayAbilitySystem/index.html)
 * Source Code!
    * Especially `GameplayPrediction.h`
+* [Lyra Sample Project by Epic](https://unrealengine.com/marketplace/en-US/learn/lyra)
 * [Action RPG Sample Project by Epic](https://www.unrealengine.com/marketplace/en-US/product/action-rpg)
 * [Unreal Slackers Discord](https://unrealslackers.org/) has a text channel dedicated to GAS `#gameplay-ability-system`
    * Check pinned messages
