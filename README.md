@@ -361,6 +361,21 @@ void APAPlayerControllerBase::AcknowledgePossession(APawn* P)
 }
 ```
 
+Because possible race condition, specially with bad network conditions, the `Pawn` `PlayerController` could not be replicated yet, so I do `RefreshAbilityActorInfo()` when the `Pawn` is replicated to the `PlayerController`.
+
+```c++
+void APAPlayerControllerBase::OnRep_Pawn()
+{
+	Super::OnRep_Pawn();
+
+	APACharacterBase* CharacterBase = Cast<APACharacterBase>(GetPawn());
+	if (CharacterBase)
+	{
+		CharacterBase->GetAbilitySystemComponent()->RefreshAbilityActorInfo();
+	}
+}
+```
+
 For player controlled characters where the `ASC` lives on the `PlayerState`, I typically initialize the server in the `Pawn's` `PossessedBy()` function and initialize on the client in the `Pawn's` `OnRep_PlayerState()` function. This ensures that the `PlayerState` exists on the client.
 
 ```c++
