@@ -1889,7 +1889,7 @@ bool TryActivateAbility(FGameplayAbilitySpecHandle AbilityToActivate, bool bAllo
 
 bool TriggerAbilityFromGameplayEvent(FGameplayAbilitySpecHandle AbilityToTrigger, FGameplayAbilityActorInfo* ActorInfo, FGameplayTag Tag, const FGameplayEventData* Payload, UAbilitySystemComponent& Component);
 
-FGameplayAbilitySpecHandle GiveAbilityAndActivateOnce(const FGameplayAbilitySpec& AbilitySpec);
+FGameplayAbilitySpecHandle GiveAbilityAndActivateOnce(const FGameplayAbilitySpec& AbilitySpec, const FGameplayEventData* GameplayEventData);
 ```
 To activate a `GameplayAbility` by event, the `GameplayAbility` must have its `Triggers` set up in the `GameplayAbility`. Assign a `GameplayTag` and pick an option for `GameplayEvent`. To send the event, use the function `UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(AActor* Actor, FGameplayTag EventTag, FGameplayEventData Payload)`. Activating a `GameplayAbility` by event allows you to pass in a payload with data.
 
@@ -3325,7 +3325,7 @@ This is a list of notable changes (fixes, changes, and new features) to GAS comp
 * Bug Fix: Improved thread safety of GameplayTag operations.
 * New: Exposed SourceObject to GameplayAbility's `K2_CanActivateAbility` method.
 * New: Native GameplayTags. Introducing a new `FNativeGameplayTag`, these make it possible to do one off native tags that are correctly registered and unregistered when the module is loaded and unloaded.
-* New: Added new method `GrantAndActivateAbilityOnSelfWithParams` which allows Designers to pass in FGameplayEventData when granting and then activating an ability from Blueprint.
+* New: Updated `GiveAbilityAndActivateOnce` to pass in FGameplayEventData parameter.
 * New: Improved ScalableFloats in the GameplayAbilities plugin to support dynamic lookup of curve tables from the new Data Registry System. Added a ScalableFloat header for easier reuse of the generic struct outside the abilities plugin.
 * New: Added code support for using the GameplayTag UI in other Editor customizations via GameplayTagsEditorModule.
 * New: Modified UGameplayAbility's PreActivate method to optionally take in trigger event data.
