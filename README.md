@@ -3213,7 +3213,7 @@ be beyond awesome.
 2. Is there any plan on how the integration of Network Prediction will
 look with the Ability System? Like for example, fixed frame ability
 activation (so the server gets frames in which abilities were
-activated and tasks executed instead of prediction keys) ?
+activated and tasks executed instead of prediction keys)?
 
 > Yes, the plan is to rewrite/remove the Ability System's prediction keys and replace them with Network Prediction constructs. The MockAbility examples in NetworkPredictionExtras show how this might work but they are more "hard coded" than what GAS will require. 
 >
@@ -3239,7 +3239,7 @@ Regardless of it's state.
 
 4. For some time on main branch there was a plugin for sending Gameplay
 Messages (Looked like Event/Message Bus), but it was removed. Any
-plans to restore it ? With the Game Features/Modular Gameplay plugins,
+plans to restore it? With the Game Features/Modular Gameplay plugins,
 having a generic Event Bus Dispatcher would be extremely useful.
 
 > I think you are referring to the GameplayMessages plugin. This will probably come back at some point - the API isn't really finalized yet and the author didn't mean for it to be public yet. I agree it should be useful for modular gameplay design. But it's not really my area so I don't have much more information. 
