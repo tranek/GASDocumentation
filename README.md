@@ -3,7 +3,7 @@ My understanding of Unreal Engine 5's GameplayAbilitySystem plugin (GAS) with a 
 
 The goal of this documentation is to explain the major concepts and classes in GAS and provide some additional commentary based on my experience with it. There is a lot of 'tribal knowledge' of GAS among users in the community and I aim to share all of mine here.
 
-The Sample Project and documentation are current with **Unreal Engine 5.0**. There are branches of this documentation for older versions of Unreal Engine, but they are no longer supported and are liable to have bugs or out of date information.
+The Sample Project and documentation are current with **Unreal Engine 5.1**. There are branches of this documentation for older versions of Unreal Engine, but they are no longer supported and are liable to have bugs or out of date information.
 
 [GASShooter](https://github.com/tranek/GASShooter) is a sister Sample Project demonstrating advanced techniques with GAS for a multiplayer FPS/TPS.
 
@@ -159,6 +159,7 @@ The best documentation will always be the plugin source code.
 >    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;11.1.1 [Community Questions 1](#resources-daveratti-community1)  
 >    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;11.1.2 [Community Questions 2](#resources-daveratti-community2)  
 > 1. [GAS Changelog](#changelog)  
+>    * [5.1](#changelog-5.1)  
 >    * [4.27](#changelog-4.27)  
 >    * [4.26](#changelog-4.26)  
 >    * [4.25.1](#changelog-4.25.1)  
@@ -3313,6 +3314,34 @@ level or something that each game has to solve on it's own ?
 ## 12. GAS Changelog
 
 This is a list of notable changes (fixes, changes, and new features) to GAS compiled from the official Unreal Engine upgrade changelog and from undocumented changes that I've encountered. If you've found something that isn't listed here, please make an issue or pull request.
+
+<a name="changelog-5.1"></a>
+### 5.1
+* Bug Fix: Fixed issue where replicated loose gameplay tags were not replicating to the owner.
+* Bug Fix: Fixed AbilityTask bug where abilities could be blocked from timely garbage-collection.
+* Bug Fix: Fixed an issue when a gameplay ability listening to activate based on a tag would fail to be activated. This would happen if there were more than one Gameplay Ability listening to this tag, and the first one in the list was invalid or didn't have authority to activate.
+* Bug Fix: Fixed GameplayEffects that use Data Registries correctly from warning on load and improved the warning text.
+* Bug Fix: Removed code from UGameplayAbility that was incorrectly only registering the last instanced ability with the Blueprint debugger for breakpoints.
+* Bug Fix: Fixed Gameplay Ability System Ability getting stuck if EndAbility was called during the lock inside ApplyGameplayEffectSpecToTarget.
+* New: Added support for Gameplay Effects to add blocked ability tags.
+* New: Added WaitGameplayTagQuery nodes. One is based off of the UAbilityTask and the other is of UAbilityAsync. This node specifies a TagQuery, and will trigger its output pin when the query becomes true or false, based on configuration.
+* New: Modified AbilityTask debugging in Console Variables to enable debug recording and printing to log by default in non-shipping builds (with ability to hotfix on/off as needed).
+* New: You can now set AbilitySystem.AbilityTask.Debug.RecordingEnabled to 0 to disable, 1 to enable in non-shipping builds, and 2 to enable all builds (including shipping).
+* New: You can use AbilitySystem.AbilityTask.Debug.AbilityTaskDebugPrintTopNResults to only print the top N results in log (to avoid log spam).
+* New: STAT_AbilityTaskDebugRecording can be used to test perf impact from these on-by-default debugging changes.
+* New: Added a debug command to filter GameplayCue events.
+* New: Added new debug commandsAbilitySystem.DebugAbilityTags, AbilitySystem.DebugBlockedTags, andAbilitySystem.DebugAttribute to the Gameplay Ability System.
+* New: Added a Blueprint function to get a debug string representation of a Gameplay Attribute.
+* New: Added a new Gameplay Task resource overlap policy to cancel existing tasks.
+* Change: Now Ability Tasks should make sure to call Super::OnDestroy only after they do anything needed to the Ability pointer, as it will be nulled out after calling it.
+* Change: Converted FGameplayAbilitySpec/Def::SourceObject to be a weak reference.
+* Change: Made a Ability System Component reference in the Ability Task a weak pointer so Garbage Collection can delete it.
+* Change: Removed redundant enum EWaitGameplayTagQueryAsyncTriggerCondition.
+* Change: GameplayTasksComponent and AbilitySystemComponent now support the registered subobject API.
+* Change: Added better logging to indicate why Gameplay Abilities failed to be activated.
+* Change: Removed AbilitySystem.Debug.NextTarget and PrevTarget commands in favor of global HUD NextDebugTarget and PrevDebugTarget commands.
+
+https://docs.unrealengine.com/5.1/en-US/unreal-engine-5.1-release-notes/
 
 <a name="changelog-4.27"></a>
 ### 4.27
