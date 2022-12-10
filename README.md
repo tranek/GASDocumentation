@@ -3343,6 +3343,11 @@ This is a list of notable changes (fixes, changes, and new features) to GAS comp
 
 https://docs.unrealengine.com/5.1/en-US/unreal-engine-5.1-release-notes/
 
+<a name="changelog-5.0"></a>
+### 5.0
+
+https://docs.unrealengine.com/5.0/en-US/unreal-engine-5.0-release-notes/
+
 <a name="changelog-4.27"></a>
 ### 4.27
 * Crash Fix: Fixed a root motion source issue where a networked client could crash when an Actor finishes executing an ability that uses a constant force root motion task with a strength-over-time modifier.
