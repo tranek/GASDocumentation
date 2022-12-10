@@ -160,6 +160,7 @@ The best documentation will always be the plugin source code.
 >    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;11.1.2 [Community Questions 2](#resources-daveratti-community2)  
 > 1. [GAS Changelog](#changelog)  
 >    * [5.1](#changelog-5.1)  
+>    * [5.0](#changelog-5.0)  
 >    * [4.27](#changelog-4.27)  
 >    * [4.26](#changelog-4.26)  
 >    * [4.25.1](#changelog-4.25.1)  
