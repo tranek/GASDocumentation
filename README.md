@@ -972,6 +972,7 @@ float FAggregatorModChannel::EvaluateWithBase(float InlineBaseValue, const FAggr
 {
 	...
 	float Multiplicitive = MultiplyMods(Mods[EGameplayModOp::Multiplicitive], Parameters);
+	float Division = MultiplyMods(Mods[EGameplayModOp::Division], Parameters);
 	...
 
 	return ((InlineBaseValue + Additive) * Multiplicitive) / Division;
