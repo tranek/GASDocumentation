@@ -46,7 +46,7 @@ int32 AGDCharacterBase::GetAbilityLevel(EGDAbilityInputID AbilityID) const
 
 void AGDCharacterBase::RemoveCharacterAbilities()
 {
-	if (GetLocalRole() != ROLE_Authority || !AbilitySystemComponent.IsValid() || !AbilitySystemComponent->CharacterAbilitiesGiven)
+	if (GetLocalRole() != ROLE_Authority || !AbilitySystemComponent.IsValid() || !AbilitySystemComponent->bCharacterAbilitiesGiven)
 	{
 		return;
 	}
@@ -67,7 +67,7 @@ void AGDCharacterBase::RemoveCharacterAbilities()
 		AbilitySystemComponent->ClearAbility(AbilitiesToRemove[i]);
 	}
 
-	AbilitySystemComponent->CharacterAbilitiesGiven = false;
+	AbilitySystemComponent->bCharacterAbilitiesGiven = false;
 }
 
 EGDHitReactDirection AGDCharacterBase::GetHitReactDirection(const FVector & ImpactPoint)
@@ -274,7 +274,7 @@ void AGDCharacterBase::BeginPlay()
 void AGDCharacterBase::AddCharacterAbilities()
 {
 	// Grant abilities, but only on the server	
-	if (GetLocalRole() != ROLE_Authority || !AbilitySystemComponent.IsValid() || AbilitySystemComponent->CharacterAbilitiesGiven)
+	if (GetLocalRole() != ROLE_Authority || !AbilitySystemComponent.IsValid() || AbilitySystemComponent->bCharacterAbilitiesGiven)
 	{
 		return;
 	}
@@ -285,7 +285,7 @@ void AGDCharacterBase::AddCharacterAbilities()
 			FGameplayAbilitySpec(StartupAbility, GetAbilityLevel(StartupAbility.GetDefaultObject()->AbilityID), static_cast<int32>(StartupAbility.GetDefaultObject()->AbilityInputID), this));
 	}
 
-	AbilitySystemComponent->CharacterAbilitiesGiven = true;
+	AbilitySystemComponent->bCharacterAbilitiesGiven = true;
 }
 
 void AGDCharacterBase::InitializeAttributes()
