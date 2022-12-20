@@ -1852,7 +1852,7 @@ We grant `GameplayAbilities` on the server which then automatically replicates t
 
 The Sample Project stores a `TArray<TSubclassOf<UGDGameplayAbility>>` on the `Character` class that it reads from and grants when the game starts:
 ```c++
-void AGSCharacterBase::AddCharacterAbilities()
+void AGDCharacterBase::AddCharacterAbilities()
 {
 	// Grant abilities, but only on the server	
 	if (Role != ROLE_Authority || !AbilitySystemComponent.IsValid() || AbilitySystemComponent->bCharacterAbilitiesGiven)
