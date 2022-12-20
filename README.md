@@ -321,7 +321,7 @@ Starting with 4.24, `PossessedBy()` now sets the owner of the `Pawn` to the new 
 AGDPlayerState::AGDPlayerState()
 {
 	// Create ability system component, and set it to be explicitly replicated
-	AbilitySystemComponent = CreateDefaultSubobject<UGSAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
+	AbilitySystemComponent = CreateDefaultSubobject<UGDAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
 	AbilitySystemComponent->SetIsReplicated(true);
 	//...
 }
@@ -373,7 +373,7 @@ void AGDHeroCharacter::PossessedBy(AController * NewController)
 	if (PS)
 	{
 		// Set the ASC on the Server. Clients do this in OnRep_PlayerState()
-		AbilitySystemComponent = Cast<UGSAbilitySystemComponent>(PS->GetAbilitySystemComponent());
+		AbilitySystemComponent = Cast<UGDAbilitySystemComponent>(PS->GetAbilitySystemComponent());
 
 		// AI won't have PlayerControllers so we can init again here just to be sure. No harm in initing twice for heroes that have PlayerControllers.
 		PS->GetAbilitySystemComponent()->InitAbilityActorInfo(PS, this);
@@ -393,7 +393,7 @@ void AGDHeroCharacter::OnRep_PlayerState()
 	if (PS)
 	{
 		// Set the ASC for clients. Server does this in PossessedBy.
-		AbilitySystemComponent = Cast<UGSAbilitySystemComponent>(PS->GetAbilitySystemComponent());
+		AbilitySystemComponent = Cast<UGDAbilitySystemComponent>(PS->GetAbilitySystemComponent());
 
 		// Init ASC Actor Info for clients. Server will init its ASC when it possesses a new Actor.
 		AbilitySystemComponent->InitAbilityActorInfo(PS, this);
@@ -675,7 +675,7 @@ A replicated health attribute would be defined like this:
 ```c++
 UPROPERTY(BlueprintReadOnly, Category = "Health", ReplicatedUsing = OnRep_Health)
 FGameplayAttributeData Health;
-ATTRIBUTE_ACCESSORS(UGSAttributeSetBase, Health)
+ATTRIBUTE_ACCESSORS(UGDAttributeSetBase, Health)
 ```
 
 Also define the `OnRep` function in the header:
@@ -686,19 +686,19 @@ virtual void OnRep_Health(const FGameplayAttributeData& OldHealth);
 
 The .cpp file for the `AttributeSet` should fill in the `OnRep` function with the `GAMEPLAYATTRIBUTE_REPNOTIFY` macro used by the prediction system:
 ```c++
-void UGSAttributeSetBase::OnRep_Health(const FGameplayAttributeData& OldHealth)
+void UGDAttributeSetBase::OnRep_Health(const FGameplayAttributeData& OldHealth)
 {
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UGSAttributeSetBase, Health, OldHealth);
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UGDAttributeSetBase, Health, OldHealth);
 }
 ```
 
 Finally, the `Attribute` needs to be added to `GetLifetimeReplicatedProps`:
 ```c++
-void UGSAttributeSetBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+void UGDAttributeSetBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME_CONDITION_NOTIFY(UGSAttributeSetBase, Health, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UGDAttributeSetBase, Health, COND_None, REPNOTIFY_Always);
 }
 ```
 
@@ -1612,12 +1612,12 @@ GEBounty->Modifiers.SetNum(Idx + 2);
 FGameplayModifierInfo& InfoXP = GEBounty->Modifiers[Idx];
 InfoXP.ModifierMagnitude = FScalableFloat(GetXPBounty());
 InfoXP.ModifierOp = EGameplayModOp::Additive;
-InfoXP.Attribute = UGSAttributeSetBase::GetXPAttribute();
+InfoXP.Attribute = UGDAttributeSetBase::GetXPAttribute();
 
 FGameplayModifierInfo& InfoGold = GEBounty->Modifiers[Idx + 1];
 InfoGold.ModifierMagnitude = FScalableFloat(GetGoldBounty());
 InfoGold.ModifierOp = EGameplayModOp::Additive;
-InfoGold.Attribute = UGSAttributeSetBase::GetGoldAttribute();
+InfoGold.Attribute = UGDAttributeSetBase::GetGoldAttribute();
 
 Source->ApplyGameplayEffectToSelf(GEBounty, 1.0f, Source->MakeEffectContext());
 ```
@@ -1850,7 +1850,7 @@ Granting a `GameplayAbility` to an `ASC` adds it to the `ASC's` list of `Activat
 
 We grant `GameplayAbilities` on the server which then automatically replicates the [`GameplayAbilitySpec`](#concepts-ga-spec) to the owning client. Other clients / simulated proxies do not receive the `GameplayAbilitySpec`.
 
-The Sample Project stores a `TArray<TSubclassOf<UGSGameplayAbility>>` on the `Character` class that it reads from and grants when the game starts:
+The Sample Project stores a `TArray<TSubclassOf<UGDGameplayAbility>>` on the `Character` class that it reads from and grants when the game starts:
 ```c++
 void AGSCharacterBase::AddCharacterAbilities()
 {
@@ -1860,7 +1860,7 @@ void AGSCharacterBase::AddCharacterAbilities()
 		return;
 	}
 
-	for (TSubclassOf<UGSGameplayAbility>& StartupAbility : CharacterAbilities)
+	for (TSubclassOf<UGDGameplayAbility>& StartupAbility : CharacterAbilities)
 	{
 		AbilitySystemComponent->GiveAbility(
 			FGameplayAbilitySpec(StartupAbility, GetAbilityLevel(StartupAbility.GetDefaultObject()->AbilityID), static_cast<int32>(StartupAbility.GetDefaultObject()->AbilityInputID), this));
@@ -1929,13 +1929,13 @@ I recommend adding a `bool` to your custom `UGameplayAbility` class specifying i
 Passive `GameplayAbilities` will typically have a [`Net Execution Policy`](#concepts-ga-net) of `Server Only`.
 
 ```c++
-void UGSGameplayAbility::OnAvatarSet(const FGameplayAbilityActorInfo * ActorInfo, const FGameplayAbilitySpec & Spec)
+void UGDGameplayAbility::OnAvatarSet(const FGameplayAbilityActorInfo * ActorInfo, const FGameplayAbilitySpec & Spec)
 {
 	Super::OnAvatarSet(ActorInfo, Spec);
 
 	if (bActivateAbilityOnGranted)
 	{
-		bool bActivatedAbility = ActorInfo->AbilitySystemComponent->TryActivateAbility(Spec.Handle, false);
+		ActorInfo->AbilitySystemComponent->TryActivateAbility(Spec.Handle, false);
 	}
 }
 ```
@@ -2731,7 +2731,7 @@ To prevent movement while stunned, we override the `CharacterMovementComponent's
 ### 5.2 Sprint
 The Sample Project provides an example of how to sprint - run faster while `Left Shift` is held down.
 
-The faster movement is handled predictively by the `CharacterMovementComponent` by sending a flag over the network to the server. See `GSCharacterMovementComponent.h/cpp` for details.
+The faster movement is handled predictively by the `CharacterMovementComponent` by sending a flag over the network to the server. See `GDCharacterMovementComponent.h/cpp` for details.
 
 The `GA` handles responding to the `Left Shift` input, tells the `CMC` to begin and stop sprinting, and to predictively charge stamina while `Left Shift` is pressed. See `GA_Sprint_BP` for details.
 
@@ -2741,7 +2741,7 @@ The `GA` handles responding to the `Left Shift` input, tells the `CMC` to begin 
 ### 5.3 Aim Down Sights
 The Sample Project handles this the exact same way as sprinting but decreasing the movement speed instead of increasing it.
 
-See `GSCharacterMovementComponent.h/cpp` for details on predictively decreasing the movement speed.
+See `GDCharacterMovementComponent.h/cpp` for details on predictively decreasing the movement speed.
 
 See `GA_AimDownSight_BP` for details on handling the input. There is no stamina cost for aiming down sights.
 
@@ -2992,7 +2992,7 @@ void AGDPlayerState::PostInitializeComponents()
 
 	if (AbilitySystemComponent)
 	{
-		AbilitySystemComponent->AddSet<UGSAttributeSetBase>();
+		AbilitySystemComponent->AddSet<UGDAttributeSetBase>();
 		// ... any other AttributeSets that you may have
 	}
 }
@@ -3015,7 +3015,7 @@ float AGDPlayerState::GetHealth() const
 {
 	if (AbilitySystemComponent)
 	{
-		return AbilitySystemComponent->GetNumericAttribute(UGSAttributeSetBase::GetHealthAttribute());
+		return AbilitySystemComponent->GetNumericAttribute(UGDAttributeSetBase::GetHealthAttribute());
 	}
 
 	return 0.0f;
@@ -3028,7 +3028,7 @@ Setting (initializing) the health `Attribute` would look something like:
 const float NewHealth = 100.0f;
 if (AbilitySystemComponent)
 {
-	AbilitySystemComponent->SetNumericAttributeBase(UGSAttributeSetBase::GetHealthAttribute(), NewHealth);
+	AbilitySystemComponent->SetNumericAttributeBase(UGDAttributeSetBase::GetHealthAttribute(), NewHealth);
 }
 ```
 
