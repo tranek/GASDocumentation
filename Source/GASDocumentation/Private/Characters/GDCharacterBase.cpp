@@ -314,7 +314,7 @@ void AGDCharacterBase::InitializeAttributes()
 
 void AGDCharacterBase::AddStartupEffects()
 {
-	if (GetLocalRole() != ROLE_Authority || !AbilitySystemComponent.IsValid() || AbilitySystemComponent->StartupEffectsApplied)
+	if (GetLocalRole() != ROLE_Authority || !AbilitySystemComponent.IsValid() || AbilitySystemComponent->bStartupEffectsApplied)
 	{
 		return;
 	}
@@ -331,7 +331,7 @@ void AGDCharacterBase::AddStartupEffects()
 		}
 	}
 
-	AbilitySystemComponent->StartupEffectsApplied = true;
+	AbilitySystemComponent->bStartupEffectsApplied = true;
 }
 
 void AGDCharacterBase::SetHealth(float Health)
