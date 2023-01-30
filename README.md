@@ -2694,6 +2694,7 @@ FName GetCoolNameFromTargetData(const FGameplayAbilityTargetDataHandle& Handle, 
 	// Here is when you would do the cast because we know its the correct type already
     	FGameplayAbilityTargetData_CustomData* CustomData = static_cast<FGameplayAbilityTargetData_CustomData*>(data);
     	return CustomData->CoolName;
+}
 ```
 
 **[⬆ Back to Top](#table-of-contents)**
