@@ -2676,9 +2676,9 @@ For getting values it requires doing type safety checking, because the only way 
 - Script Struct & Static Structs: You can instead do direct class comparison(which can involve a lot of IF statements or making some template functions), below is an example of doing this but basically you can get the script struct from any `FGameplayAbilityTargetData`(this is a nice advantage of it being a `USTRUCT` and requiring any inherited classes to specify the struct type in `GetScriptStruct`) and compare if its the type you're looking for. Below is an example of using these functions for type checking:
 ```c++
 UFUNCTION(BlueprintPure)
-FName GetCoolNameFromTargetData(const FGameplayAbilityTargetDataHandle& Handle)
+FName GetCoolNameFromTargetData(const FGameplayAbilityTargetDataHandle& Handle, const int Index)
 {
-	FGameplayAbilityTargetData* data = Handle.Data[0].Get();
+	FGameplayAbilityTargetData* data = Handle.Data[Index].Get();
 	// Valid check we have something to use, null data means nothing to cast for
 	if(data == nullptr)
 	{
