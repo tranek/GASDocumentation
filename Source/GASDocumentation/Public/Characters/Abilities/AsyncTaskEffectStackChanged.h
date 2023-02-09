@@ -35,6 +35,8 @@ protected:
 
 	FGameplayTag EffectGameplayTag;
 
+	FActiveGameplayEffectHandle ActiveEffectHandle;
+
 	virtual void OnActiveGameplayEffectAddedCallback(UAbilitySystemComponent* Target, const FGameplayEffectSpec& SpecApplied, FActiveGameplayEffectHandle ActiveHandle);
 	virtual void OnRemoveGameplayEffectCallback(const FActiveGameplayEffect& EffectRemoved);
 
