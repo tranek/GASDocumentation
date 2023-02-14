@@ -27,6 +27,11 @@ void UAsyncTaskEffectStackChanged::EndTask()
 	{
 		ASC->OnActiveGameplayEffectAddedDelegateToSelf.RemoveAll(this);
 		ASC->OnAnyGameplayEffectRemovedDelegate().RemoveAll(this);
+		
+		if(ActiveEffectHandle.IsValid())
+		{
+			ASC->OnGameplayEffectStackChangeDelegate(ActiveEffectHandle)->RemoveAll(this);
+		}
 	}
 
 	SetReadyToDestroy();
@@ -45,6 +50,7 @@ void UAsyncTaskEffectStackChanged::OnActiveGameplayEffectAddedCallback(UAbilityS
 	{
 		ASC->OnGameplayEffectStackChangeDelegate(ActiveHandle)->AddUObject(this, &UAsyncTaskEffectStackChanged::GameplayEffectStackChanged);
 		OnGameplayEffectStackChange.Broadcast(EffectGameplayTag, ActiveHandle, 1, 0);
+		ActiveEffectHandle = ActiveHandle;
 	}
 }
 
