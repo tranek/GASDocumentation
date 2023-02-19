@@ -2612,33 +2612,33 @@ An example of inheritting from `FGameplayAbilityTargetData`:
 USTRUCT(BlueprintType)
 struct MYGAME_API FGameplayAbilityTargetData_CustomData : public FGameplayAbilityTargetData
 {
-        GENERATED_BODY()
+    GENERATED_BODY()
 public:
 
-        FGameplayAbilityTargetData_CustomData()
-        { }
+    FGameplayAbilityTargetData_CustomData()
+    { }
 
-        UPROPERTY()
-        FName CoolName = NAME_None;
+    UPROPERTY()
+    FName CoolName = NAME_None;
 
-        UPROPERTY()
-        FPredictionKey MyCoolPredictionKey;
+    UPROPERTY()
+    FPredictionKey MyCoolPredictionKey;
+
+    // This is required for all child structs of FGameplayAbilityTargetData
+    virtual UScriptStruct* GetScriptStruct() const override
+    {
+    	return FGameplayAbilityTargetData_CustomData::StaticStruct();
+    }
 
 	// This is required for all child structs of FGameplayAbilityTargetData
-	virtual UScriptStruct* GetScriptStruct() const override
-	{
-		return FGameplayAbilityTargetData_CustomData::StaticStruct();
-	}
-
-	// This is required for all child structs of FGameplayAbilityTargetData
-        bool NetSerialize(FArchive& Ar, class UPackageMap* Map, bool& bOutSuccess)
-        {
-		// The engine already defined NetSerialize for FName & FPredictionKey, thanks Epic!
-                CoolName.NetSerialize(Ar, Map, bOutSuccess);
-                MyCoolPredictionKey.NetSerialize(Ar, Map, bOutSuccess);
-                bOutSuccess = true;
-                return true;
-        }
+    bool NetSerialize(FArchive& Ar, class UPackageMap* Map, bool& bOutSuccess)
+    {
+	    // The engine already defined NetSerialize for FName & FPredictionKey, thanks Epic!
+        CoolName.NetSerialize(Ar, Map, bOutSuccess);
+        MyCoolPredictionKey.NetSerialize(Ar, Map, bOutSuccess);
+        bOutSuccess = true;
+        return true;
+    }
 }
 
 template<>
@@ -2646,7 +2646,7 @@ struct TStructOpsTypeTraits<FGameplayAbilityTargetData_CustomData> : public TStr
 {
 	enum
 	{
-		WithNetSerializer = true // This is REQUIRED for FGameplayAbilityTargetDataHandle net serialization to work
+        WithNetSerializer = true // This is REQUIRED for FGameplayAbilityTargetDataHandle net serialization to work
 	};
 };
 ```
@@ -2677,23 +2677,26 @@ For getting values it requires doing type safety checking, because the only way 
 ```c++
 UFUNCTION(BlueprintPure)
 FName GetCoolNameFromTargetData(const FGameplayAbilityTargetDataHandle& Handle, const int Index)
-{
-	FGameplayAbilityTargetData* data = Handle.Data[Index].Get();
-	// Valid check we have something to use, null data means nothing to cast for
-	if(data == nullptr)
-	{
-		// NAME_None is a static value for FName's as a safe "None" value
-    		return NAME_None;
-	}
-	// This is basically the type checking pass, static_cast does not have type safety, this is why we do this check.
-	// If we don't do this then it will object slice the struct and thus we have no way of making sure its that type.
-	if(data->GetScriptStruct() == FGameplayAbilityTargetData_CustomData::StaticStruct())
-	{
-    		return NAME_None;
-	}
-	// Here is when you would do the cast because we know its the correct type already
-    	FGameplayAbilityTargetData_CustomData* CustomData = static_cast<FGameplayAbilityTargetData_CustomData*>(data);
-    	return CustomData->CoolName;
+{   
+    // NOTE, there is two versions of this '::Get(int32 Index)' function; 
+    // 1) const version that returns 'const FGameplayAbilityTargetData*', good for reading target data values 
+    // 2) non-const version that returns 'FGameplayAbilityTargetData*', good for modifying target data values
+    FGameplayAbilityTargetData* Data = Handle.Get(Index); // This will valid check the index for you 
+    
+    // Valid check we have something to use, null data means nothing to cast for
+    if(Data == nullptr)
+    {
+       	return NAME_None;
+    }
+    // This is basically the type checking pass, static_cast does not have type safety, this is why we do this check.
+    // If we don't do this then it will object slice the struct and thus we have no way of making sure its that type.
+    if(Data->GetScriptStruct() == FGameplayAbilityTargetData_CustomData::StaticStruct())
+    {
+       	return NAME_None;
+    }
+    // Here is when you would do the cast because we know its the correct type already
+    FGameplayAbilityTargetData_CustomData* CustomData = static_cast<FGameplayAbilityTargetData_CustomData*>(Data);    
+    return CustomData->CoolName;
 }
 ```
 
