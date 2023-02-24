@@ -2675,7 +2675,7 @@ FGameplayAbilityTargetDataHandle MakeTargetDataFromCustomName(const FName Custom
 ```
 
 For getting values it requires doing type safety checking, because the only way to get values from the handle's target data is by using generic C/C++ casting for it which is *NOT* type safe which can cause object slicing and crashes. For type checking there are multiple ways of doing this(however you want honestly) two common ways are:
-- Gameplay Tag(s): You can use a subclass hierarchy where you know that anytime a ceratain code architcture's functionality occurs, you can cast for the base parent type and get its gameplay tag(s) and then compare against those for casting for inherited classes.
+- Gameplay Tag(s): You can use a subclass hierarchy where you know that anytime a certain code architecture's functionality occurs, you can cast for the base parent type and get its gameplay tag(s) and then compare against those for casting for inherited classes.
 - Script Struct & Static Structs: You can instead do direct class comparison(which can involve a lot of IF statements or making some template functions), below is an example of doing this but basically you can get the script struct from any `FGameplayAbilityTargetData`(this is a nice advantage of it being a `USTRUCT` and requiring any inherited classes to specify the struct type in `GetScriptStruct`) and compare if its the type you're looking for. Below is an example of using these functions for type checking:
 ```c++
 UFUNCTION(BlueprintPure)
@@ -2695,11 +2695,11 @@ FName GetCoolNameFromTargetData(const FGameplayAbilityTargetDataHandle& Handle, 
     // If we don't do this then it will object slice the struct and thus we have no way of making sure its that type.
     if(Data->GetScriptStruct() == FGameplayAbilityTargetData_CustomData::StaticStruct())
     {
-       	return NAME_None;
+        // Here is when you would do the cast because we know its the correct type already
+        FGameplayAbilityTargetData_CustomData* CustomData = static_cast<FGameplayAbilityTargetData_CustomData*>(Data);    
+        return CustomData->CoolName;
     }
-    // Here is when you would do the cast because we know its the correct type already
-    FGameplayAbilityTargetData_CustomData* CustomData = static_cast<FGameplayAbilityTargetData_CustomData*>(Data);    
-    return CustomData->CoolName;
+    return NAME_None;
 }
 ```
 
@@ -3168,13 +3168,13 @@ warning C4996: 'FGameplayAbilityInputBinds::FGameplayAbilityInputBinds': Enum na
 UE 5.1 deprecated using `FString` in the constructor for `BindAbilityActivationToInputComponent()`. Instead, we must pass in an `FTopLevelAssetPath`.
 
 Old, deprecated way:
-```
+```c++
 AbilitySystemComponent->BindAbilityActivationToInputComponent(InputComponent, FGameplayAbilityInputBinds(FString("ConfirmTarget"),
 	FString("CancelTarget"), FString("EGDAbilityInputID"), static_cast<int32>(EGDAbilityInputID::Confirm), static_cast<int32>(EGDAbilityInputID::Cancel)));
 ```
 
 New way:
-```
+```c++
 FTopLevelAssetPath AbilityEnumAssetPath = FTopLevelAssetPath(FName("/Script/GASDocumentation"), FName("EGDAbilityInputID"));
 AbilitySystemComponent->BindAbilityActivationToInputComponent(InputComponent, FGameplayAbilityInputBinds(FString("ConfirmTarget"),
 	FString("CancelTarget"), AbilityEnumAssetPath, static_cast<int32>(EGDAbilityInputID::Confirm), static_cast<int32>(EGDAbilityInputID::Cancel)));
