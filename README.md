@@ -81,6 +81,7 @@ The best documentation will always be the plugin source code.
 >    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.6.3 [Granting Abilities](#concepts-ga-granting)  
 >    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.6.4 [Activating Abilities](#concepts-ga-activating)  
 >    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.6.4.1 [Passive Abilities](#concepts-ga-activating-passive)  
+>    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.6.4.2 [Activation Failed Tags](#concepts-ga-activating-failedtags)  
 >    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.6.5 [Canceling Abilities](#concepts-ga-cancelabilities)  
 >    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.6.6 [Getting Active Abilities](#concepts-ga-definition-activeability)  
 >    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.6.7 [Instancing Policy](#concepts-ga-instancing)  
@@ -1947,6 +1948,42 @@ void UGDGameplayAbility::OnAvatarSet(const FGameplayAbilityActorInfo * ActorInfo
 ```
 
 Epic describes this function as the correct place to initiate passive abilities and to do `BeginPlay` type things.
+
+**[⬆ Back to Top](#table-of-contents)**
+
+<a name="concepts-ga-activating-failedtags"></a>
+##### 4.6.4.2 Activation Failed Tags
+
+Abilities have default logic to tell you why an ability activation failed. To enable this, you must set up the GameplayTags that correspond to the default failure cases.
+
+Add these tags (or your own naming convention) to your project:
+```
++GameplayTagList=(Tag="Activation.Fail.BlockedByTags",DevComment="")
++GameplayTagList=(Tag="Activation.Fail.CantAffordCost",DevComment="")
++GameplayTagList=(Tag="Activation.Fail.IsDead",DevComment="")
++GameplayTagList=(Tag="Activation.Fail.MissingTags",DevComment="")
++GameplayTagList=(Tag="Activation.Fail.Networking",DevComment="")
++GameplayTagList=(Tag="Activation.Fail.OnCooldown",DevComment="")
+```
+
+Then add them to the [`GASDocumentation\Config\DefaultGame.ini`](https://github.com/tranek/GASDocumentation/blob/master/Config/DefaultGame.ini#L8-L13):
+```
+[/Script/GameplayAbilities.AbilitySystemGlobals]
+ActivateFailIsDeadName=Activation.Fail.IsDead
+ActivateFailCooldownName=Activation.Fail.OnCooldown
+ActivateFailCostName=Activation.Fail.CantAffordCost
+ActivateFailTagsBlockedName=Activation.Fail.BlockedByTags
+ActivateFailTagsMissingName=Activation.Fail.MissingTags
+ActivateFailNetworkingName=Activation.Fail.Networking
+```
+
+Now whenever an ability activation fails, this corresponding GameplayTag will be included in output log messages or visible on the `showdebug AbilitySystem` hud.
+```
+LogAbilitySystem: Display: InternalServerTryActivateAbility. Rejecting ClientActivation of Default__GA_FireGun_C. InternalTryActivateAbility failed: Activation.Fail.BlockedByTags
+LogAbilitySystem: Display: ClientActivateAbilityFailed_Implementation. PredictionKey :109 Ability: Default__GA_FireGun_C
+```
+
+![Activation Failed Tags Displayed in showdebug AbilitySystem](https://github.com/tranek/GASDocumentation/raw/master/Images/activationfailedtags.png)
 
 **[⬆ Back to Top](#table-of-contents)**
 
