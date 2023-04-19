@@ -50,6 +50,7 @@ void AGDMinionCharacter::BeginPlay()
 
 	if (AbilitySystemComponent.IsValid())
 	{
+		// 设置 ASC（ASC 在 Pawn 上的情况）
 		AbilitySystemComponent->InitAbilityActorInfo(this, this);
 		InitializeAttributes();
 		AddStartupEffects();
@@ -77,6 +78,7 @@ void AGDMinionCharacter::BeginPlay()
 		// Attribute change callbacks
 		HealthChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSetBase->GetHealthAttribute()).AddUObject(this, &AGDMinionCharacter::HealthChanged);
 
+		// 给眩晕标签的新增和移除添加回调
 		// Tag change callbacks
 		AbilitySystemComponent->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag(FName("State.Debuff.Stun")), EGameplayTagEventType::NewOrRemoved).AddUObject(this, &AGDMinionCharacter::StunTagChanged);
 	}

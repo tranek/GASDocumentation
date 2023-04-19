@@ -83,6 +83,7 @@ public:
 	FGameplayAttributeData Armor;
 	ATTRIBUTE_ACCESSORS(UGDAttributeSetBase, Armor)
 
+	// Damage 是一个用来计算最终伤害的暂时属性，只存在于服务器上，不需要复制。
 	// Damage is a meta attribute used by the DamageExecution to calculate final damage, which then turns into -Health
 	// Temporary value that only exists on the Server. Not replicated.
 	UPROPERTY(BlueprintReadOnly, Category = "Damage")

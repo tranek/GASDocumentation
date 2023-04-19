@@ -15,6 +15,7 @@ AGDPlayerState::AGDPlayerState()
 	AbilitySystemComponent = CreateDefaultSubobject<UGDAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
 	AbilitySystemComponent->SetIsReplicated(true);
 
+	// Mixed 表示 GE 只复制给 autonomous proxy ，不复制给 simulated proxy ，GameplayCues 和 GameplayTags 复制给所有客户端 
 	// Mixed mode means we only are replicated the GEs to ourself, not the GEs to simulated proxies. If another GDPlayerState (Hero) receives a GE,
 	// we won't be told about it by the Server. Attributes, GameplayTags, and GameplayCues will still replicate to us.
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
@@ -147,6 +148,7 @@ void AGDPlayerState::BeginPlay()
 
 	if (AbilitySystemComponent)
 	{
+		// 注册属性改变的回调
 		// Attribute change callbacks
 		HealthChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSetBase->GetHealthAttribute()).AddUObject(this, &AGDPlayerState::HealthChanged);
 		MaxHealthChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSetBase->GetMaxHealthAttribute()).AddUObject(this, &AGDPlayerState::MaxHealthChanged);
@@ -161,21 +163,26 @@ void AGDPlayerState::BeginPlay()
 		GoldChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSetBase->GetGoldAttribute()).AddUObject(this, &AGDPlayerState::GoldChanged);
 		CharacterLevelChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSetBase->GetCharacterLevelAttribute()).AddUObject(this, &AGDPlayerState::CharacterLevelChanged);
 
+		// 给眩晕标签的新增和移除添加回调
 		// Tag change callbacks
 		AbilitySystemComponent->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag(FName("State.Debuff.Stun")), EGameplayTagEventType::NewOrRemoved).AddUObject(this, &AGDPlayerState::StunTagChanged);
 	}
 }
 
+/**
+ * @brief Health Attribute 改变时的回调
+ * @param Data FOnAttributeChangeData 只会在服务器上设置
+ */
 void AGDPlayerState::HealthChanged(const FOnAttributeChangeData & Data)
 {
-	float Health = Data.NewValue;
+	const float Health = Data.NewValue;
 
+	// 更新血条
 	// Update floating status bar
 	AGDHeroCharacter* Hero = Cast<AGDHeroCharacter>(GetPawn());
 	if (Hero)
 	{
-		UGDFloatingStatusBarWidget* HeroFloatingStatusBar = Hero->GetFloatingStatusBar();
-		if (HeroFloatingStatusBar)
+		if (UGDFloatingStatusBarWidget* HeroFloatingStatusBar = Hero->GetFloatingStatusBar())
 		{
 			HeroFloatingStatusBar->SetHealthPercentage(Health / GetMaxHealth());
 		}
