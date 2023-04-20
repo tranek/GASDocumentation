@@ -11,6 +11,7 @@ UAsyncTaskAttributeChanged* UAsyncTaskAttributeChanged::ListenForAttributeChange
 
 	if (!IsValid(AbilitySystemComponent) || !Attribute.IsValid())
 	{
+		/** Remove an object from the root set. */
 		WaitForAttributeChangedTask->RemoveFromRoot();
 		return nullptr;
 	}
