@@ -920,15 +920,15 @@ The server will always call this function regardless of replication mode. The au
 | `Modifier` Type            | Description                                                  |
 | -------------------------- | ------------------------------------------------------------ |
 | `Scalable Float`           | `FScalableFloats` are a structure that **can point to a Data Table** that has the **variables as rows and levels as columns**. The Scalable Floats will automatically read the value of the specified table row at the ability's current level (or different level if overriden on the [`GameplayEffectSpec`](#concepts-ge-spec)). **This value can further be manipulated by a coefficient. If no Data Table/Row is specified, it treats the value as a 1 so the coefficient can be used to hard code in a single value at all levels**. ![ScalableFloat](https://github.com/tranek/GASDocumentation/raw/master/Images/scalablefloats.png) |
-| `Attribute Based`          | `Attribute Based` `Modifiers` take the `CurrentValue` or `BaseValue` of a backing `Attribute` on the `Source` (who created the `GameplayEffectSpec`) or `Target` (who received the `GameplayEffectSpec`) and further modifies it with a coefficient and pre and post coefficient additions. `Snapshotting` means the backing `Attribute` is captured when the `GameplayEffectSpec` is created whereas no snapshotting means the `Attribute` is captured when the `GameplayEffectSpec` is applied. |
+| `Attribute Based`          | `Attribute Based` `Modifiers` take the `CurrentValue` or `BaseValue` of a backing `Attribute` on the `Source` (who created the `GameplayEffectSpec`) or `Target` (who received the `GameplayEffectSpec`) and further modifies it with a coefficient and pre and post coefficient additions. **`Snapshotting` means the backing `Attribute` is captured when the `GameplayEffectSpec` is created whereas no snapshotting means the `Attribute` is captured when the `GameplayEffectSpec` is applied.** |
 | `Custom Calculation Class` | `Custom Calculation Class` provides the most flexibility for complex `Modifiers`. This `Modifier` takes a [`ModifierMagnitudeCalculation`](#concepts-ge-mmc) class and can further manipulate the resulting float value with a coefficient and pre and post coefficient additions. |
-| `Set By Caller`            | `SetByCaller` `Modifiers` are values that are set outside of the `GameplayEffect` at runtime by the ability or whoever made the `GameplayEffectSpec` on the `GameplayEffectSpec`. For example, you would use a `SetByCaller` if you want to set the damage to be based on how long the player held down a button to charge the ability. `SetByCallers` are essentially `TMap<FGameplayTag, float>` that live on the `GameplayEffectSpec`. The `Modifier` is just telling the `Aggregator` to look for a `SetByCaller` value associated with the supplied `GameplayTag`. The `SetByCallers` used by `Modifiers` can only use the `GameplayTag` version of the concept. The `FName` version is disabled here. If the `Modifier` is set to `SetByCaller` but a `SetByCaller` with the correct `GameplayTag` does not exist on the `GameplayEffectSpec`, the game will throw a runtime error and return a value of 0. This might cause issues in the case of a `Divide` operation. See [`SetByCallers`](#concepts-ge-spec-setbycaller) for more information on how to use `SetByCallers`. |
+| `Set By Caller`            | `SetByCaller` `Modifiers` are values that are **set outside of the `GameplayEffect` at runtime** by the ability or whoever made the `GameplayEffectSpec` on the `GameplayEffectSpec`. **For example, you would use a `SetByCaller` if you want to set the damage to be based on how long the player held down a button to charge the ability.** `SetByCallers` are essentially `TMap<FGameplayTag, float>` that live on the `GameplayEffectSpec`. **The `Modifier` is just telling the `Aggregator` to look for a `SetByCaller` value associated with the supplied `GameplayTag`.** **The `SetByCallers` used by `Modifiers` can only use the `GameplayTag` version of the concept. The `FName` version is disabled here.** If the `Modifier` is set to `SetByCaller` but a `SetByCaller` with the correct `GameplayTag` does not exist on the `GameplayEffectSpec`, the game will throw a runtime error and return a value of 0. This might cause issues in the case of a `Divide` operation. See [`SetByCallers`](#concepts-ge-spec-setbycaller) for more information on how to use `SetByCallers`. |
 
 **[⬆ Back to Top](#table-of-contents)**
 
 <a name="concepts-ge-mods-multiplydivide"></a>
 ##### 4.5.4.1 Multiply and Divide Modifiers
-By default, all `Multiply` and `Divide` `Modifiers` are added together before multiplying or dividing them into the `Attribute`'s `BaseValue`.
+**By default, all `Multiply` and `Divide` `Modifiers` are added together** before multiplying or dividing them into the `Attribute`'s `BaseValue`.
 
 ```c++
 float FAggregatorModChannel::EvaluateWithBase(float InlineBaseValue, const FAggregatorEvaluateParameters& Parameters) const
@@ -967,7 +967,7 @@ Both `Multiply` and `Divide` `Modifiers` have a `Bias` value of `1` in this form
 1 + (Mod1.Magnitude - 1) + (Mod2.Magnitude - 1) + ...
 ```
 
-This formula leads to some unexpected results. Firstly, this formula adds all the modifiers together before multiplying or dividing them into the `BaseValue`. Most people would expect it to multiply or divide them together. For example, if you have two `Multiply` modifiers of `1.5`, most people would expect the `BaseValue` to be multiplied by `1.5 x 1.5 = 2.25`. Instead, this adds the `1.5`s together to multiply the `BaseValue` by `2` (`50% increase + another 50% increase = 100% increase`). This was for the example from `GameplayPrediction.h` of a `10%` speed buff on `500` base speed would be `550`. Add another `10%` speed buff and it will be `600`.
+**This formula leads to some unexpected results.** Firstly, this formula adds all the modifiers together before multiplying or dividing them into the `BaseValue`. Most people would expect it to multiply or divide them together. **For example, if you have two `Multiply` modifiers of `1.5`, most people would expect the `BaseValue` to be multiplied by `1.5 x 1.5 = 2.25`. Instead, this adds the `1.5`s together to multiply the `BaseValue` by `2` (`50% increase + another 50% increase = 100% increase`).** This was for the example from `GameplayPrediction.h` of a `10%` speed buff on `500` base speed would be `550`. Add another `10%` speed buff and it will be `600`.
 
 Secondly, this formula has some undocumented rules about what values can be used as it was designed with Paragon in mind.
 
@@ -975,20 +975,20 @@ Rules for `Multiply` and `Divide` multiplication addition formula:
 * `(No more than one value < 1) AND (Any number of values [1, 2))`
 * `OR (One value >= 2)`
 
-The `Bias` in the formula basically subtracts out the integer digit of numbers in the range `[1, 2)`. The first `Modifier`'s `Bias` subtracts out from the starting `Sum` value (set to the `Bias` before the loop) which is why any value by itself works and why one value `< 1` will work with the numbers in the range `[1, 2)`.
+**The `Bias` in the formula basically subtracts out the integer digit of numbers in the range `[1, 2)`. The first `Modifier`'s `Bias` subtracts out from the starting `Sum` value (set to the `Bias` before the loop) which is why any value by itself works and why one value `< 1` will work with the numbers in the range `[1, 2)`.**
 
 Some examples with `Multiply`:  
 Multipliers: `0.5`  
 `1 + (0.5 - 1) = 0.5`, correct
 
 Multipliers: `0.5, 0.5`  
-`1 + (0.5 - 1) + (0.5 - 1) = 0`, incorrect expected `1`? Multiple values less than `1` don't make sense for adding multipliers. Paragon was designed to only use the [greatest negative value for `Multiply` `Modifiers`](#cae-nonstackingge) so there would only ever be at most one value less than `1` multiplying into the `BaseValue`.
+`1 + (0.5 - 1) + (0.5 - 1) = 0`, incorrect expected `1`? **Multiple values less than `1` don't make sense for adding multipliers. Paragon was designed to only use the [greatest negative value for `Multiply` `Modifiers`](#cae-nonstackingge) so there would only ever be at most one value less than `1` multiplying into the `BaseValue`.**
 
 Multipliers: `1.1, 0.5`  
 `1 + (0.5 - 1) + (1.1 - 1) = 0.6`, correct
 
 Multipliers: `5, 5`  
-`1 + (5 - 1) + (5 - 1) = 9`, incorrect expected `10`. Will always be the `sum of the Modifiers - number of Modifiers + 1`.
+`1 + (5 - 1) + (5 - 1) = 9`, incorrect expected `10`. **Will always be the `sum of the Modifiers - number of Modifiers + 1`.**
 
 Many games will want their `Multiply` and `Divide` `Modifiers` to multiply and divide together before applying to the `BaseValue`. To achieve this, you will need to **change the engine code** for `FAggregatorModChannel::EvaluateWithBase()`.
 
@@ -1026,28 +1026,28 @@ float FAggregatorModChannel::MultiplyMods(const TArray<FAggregatorMod>& InMods, 
 <a name="concepts-ge-mods-gameplaytags"></a>
 ##### 4.5.4.2 Gameplay Tags on Modifiers
 
-`SourceTags` and `TargetTags` can be set for each [Modifier](#concepts-ge-mods). They work the same like the [`Application Tag requirements`](#concepts-ge-tags) of a `GameplayEffect`. So the tags are considered only when the effect is applied. I.e. when having a periodic, infinite effect, they are only taken into consideration on the first application of the effect but *not* on each periodic execution.
+**`SourceTags` and `TargetTags` can be set for each [Modifier](#concepts-ge-mods). They work the same like the [`Application Tag requirements`](#concepts-ge-tags) of a `GameplayEffect`.** **So the tags are considered only when the effect is applied.** I.e. **when having a periodic, infinite effect, they are only taken into consideration on the first application of the effect but *not* on each periodic execution.**
 
-`Attribute Based` Modifiers can also set `SourceTagFilter` and `TargetTagFilter`. When determining the magnitude of the attribute which is the source of the `Attribute Based` Modifier, these filters are used to exclude certain Modifiers to that attribute. Modifiers which source or target didn't have all of the tags of the filter are excluded.
+**`Attribute Based` Modifiers can also set `SourceTagFilter` and `TargetTagFilter`. When determining the magnitude of the attribute which is the source of the `Attribute Based` Modifier, these filters are used to exclude certain Modifiers to that attribute. Modifiers which source or target didn't have all of the tags of the filter are excluded.**
 
-This means in detail: The tags of the source ASC and the target ASC are captured by `GameplayEffects`. The source ASC tags are captured, when the `GameplayEffectSpec` is created, the target ASC tags are captured on execution of the effect. When determining, if a Modifier of an infinite or duration effect "qualifies" to be applied (i.e. its Aggregator qualifies) and those filters are set, the captured tags are compared against the filters.
+This means in detail: **The tags of the source ASC and the target ASC are captured by `GameplayEffects`. The source ASC tags are captured, when the `GameplayEffectSpec` is created, the target ASC tags are captured on execution of the effect. When determining, if a Modifier of an infinite or duration effect "qualifies" to be applied (i.e. its Aggregator qualifies) and those filters are set, the captured tags are compared against the filters.**
 
 **[⬆ Back to Top](#table-of-contents)**
 
 <a name="concepts-ge-stacking"></a>
 #### 4.5.5 Stacking Gameplay Effects
-`GameplayEffects` by default will apply new instances of the `GameplayEffectSpec` that don't know or care about previously existing instances of the `GameplayEffectSpec` on application. `GameplayEffects` can be set to stack where instead of a new instance of the `GameplayEffectSpec` is added, the currently existing `GameplayEffectSpec's` stack count is changed. Stacking only works for `Duration` and `Infinite` `GameplayEffects`.
+**`GameplayEffects` by default will apply new instances of the `GameplayEffectSpec` that don't know or care about previously existing instances of the `GameplayEffectSpec` on application.** **`GameplayEffects` can be set to stack where instead of a new instance of the `GameplayEffectSpec` is added, the currently existing `GameplayEffectSpec's` stack count is changed.** Stacking only works for `Duration` and `Infinite` `GameplayEffects`.
 
 There are two types of stacking: Aggregate by Source and Aggregate by Target.
 
-| Stacking Type       | Description                                                                                                                          |
-| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| Aggregate by Source | There is a separate instance of stacks per Source `ASC` on the Target. Each Source can apply X amount of stacks.                     |
-| Aggregate by Target | There is only one instance of stacks on the Target regardless of Source. Each Source can apply a stack up to the shared stack limit. |
+| Stacking Type       | Description                                                  |
+| ------------------- | ------------------------------------------------------------ |
+| Aggregate by Source | There is a separate instance of stacks per Source `ASC` on the Target. **Each Source can apply X amount of stacks.** |
+| Aggregate by Target | **There is only one instance of stacks on the Target regardless of Source. Each Source can apply a stack up to the shared stack limit.** |
 
 Stacks also have policies for expiration, duration refresh, and period reset. They have helpful hover tooltips in the `GameplayEffect` Blueprint.
 
-The Sample Project includes a custom Blueprint node that listens for `GameplayEffect` stack changes. The HUD UMG Widget uses it to update the amount of passive armor stacks that the player has. This `AsyncTask` will live forever until manually called `EndTask()`, which we do in the UMG Widget's `Destruct` event. See `AsyncTaskEffectStackChanged.h/cpp`.
+The Sample Project includes **a custom Blueprint node that listens for `GameplayEffect` stack changes**. The HUD UMG Widget uses it to update the amount of passive armor stacks that the player has. **This `AsyncTask` will live forever until manually called `EndTask()`, which we do in the UMG Widget's `Destruct` event.** See `AsyncTaskEffectStackChanged.h/cpp`.
 
 ![Listen for GameplayEffect Stack Change BP Node](https://github.com/tranek/GASDocumentation/raw/master/Images/gestackchange.png)
 
@@ -1055,9 +1055,9 @@ The Sample Project includes a custom Blueprint node that listens for `GameplayEf
 
 <a name="concepts-ge-ga"></a>
 #### 4.5.6 Granted Abilities
-`GameplayEffects` can grant new [`GameplayAbilities`](#concepts-ga) to `ASCs`. Only `Duration` and `Infinite` `GameplayEffects` can grant abilities.
+`GameplayEffects` can grant new [`GameplayAbilities`](#concepts-ga) to `ASCs`. **Only `Duration` and `Infinite` `GameplayEffects` can grant abilities.**
 
-A common usecase for this is when you want to force another player to do something like moving them from a knockback or pull. You would apply a `GameplayEffect` to them that grants them an automatically activating ability (see [Passive Abilities](#concepts-ga-activating-passive) for how to automatically activate an ability when it is granted) that does the desired action to them.
+A common use case for this is when you want to force another player to do something like moving them from a knock back or pull. **You would apply a `GameplayEffect` to them that grants them an automatically activating ability (see [Passive Abilities](#concepts-ga-activating-passive) for how to automatically activate an ability when it is granted)** that does the desired action to them.
 
 Designers can choose which abilities a `GameplayEffect` grants, what level to grant them at, what [input to bind](#concepts-ga-input) them at and the removal policy for the granted ability.
 
@@ -1071,21 +1071,22 @@ Designers can choose which abilities a `GameplayEffect` grants, what level to gr
 
 <a name="concepts-ge-tags"></a>
 #### 4.5.7 Gameplay Effect Tags
-`GameplayEffects` carry multiple [`GameplayTagContainers`](#concepts-gt). Designers will edit the `Added` and `Removed` `GameplayTagContainers` for each category and the result will show up in the `Combined` `GameplayTagContainer` on compilation. `Added` tags are new tags that this `GameplayEffect` adds that its parents did not previously have. `Removed` tags are tags that parent classes have but this subclass does not have.
+`GameplayEffects` carry multiple [`GameplayTagContainers`](#concepts-gt). Designers will edit the `Added` and `Removed` `GameplayTagContainers` for each category and the result will show up in the `Combined` `GameplayTagContainer` on compilation. **`Added` tags are new tags that this `GameplayEffect` adds that its parents did not previously have. `Removed` tags are tags that parent classes have but this subclass does not have.**
 
-| Category                          | Description                                                                                                                                                                                                                                                                                                                                                                        |
-| --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Gameplay Effect Asset Tags        | Tags that the `GameplayEffect` has. They do not do any function on their own and serve only the purpose of describing the `GameplayEffect`.                                                                                                                                                                                                                                        |
-| Granted Tags                      | Tags that live on the `GameplayEffect` but are also given to the `ASC` that the `GameplayEffect` is applied to. They are removed from the `ASC` when the `GameplayEffect` is removed. This only works for `Duration` and `Infinite` `GameplayEffects`.                                                                                                                             |
-| Ongoing Tag Requirements          | Once applied, these tags determine whether the `GameplayEffect` is on or off. A `GameplayEffect` can be off and still be applied. If a `GameplayEffect` is off due to failing the Ongoing Tag Requirements, but the requirements are then met, the `GameplayEffect` will turn on again and reapply its modifiers. This only works for `Duration` and `Infinite` `GameplayEffects`. |
-| Application Tag Requirements      | Tags on the Target that determine if a `GameplayEffect` can be applied to the Target. If these requirements are not met, the `GameplayEffect` is not applied.                                                                                                                                                                                                                      |
-| Remove Gameplay Effects with Tags | `GameplayEffects` on the Target that have any of these tags in their `Asset Tags` or `Granted Tags` will be removed from the Target when this `GameplayEffect` is successfully applied.                                                                                                                                                                                            |
+| Category                          | Description                                                  |
+| --------------------------------- | ------------------------------------------------------------ |
+| Gameplay Effect Asset Tags        | **Tags that the `GameplayEffect` has. They do not do any function on their own and serve only the purpose of describing the `GameplayEffect`.** |
+| Granted Tags                      | Tags that live on the `GameplayEffect` but are also given to the `ASC` that the `GameplayEffect` is applied to. They are removed from the `ASC` when the `GameplayEffect` is removed. **This only works for `Duration` and `Infinite` `GameplayEffects`.** |
+| Ongoing Tag Requirements          | **Once applied, these tags determine whether the `GameplayEffect` is on or off.** A `GameplayEffect` can be off and still be applied. If a `GameplayEffect` is off due to failing the Ongoing Tag Requirements, but the requirements are then met, the `GameplayEffect` will turn on again and reapply its modifiers. **This only works for `Duration` and `Infinite` `GameplayEffects`.** |
+| Application Tag Requirements      | **Tags on the Target that determine if a `GameplayEffect` can be applied to the Target.** If these requirements are not met, the `GameplayEffect` is not applied. |
+| Remove Gameplay Effects with Tags | `GameplayEffects` on the Target that have any of these tags in their `Asset Tags` **or `Granted Tags`** will be removed from the Target when this `GameplayEffect` is successfully applied. |
 
 **[⬆ Back to Top](#table-of-contents)**
 
 <a name="concepts-ge-immunity"></a>
+
 #### 4.5.8 Immunity
-`GameplayEffects` can grant immunity, effectively blocking the application of other `GameplayEffects`, based on [`GameplayTags`](#concepts-gt). While immunity can be effectively achieved through other means like `Application Tag Requirements`, using this system provides a delegate for when `GameplayEffects` are blocked due to immunity `UAbilitySystemComponent::OnImmunityBlockGameplayEffectDelegate`.
+**`GameplayEffects` can grant immunity, effectively blocking the application of other `GameplayEffects`, based on [`GameplayTags`](#concepts-gt).** While immunity can be effectively achieved through other means like `Application Tag Requirements`, **using this system provides a delegate for when `GameplayEffects` are blocked due to immunity `UAbilitySystemComponent::OnImmunityBlockGameplayEffectDelegate`**.
 
 `GrantedApplicationImmunityTags` checks if the Source `ASC` (including tags from the Source ability's `AbilityTags` if there was one) has any of the specified tags. This is a way to provide immunity from all `GameplayEffects` from certain characters or sources based on their tags.
 
@@ -1097,9 +1098,9 @@ The queries have helpful hover tooltips in the `GameplayEffect` Blueprint.
 
 <a name="concepts-ge-spec"></a>
 #### 4.5.9 Gameplay Effect Spec
-The [`GameplayEffectSpec`](https://docs.unrealengine.com/en-US/API/Plugins/GameplayAbilities/FGameplayEffectSpec/index.html) (`GESpec`) can be thought of as the instantiations of `GameplayEffects`. They hold a reference to the `GameplayEffect` class that they represent, what level it was created at, and who created it. These can be freely created and modified at runtime before application unlike `GameplayEffects` which should be created by designers prior to runtime. When applying a `GameplayEffect`, a `GameplayEffectSpec` is created from the `GameplayEffect` and that is actually what is applied to the Target.
+**The [`GameplayEffectSpec`](https://docs.unrealengine.com/en-US/API/Plugins/GameplayAbilities/FGameplayEffectSpec/index.html) (`GESpec`) can be thought of as the instantiations of `GameplayEffects`.** **They hold a reference to the `GameplayEffect` class that they represent, what level it was created at, and who created it. These can be freely created and modified at runtime before application unlike `GameplayEffects` which should be created by designers prior to runtime.** **When applying a `GameplayEffect`, a `GameplayEffectSpec` is created from the `GameplayEffect` and that is actually what is applied to the Target.**
 
-`GameplayEffectSpecs` are created from `GameplayEffects` using `UAbilitySystemComponent::MakeOutgoingSpec()` which is `BlueprintCallable`. `GameplayEffectSpecs` do not have to be immediately applied. It is common to pass a `GameplayEffectSpec` to a projectile created from an ability that the projectile can apply to the target it hits later. When `GameplayEffectSpecs` are successfully applied, they return a new struct called `FActiveGameplayEffect`.
+**`GameplayEffectSpecs` are created from `GameplayEffects` using `UAbilitySystemComponent::MakeOutgoingSpec()` which is `BlueprintCallable`. `GameplayEffectSpecs` do not have to be immediately applied. It is common to pass a `GameplayEffectSpec` to a projectile created from an ability that the projectile can apply to the target it hits later.** **When `GameplayEffectSpecs` are successfully applied, they return a new struct called `FActiveGameplayEffect`.**
 
 Notable `GameplayEffectSpec` Contents:
 * The `GameplayEffect` class that this `GameplayEffect` was created from.
@@ -1117,7 +1118,7 @@ Notable `GameplayEffectSpec` Contents:
 
 <a name="concepts-ge-spec-setbycaller"></a>
 ##### 4.5.9.1 SetByCallers
-`SetByCallers` allow the `GameplayEffectSpec` to carry float values associated with a `GameplayTag` or `FName` around. They are stored in their respective `TMaps`: `TMap<FGameplayTag, float>` and `TMap<FName, float>` on the `GameplayEffectSpec`. These can be used as `Modifiers` on the `GameplayEffect` or as generic means of ferrying floats around. It is common to pass numerical data generated inside of an ability to [`GameplayEffectExecutionCalculations`](#concepts-ge-ec) or [`ModifierMagnitudeCalculations`](#concepts-ge-mmc) via `SetByCallers`.
+**`SetByCallers` allow the `GameplayEffectSpec` to carry float values associated with a `GameplayTag` or `FName` around.** They are stored in their respective `TMaps`: `TMap<FGameplayTag, float>` and `TMap<FName, float>` on the `GameplayEffectSpec`. **These can be used as `Modifiers` on the `GameplayEffect` or as generic means of ferrying floats around.** **It is common to pass numerical data generated inside of an ability to [`GameplayEffectExecutionCalculations`](#concepts-ge-ec) or [`ModifierMagnitudeCalculations`](#concepts-ge-mmc) via `SetByCallers`.**
 
 | `SetByCaller` Use | Notes                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -1128,7 +1129,7 @@ To assign `SetByCaller` values in Blueprint, use the Blueprint node for the vers
 
 ![Assigning SetByCaller](https://github.com/tranek/GASDocumentation/raw/master/Images/setbycaller.png)
 
-To read a `SetByCaller` value in Blueprint, you will need to make custom nodes in your Blueprint Library.
+**To read a `SetByCaller` value in Blueprint, you will need to make custom nodes in your Blueprint Library.**
 
 To assign `SetByCaller` values in C++, use the version of the function that you need (`GameplayTag` or `FName`):
 
@@ -1148,13 +1149,13 @@ float GetSetByCallerMagnitude(FName DataName, bool WarnIfNotFound = true, float 
 float GetSetByCallerMagnitude(FGameplayTag DataTag, bool WarnIfNotFound = true, float DefaultIfNotFound = 0.f) const;
 ```
 
-I recommend using the `GameplayTag` version over the `FName` version. This can prevent spelling errors in Blueprint.
+**I recommend using the `GameplayTag` version over the `FName` version. This can prevent spelling errors in Blueprint.**
 
 **[⬆ Back to Top](#table-of-contents)**
 
 <a name="concepts-ge-context"></a>
 #### 4.5.10 Gameplay Effect Context
-The [`GameplayEffectContext`](https://docs.unrealengine.com/en-US/API/Plugins/GameplayAbilities/FGameplayEffectContext/index.html) structure holds information about a `GameplayEffectSpec's` instigator and [`TargetData`](#concepts-targeting-data). This is also a good structure to subclass to pass arbitrary data around between places like [`ModifierMagnitudeCalculations`](#concepts-ge-mmc) / [`GameplayEffectExecutionCalculations`](#concepts-ge-ec), [`AttributeSets`](#concepts-as), and [`GameplayCues`](#concepts-gc).
+The [`GameplayEffectContext`](https://docs.unrealengine.com/en-US/API/Plugins/GameplayAbilities/FGameplayEffectContext/index.html) structure holds information about a `GameplayEffectSpec's` instigator and [`TargetData`](#concepts-targeting-data). **This is also a good structure to subclass to pass arbitrary data around between places like [`ModifierMagnitudeCalculations`](#concepts-ge-mmc) / [`GameplayEffectExecutionCalculations`](#concepts-ge-ec), [`AttributeSets`](#concepts-as), and [`GameplayCues`](#concepts-gc).**
 
 To subclass the `GameplayEffectContext`:
 
@@ -1171,20 +1172,20 @@ To subclass the `GameplayEffectContext`:
 
 <a name="concepts-ge-mmc"></a>
 #### 4.5.11 Modifier Magnitude Calculation
-[`ModifierMagnitudeCalculations`](https://docs.unrealengine.com/en-US/API/Plugins/GameplayAbilities/UGameplayModMagnitudeCalculation/index.html) (`ModMagCalc` or `MMC`) are powerful classes used as [`Modifiers`](#concepts-ge-mods) in `GameplayEffects`. They function similarly to [`GameplayEffectExecutionCalculations`](#concepts-ge-ec) but are less powerful and most importantly they can be [predicted](#concepts-p). Their sole purpose is to return a float value from `CalculateBaseMagnitude_Implementation()`. You can subclass and override this function in Blueprint and C++.
+[`ModifierMagnitudeCalculations`](https://docs.unrealengine.com/en-US/API/Plugins/GameplayAbilities/UGameplayModMagnitudeCalculation/index.html) (`ModMagCalc` or `MMC`) are powerful classes used as [`Modifiers`](#concepts-ge-mods) in `GameplayEffects`. They function similarly to [`GameplayEffectExecutionCalculations`](#concepts-ge-ec) but are **less powerful and most importantly they can be [predicted](#concepts-p).** Their sole purpose is to return a float value from `CalculateBaseMagnitude_Implementation()`. You can subclass and override this function in Blueprint and C++.
 
 `MMCs` can be used in any duration of `GameplayEffects` - `Instant`, `Duration`, `Infinite`, or `Periodic`.
 
-`MMCs'` strength lies in their capability to capture the value of any number of `Attributes` on the `Source` or the `Target` of `GameplayEffect` with full access to the `GameplayEffectSpec` to read `GameplayTags` and `SetByCallers`. `Attributes` can either be snapshotted or not. Snapshotted `Attributes` are captured when the `GameplayEffectSpec` is created whereas non snapshotted `Attributes` are captured when the `GameplayEffectSpec` is applied and automatically update when the `Attribute` changes for `Infinite` and `Duration` `GameplayEffects`. Capturing `Attributes` recalculates their `CurrentValue` from existing mods on the `ASC`. This recalculation will **not** run [`PreAttributeChange()`](#concepts-as-preattributechange) in the `AbilitySet` so any clamping must be done here again.
+**`MMCs'` strength lies in their capability to capture the value of any number of `Attributes` on the `Source` or the `Target` of `GameplayEffect` with full access to the `GameplayEffectSpec` to read `GameplayTags` and `SetByCallers`. `Attributes` can either be snapshotted or not.** Snapshotted `Attributes` are captured when the `GameplayEffectSpec` is created whereas non snapshotted `Attributes` are captured when the `GameplayEffectSpec` is applied and automatically update when the `Attribute` changes for `Infinite` and `Duration` `GameplayEffects`. **Capturing `Attributes` recalculates their `CurrentValue` from existing mods on the `ASC`. This recalculation will not run [`PreAttributeChange()`](#concepts-as-preattributechange) in the `AbilitySet` so any clamping must be done here again.**
 
 | Snapshot | Source or Target | Captured on `GameplayEffectSpec` | Automatically updates when `Attribute` changes for `Infinite` or `Duration` `GE` |
-| -------- | ---------------- | -------------------------------- | -------------------------------------------------------------------------------- |
-| Yes      | Source           | Creation                         | No                                                                               |
-| Yes      | Target           | Application                      | No                                                                               |
-| No       | Source           | Application                      | Yes                                                                              |
-| No       | Target           | Application                      | Yes                                                                              |
+| -------- | ---------------- | -------------------------------- | ------------------------------------------------------------ |
+| Yes      | Source           | Creation                         | No                                                           |
+| Yes      | Target           | **Application**                  | No                                                           |
+| No       | Source           | Application                      | Yes                                                          |
+| No       | Target           | Application                      | Yes                                                          |
 
-The resultant float from an `MMC` can further be modified in the `GameplayEffect's` `Modifier` by a coefficient and a pre and post coefficient addition.
+**The resultant float from an `MMC` can further be modified in the `GameplayEffect's` `Modifier` by a coefficient and a pre and post coefficient addition.**
 
 An example `MMC` that captures the `Target's` mana `Attribute` reduces it from a poison effect where the amount reduced changes depending on how much mana the `Target` has and a tag that the `Target` might have:
 ```c++
@@ -1246,9 +1247,9 @@ If you don't add the `FGameplayEffectAttributeCaptureDefinition` to `RelevantAtt
 
 <a name="concepts-ge-ec"></a>
 #### 4.5.12 Gameplay Effect Execution Calculation
-[`GameplayEffectExecutionCalculations`](https://docs.unrealengine.com/en-US/API/Plugins/GameplayAbilities/UGameplayEffectExecutionCalculat-/index.html) (`ExecutionCalculation`, `Execution` (you will often see this term in the plugin's source code), or `ExecCalc`) are the most powerful way for `GameplayEffects` to make changes to an `ASC`. Like [`ModifierMagnitudeCalculations`](#concepts-ge-mmc), these can capture `Attributes` and optionally snapshot them. Unlike `MMCs`, these can change more than one `Attribute` and essentially do anything else that the programmer wants. The downside to this power and flexibility is that they can not be [predicted](#concepts-p) and they must be implemented in C++.
+[`GameplayEffectExecutionCalculations`](https://docs.unrealengine.com/en-US/API/Plugins/GameplayAbilities/UGameplayEffectExecutionCalculat-/index.html) (`ExecutionCalculation`, `Execution` (you will often see this term in the plugin's source code), or `ExecCalc`) are the **most powerful way** for `GameplayEffects` to make changes to an `ASC`. Like [`ModifierMagnitudeCalculations`](#concepts-ge-mmc), these can capture `Attributes` and optionally snapshot them. **Unlike `MMCs`, these can change more than one `Attribute` and essentially do anything else that the programmer wants.** **The downside to this power and flexibility is that they can not be [predicted](#concepts-p) and they must be implemented in C++.**
 
-`ExecutionCalculations` can only be used with `Instant` and `Periodic` `GameplayEffects`. Anything with the word 'Execute' in it typically refers to these two types of `GameplayEffects`.
+**`ExecutionCalculations` can only be used with `Instant` and `Periodic` `GameplayEffects`. Anything with the word 'Execute' in it typically refers to these two types of `GameplayEffects`.**
 
 Snapshotting captures the `Attribute` when the `GameplayEffectSpec` is created whereas not snapshotting captures the `Attribute` when the `GameplayEffectSpec` is applied. Capturing `Attributes` recalculates their `CurrentValue` from existing mods on the `ASC`. This recalculation will **not** run [`PreAttributeChange()`](#concepts-as-preattributechange) in the `AbilitySet` so any clamping must be done here again.
 
@@ -1259,9 +1260,9 @@ Snapshotting captures the `Attribute` when the `GameplayEffectSpec` is created w
 | No       | Source           | Application                      |
 | No       | Target           | Application                      |
 
-To set up `Attribute` capture, we follow a pattern set by Epic's ActionRPG Sample Project by defining a struct holding and defining how we capture the `Attributes` and creating one copy of it in the struct's constructor. You will have a struct like this for every `ExecCalc`. **Note:** Each struct needs a unique name as they share the same namespace. Using the same name for the structs will cause incorrect behavior in capturing your `Attributes` (mostly capturing the values of the wrong `Attributes`).
+**To set up `Attribute` capture, we follow a pattern set by Epic's ActionRPG Sample Project by defining a struct holding and defining how we capture the `Attributes` and creating one copy of it in the struct's constructor. You will have a struct like this for every `ExecCalc`. Note: Each struct needs a unique name as they share the same namespace. Using the same name for the structs will cause incorrect behavior in capturing your `Attributes` (mostly capturing the values of the wrong `Attributes`).**
 
-For `Local Predicted`, `Server Only`, and `Server Initiated` [`GameplayAbilities`](#concepts-ga), the `ExecCalc` only calls on the Server.
+**For `Local Predicted`, `Server Only`, and `Server Initiated` [`GameplayAbilities`](#concepts-ga), the `ExecCalc` only calls on the Server.**
 
 Calculating damage received based on a complex formula reading from many attributes on the `Source` and the `Target` is the most common example of an `ExecCalc`. The included Sample Project has a simple `ExecCalc` for calculating damage that reads the value of damage from the `GameplayEffectSpec's` [`SetByCaller`](#concepts-ge-spec-setbycaller) and then mitigates that value based on the armor `Attribute` captured from the `Target`. See `GDDamageExecCalculation.cpp/.h`.
 
@@ -1273,7 +1274,7 @@ There are a few ways to send data to an `ExecutionCalculation` in addition to ca
 
 <a name="concepts-ge-ec-senddata-setbycaller"></a>
 ###### 4.5.12.1.1 SetByCaller
-Any [`SetByCallers` set on the `GameplayEffectSpec`](#concepts-ge-spec-setbycaller) can be directly read in the `ExecutionCalculation`.
+**Any [`SetByCallers` set on the `GameplayEffectSpec`](#concepts-ge-spec-setbycaller) can be directly read in the `ExecutionCalculation`.**
 
 ```c++
 const FGameplayEffectSpec& Spec = ExecutionParams.GetOwningSpec();
@@ -1282,7 +1283,7 @@ float Damage = FMath::Max<float>(Spec.GetSetByCallerMagnitude(FGameplayTag::Requ
 
 <a name="concepts-ge-ec-senddata-backingdataattribute"></a>
 ###### 4.5.12.1.2 Backing Data Attribute Calculation Modifier
-If you want to hardcode values to a `GameplayEffect`, you can pass them in using a `CalculationModifier` that uses one of the captured `Attributes` as the backing data.
+**If you want to hardcode values to a `GameplayEffect`, you can pass them in using a `CalculationModifier` that uses one of the captured `Attributes` as the backing data.**
 
 In this screenshot example, we're adding 50 to the captured Damage `Attribute`. You could also set this to `Override` to just take in only the hardcoded value.
 
