@@ -3,7 +3,7 @@ My understanding of Unreal Engine 5's GameplayAbilitySystem plugin (GAS) with a 
 
 The goal of this documentation is to explain the major concepts and classes in GAS and provide some additional commentary based on my experience with it. There is a lot of 'tribal knowledge' of GAS among users in the community and I aim to share all of mine here.
 
-The Sample Project and documentation are current with **Unreal Engine 5.1**. There are branches of this documentation for older versions of Unreal Engine, but they are no longer supported and are liable to have bugs or out of date information.
+The Sample Project and documentation are current with **Unreal Engine 5.2**. There are branches of this documentation for older versions of Unreal Engine, but they are no longer supported and are liable to have bugs or out of date information.
 
 [GASShooter](https://github.com/tranek/GASShooter) is a sister Sample Project demonstrating advanced techniques with GAS for a multiplayer FPS/TPS.
 
@@ -161,6 +161,7 @@ The best documentation will always be the plugin source code.
 >    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;11.1.1 [Community Questions 1](#resources-daveratti-community1)  
 >    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;11.1.2 [Community Questions 2](#resources-daveratti-community2)  
 > 1. [GAS Changelog](#changelog)  
+>    * [5.2](#changelog-5.2)  
 >    * [5.1](#changelog-5.1)  
 >    * [5.0](#changelog-5.0)  
 >    * [4.27](#changelog-4.27)  
@@ -2957,15 +2958,15 @@ Often when debugging GAS related issues, you want to know things like:
 
 GAS comes with two techniques for answering these questions at runtime - [`showdebug abilitysystem`](#debugging-sd) and hooks in the [`GameplayDebugger`](#debugging-gd).
 
-**Tip:** UE5 likes to optimize C++ code which makes it hard to debug some functions. You will encounter this rarely when tracing deep into your code. If setting your Visual Studio solution configuration to `DebugGame Editor` still prevents tracing code or inspecting variables, you can disable all optimizations by wrapping the optimized function with the `PRAGMA_DISABLE_OPTIMIZATION_ACTUAL` and `PRAGMA_ENABLE_OPTIMIZATION_ACTUAL` macros. This cannot be used on the plugin code unless you rebuild the plugin from source. This may or may not work on inline functions depending on what they do and where they are. Be sure to remove the macros when you're done debugging!
+**Tip:** Unreal Engine likes to optimize C++ code which makes it hard to debug some functions. You will encounter this rarely when tracing deep into your code. If setting your Visual Studio solution configuration to `DebugGame Editor` still prevents tracing code or inspecting variables, you can disable all optimizations by wrapping the optimized function with the `UE_DISABLE_OPTIMIZATION` and `UE_ENABLE_OPTIMIZATION` macros or the ship variations defined in CoreMiscDefines.h. This cannot be used on the plugin code unless you rebuild the plugin from source. This may or may not work on inline functions depending on what they do and where they are. Be sure to remove the macros when you're done debugging!
 
 ```c++
-PRAGMA_DISABLE_OPTIMIZATION_ACTUAL
+UE_DISABLE_OPTIMIZATION
 void MyClass::MyFunction(int32 MyIntParameter)
 {
 	// My code
 }
-PRAGMA_ENABLE_OPTIMIZATION_ACTUAL
+UE_ENABLE_OPTIMIZATION
 ```
 
 **[⬆ Back to Top](#table-of-contents)**
@@ -3483,6 +3484,28 @@ level or something that each game has to solve on it's own?
 
 This is a list of notable changes (fixes, changes, and new features) to GAS compiled from the official Unreal Engine upgrade changelog and from undocumented changes that I've encountered. If you've found something that isn't listed here, please make an issue or pull request.
 
+<a name="changelog-5.2"></a>
+### 5.2
+* Bug Fix: Fixed a crash in the `UAbilitySystemBlueprintLibrary::MakeSpecHandle` function.
+* Bug Fix: Fixed logic in the Gameplay Ability System where a non-Controlled Pawn would be considered remote, even if it was spawned locally on the server (e.g. Vehicles).
+* Bug Fix: Correctly set activation info on predicted instanced abilities that were rejected by the server.
+* Bug Fix: Fixed a bug that would cause GameplayCues to get stuck on remote instances.
+* Bug Fix: Fixed a memory stomp when chaining calls to WaitGameplayEvent.
+* Bug Fix: Calling the AbilitySystemComponent `GetOwnedGameplayTags()` function in Blueprint no longer retains the previous call's return values when the same node is executed multiple times.
+* Bug Fix: Fixed an issue with GameplayEffectContext replicating a reference to a dynamic object that would never be replicated.
+  * This prevented GameplayEffect from calling `Owner->HandleDeferredGameplayCues(this)` as `bHasMoreUnmappedReferences` would always be true.
+* New: The [Gameplay Targeting System](https://docs.unrealengine.com/en-US/gameplay-targeting-system-in-unreal-engine/) is a way to create data-driven targeting requests.
+* New: Added custom serialization support for GameplayTag Queries.
+* New: Added support for replicating derived FGameplayEffectContext types.
+* New: Gameplay Attributes in assets are now registered as searchable names on save, allowing for references to attributes to be seen in the reference viewer.
+* New: Added some basic unit tests for the AbilitySystemComponent.
+* New: Gameplay Ability System Attributes now respect Core Redirects. This means you can now rename Attribute Sets and their Attributes in code and have them load properly in assets saved with the old names by adding redirect entries to DefaultEngine.ini.
+* Change: Allow changing the evaluation channel of a Gameplay Effect Modifier from code.
+* Change: Removed previously unused variable `FGameplayModifierInfo::Magnitude` from the Gameplay Abilities Plugin.
+* Change: Removed the synchronization logic between the ability system component and Smart Object instance tags.
+
+https://docs.unrealengine.com/5.2/en-US/unreal-engine-5.2-release-notes/
+
 <a name="changelog-5.1"></a>
 ### 5.1
 * Bug Fix: Fixed issue where replicated loose gameplay tags were not replicating to the owner.
@@ -3601,8 +3624,8 @@ https://docs.unrealengine.com/en-US/WhatsNew/Builds/ReleaseNotes/4_25/
 * `UGameplayAbility::MontageStop()` function now properly uses the `OverrideBlendOutTime` parameter.
 * Fixed `GameplayTag` query variables on components not being modified when edited.
 * Added the ability for `GameplayEffectExecutionCalculations` to support scoped modifiers against "temporary variables" that aren't required to be backed by an attribute capture.
-   * Implementation basically enables `GameplayTag`-identified aggregators to be created as a means for an execution to expose a temporary value to be manipulated with scoped modifiers; you can now build formulas that want manipulatable values that don't need to be captured from a source or target.
-   * To use, an execution has to add a tag to the new member variable `ValidTransientAggregatorIdentifiers`; those tags will show up in the calculation modifier array of scoped mods at the bottom, marked as temporary variables—with updated details customizations accordingly to support feature
+  * Implementation basically enables `GameplayTag`-identified aggregators to be created as a means for an execution to expose a temporary value to be manipulated with scoped modifiers; you can now build formulas that want manipulatable values that don't need to be captured from a source or target.
+  * To use, an execution has to add a tag to the new member variable `ValidTransientAggregatorIdentifiers`; those tags will show up in the calculation modifier array of scoped mods at the bottom, marked as temporary variables—with updated details customizations accordingly to support feature
 * Added restricted tag quality-of-life improvements. Removed the default option for restricted `GameplayTag` source. We no longer reset the source when adding restricted tags to make it easier to add several in a row. 
 * `APawn::PossessedBy()` now sets the owner of the `Pawn` to the new `Controller`. Useful because [Mixed Replication Mode](#concepts-asc-rm) expects the owner of the `Pawn` to be the `Controller` if the `ASC` lives on the `Pawn`.
 * Fixed bug with POD (Plain Old Data) in `FAttributeSetInitterDiscreteLevels`.
