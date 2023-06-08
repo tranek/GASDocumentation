@@ -153,7 +153,7 @@ The best documentation will always be the plugin source code.
 >    9.3 [Animation Montages are not replicating to clients](#troubleshooting-replicatinganimmontages)  
 >    9.4 [Duplicating Blueprint Actors is setting AttributeSets to nullptr](#troubleshooting-duplicatingblueprintactors)  
 >    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;9.4.1 [Not creating `AttributeSet` in the constructor](#troubleshooting-duplicatingblueprintactors-no-constructor)  
->    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;9.4.2 [Making `AttributeSet` `Transient`](#troubleshooting-duplicatingblueprintactors-no-transient)  
+>    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;9.4.2 [Making `AttributeSet` `Transient`](#troubleshooting-duplicatingblueprintactors-transient)  
 > 1. [Common GAS Acronyms](#acronyms)
 > 1. [Other Resources](#resources)  
 >    11.1 [Q&A With Epic Game's Dave Ratti](#resources-daveratti)  
