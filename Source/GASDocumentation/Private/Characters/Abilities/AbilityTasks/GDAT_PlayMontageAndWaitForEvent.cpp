@@ -17,11 +17,6 @@ UGDAT_PlayMontageAndWaitForEvent::UGDAT_PlayMontageAndWaitForEvent(const FObject
 	bStopWhenAbilityEnds = true;
 }
 
-UGDAbilitySystemComponent* UGDAT_PlayMontageAndWaitForEvent::GetTargetASC()
-{
-	return Cast<UGDAbilitySystemComponent>(AbilitySystemComponent);
-}
-
 void UGDAT_PlayMontageAndWaitForEvent::OnMontageBlendingOut(UAnimMontage* Montage, bool bInterrupted)
 {
 	if (Ability && Ability->GetCurrentMontage() == MontageToPlay)
@@ -119,18 +114,17 @@ void UGDAT_PlayMontageAndWaitForEvent::Activate()
 	}
 
 	bool bPlayedMontage = false;
-	UGDAbilitySystemComponent* GDAbilitySystemComponent = GetTargetASC();
 
-	if (GDAbilitySystemComponent)
+	if (AbilitySystemComponent.IsValid())
 	{
 		const FGameplayAbilityActorInfo* ActorInfo = Ability->GetCurrentActorInfo();
 		UAnimInstance* AnimInstance = ActorInfo->GetAnimInstance();
 		if (AnimInstance != nullptr)
 		{
 			// Bind to event callback
-			EventHandle = GDAbilitySystemComponent->AddGameplayEventTagContainerDelegate(EventTags, FGameplayEventTagMulticastDelegate::FDelegate::CreateUObject(this, &UGDAT_PlayMontageAndWaitForEvent::OnGameplayEvent));
+			EventHandle = AbilitySystemComponent->AddGameplayEventTagContainerDelegate(EventTags, FGameplayEventTagMulticastDelegate::FDelegate::CreateUObject(this, &UGDAT_PlayMontageAndWaitForEvent::OnGameplayEvent));
 
-			if (GDAbilitySystemComponent->PlayMontage(Ability, Ability->GetCurrentActivationInfo(), MontageToPlay, Rate, StartSection) > 0.f)
+			if (AbilitySystemComponent->PlayMontage(Ability, Ability->GetCurrentActivationInfo(), MontageToPlay, Rate, StartSection) > 0.f)
 			{
 				// Playing a montage could potentially fire off a callback into game code which could kill this ability! Early out if we are  pending kill.
 				if (ShouldBroadcastAbilityTaskDelegates() == false)
@@ -181,7 +175,7 @@ void UGDAT_PlayMontageAndWaitForEvent::Activate()
 
 void UGDAT_PlayMontageAndWaitForEvent::ExternalCancel()
 {
-	check(AbilitySystemComponent);
+	check(AbilitySystemComponent.IsValid());
 
 	OnAbilityCancelled();
 
@@ -203,10 +197,9 @@ void UGDAT_PlayMontageAndWaitForEvent::OnDestroy(bool AbilityEnded)
 		}
 	}
 
-	UGDAbilitySystemComponent* GDAbilitySystemComponent = GetTargetASC();
-	if (GDAbilitySystemComponent)
+	if (AbilitySystemComponent.IsValid())
 	{
-		GDAbilitySystemComponent->RemoveGameplayEventTagContainerDelegate(EventTags, EventHandle);
+		AbilitySystemComponent->RemoveGameplayEventTagContainerDelegate(EventTags, EventHandle);
 	}
 
 	Super::OnDestroy(AbilityEnded);
@@ -229,7 +222,7 @@ bool UGDAT_PlayMontageAndWaitForEvent::StopPlayingMontage()
 
 	// Check if the montage is still playing
 	// The ability would have been interrupted, in which case we should automatically stop the montage
-	if (AbilitySystemComponent && Ability)
+	if (AbilitySystemComponent.IsValid() && Ability)
 	{
 		if (AbilitySystemComponent->GetAnimatingAbility() == Ability
 			&& AbilitySystemComponent->GetCurrentMontage() == MontageToPlay)

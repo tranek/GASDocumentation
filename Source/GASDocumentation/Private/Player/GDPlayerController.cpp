@@ -54,12 +54,6 @@ void AGDPlayerController::CreateHUD()
 	UIHUDWidget->SetExperience(PS->GetXP());
 	UIHUDWidget->SetGold(PS->GetGold());
 	UIHUDWidget->SetHeroLevel(PS->GetCharacterLevel());
-
-	DamageNumberClass = StaticLoadClass(UObject::StaticClass(), nullptr, TEXT("/Game/GASDocumentation/UI/WC_DamageText.WC_DamageText_C"));
-	if (!DamageNumberClass)
-	{
-		UE_LOG(LogTemp, Error, TEXT("%s() Failed to find DamageNumberClass. If it was moved, please update the reference location in C++."), *FString(__FUNCTION__));
-	}
 }
 
 UGDHUDWidget * AGDPlayerController::GetHUD()
@@ -69,7 +63,7 @@ UGDHUDWidget * AGDPlayerController::GetHUD()
 
 void AGDPlayerController::ShowDamageNumber_Implementation(float DamageAmount, AGDCharacterBase* TargetCharacter)
 {
-	if (TargetCharacter)
+	if (TargetCharacter && DamageNumberClass)
 	{
 		UGDDamageTextWidgetComponent* DamageText = NewObject<UGDDamageTextWidgetComponent>(TargetCharacter, DamageNumberClass);
 		DamageText->RegisterComponent();

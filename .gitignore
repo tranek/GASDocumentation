@@ -82,3 +82,4 @@ DerivedDataCache/*
 
 # Rider user specific files
 .idea/
+/Plugins/Developer/RiderLink
