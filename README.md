@@ -152,6 +152,8 @@ The best documentation will always be the plugin source code.
 >    9.2 [`ScriptStructCache` errors](#troubleshooting-scriptstructcache)  
 >    9.3 [Animation Montages are not replicating to clients](#troubleshooting-replicatinganimmontages)  
 >    9.4 [Duplicating Blueprint Actors is setting AttributeSets to nullptr](#troubleshooting-duplicatingblueprintactors)  
+>    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;9.4.1 [Not creating `AttributeSet` in the constructor](#troubleshooting-duplicatingblueprintactors-no-constructor)  
+>    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;9.4.2 [Making `AttributeSet` `Transient`](#troubleshooting-duplicatingblueprintactors-no-transient)  
 > 1. [Common GAS Acronyms](#acronyms)
 > 1. [Other Resources](#resources)  
 >    11.1 [Q&A With Epic Game's Dave Ratti](#resources-daveratti)  
@@ -472,8 +474,6 @@ virtual void StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
 `Attributes` are defined by and live in an [`AttributeSet`](#concepts-as). The `AttributeSet` is responsible for replicating `Attributes` that are marked for replication. See the section on [`AttributeSets`](#concepts-as) for how to define `Attributes`.
 
 **Tip:** If you don't want an `Attribute` to show up in the Editor's list of `Attributes`, you can use the `Meta = (HideInDetailsView)` `property specifier`.
-
-**Note:** Set the `AttributeSet` to be a `Transient` property. Because it is not a Component it's creation inside an actor's constructor is not safe. Having it not Transient might lead to hard to track issues when duplicating character's Blueprints.
 
 **[⬆ Back to Top](#table-of-contents)**
 
@@ -2984,7 +2984,11 @@ Make sure that you're using the `PlayMontageAndWait` Blueprint node instead of `
 
 <a name="troubleshooting-duplicatingblueprintactors"></a>
 ### 9.4 Duplicating Blueprint Actors is setting AttributeSets to nullptr
-There is a [bug in Unreal Engine](https://issues.unrealengine.com/issue/UE-81109) that will set `AttributeSet` pointers on your classes to nullptr for Blueprint Actor classes that are duplicated from existing Blueprint Actor classes. There are a few workarounds for this. I've had success not creating bespoke `AttributeSet` pointers on my classes (no pointer in the .h, not calling `CreateDefaultSubobject` in the constructor) and instead just directly adding `AttributeSets` to the `ASC` in `PostInitializeComponents()` (not shown in the Sample Project). The replicated `AttributeSets` will still live in the `ASC's` `SpawnedAttributes` array. It would look something like this:
+There is a [bug in Unreal Engine](https://issues.unrealengine.com/issue/UE-81109) that will set `AttributeSet` pointers on your classes to nullptr for Blueprint Actor classes that are duplicated from existing Blueprint Actor classes. There are a few workarounds for this:
+
+<a name="troubleshooting-duplicatingblueprintactors-no-constructor"></a>
+#### 9.4.1 Not creating `AttributeSet` in the constructor
+I've had success not creating bespoke `AttributeSet` pointers on my classes (no pointer in the .h, not calling `CreateDefaultSubobject` in the constructor) and instead just directly adding `AttributeSets` to the `ASC` in `PostInitializeComponents()` (not shown in the Sample Project). The replicated `AttributeSets` will still live in the `ASC's` `SpawnedAttributes` array. It would look something like this:
 
 ```c++
 void AGDPlayerState::PostInitializeComponents()
@@ -3034,6 +3038,18 @@ if (AbilitySystemComponent)
 ```
 
 As a reminder, the `ASC` only ever expects at most one `AttributeSet` object per `AttributeSet` class.
+
+<a name="troubleshooting-duplicatingblueprintactors-transient"></a>
+#### 9.4.2 Making `AttributeSet` `Transient`
+The other workaround for this issue, which seems to work, is to set the `AttributeSet` object to be `Transient`:
+
+```c++
+UPROPERTY(Transient)
+class UGDAttributeSetBase* AttributeSetBase;
+```
+
+Thanks to that, even when the `AttributeSet` is created in the constructor it won't be serialized and copied when duplicating Blueprint Actor.  
+
 
 **[⬆ Back to Top](#table-of-contents)**
 
