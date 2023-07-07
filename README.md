@@ -2259,7 +2259,9 @@ In Blueprint, we just use the Blueprint node that we create for the `AbilityTask
 
 ![Blueprint WaitTargetData AbilityTask](https://github.com/tranek/GASDocumentation/raw/master/Images/abilitytask.png)
 
-To manually cancel an `AbilityTask`, just call `EndTask()` on the `AbilityTask` object in Blueprint (called `Async Task Proxy`) or in C++. When creating a new `AbilityTask`, it will be registered to the owning `GameplayAbility`, `TArray<TObjectPtr<UAbilityTask>> UGameplayAbility::ActiveTasks`.  When an ability is ended, all of the `AbilityTasks` in the array will be automatically ended and the array will be reset. This happens in `UGameplayAbility::EndAbility`. So you don't need to call `EndTask()` explicitly on created `AbilityTasks` in `EndAbility` in your Ability class.
+To manually cancel an `AbilityTask`, just call `EndTask()` on the `AbilityTask` object in Blueprint (called `Async Task Proxy`) or in C++. 
+
+When an `AbilityTask` becomes activated (in C++ we need to call `ReadyForActivation()` and in Blueprint the function will be automatically called for you), it is automatically registered to the owning `GameplayAbility` within the `TArray<TObjectPtr<UGameplayTask>> UGameplayAbility::ActiveTasks`. Subsequently, when the ability ends, each of the `AbilityTasks` within the array will be automatically ended, and the array reset. This takes place in `UGameplayAbility::EndAbility()`. Therefore, there is no need to explicitly call `EndTask()` on active `AbilityTasks` within `EndAbility()` in your Ability class. However, for `AbilityTask` that hasn't been activated when the ability is ending, you will still need to call `EndTask()` on them to clean up. 
 
 **[⬆ Back to Top](#table-of-contents)**
 
