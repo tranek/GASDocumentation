@@ -428,6 +428,8 @@ Multiple `GameplayTags` can be stored in an `FGameplayTagContainer`. It is prefe
 
 ![GameplayTag Editor in Project Settings](https://github.com/tranek/GASDocumentation/raw/master/Images/gameplaytageditor.png)
 
+Alternatively, `GameplayTags` can be imported from `DataTable` Assets. To do this, create a DataTable whose Row Type is `GameplayTagTableRow`. Here, you can add `GameplayTags` and optional DevCommands. You can import these `DataTables` by adding them in `ProjectSettings -> GameplayTags -> GameplayTagTableList`. It's good practice to categorize `GameplayTags` into different `DataTables` for better organization of data.    
+ 
 Searching for `GameplayTag` references will bring up the familiar `Reference Viewer` graph in the Editor showing all the assets that reference the `GameplayTag`. This will not however show any C++ classes that reference the `GameplayTag`.
 
 Renaming `GameplayTags` creates a redirect so that assets still referencing the original `GameplayTag` can redirect to the new `GameplayTag`. I prefer if possible to instead create a new `GameplayTag`, update all the references manually to the new `GameplayTag`, and then delete the old `GameplayTag` to avoid creating a redirect.
