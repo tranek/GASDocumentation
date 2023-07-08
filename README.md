@@ -428,7 +428,7 @@ Multiple `GameplayTags` can be stored in an `FGameplayTagContainer`. It is prefe
 
 ![GameplayTag Editor in Project Settings](https://github.com/tranek/GASDocumentation/raw/master/Images/gameplaytageditor.png)
 
-Alternatively, `GameplayTags` can be imported from `DataTable` Assets. To do this, create a DataTable whose Row Type is `GameplayTagTableRow`. Here, you can add `GameplayTags` and optional DevCommands. You can import these `DataTables` by adding them in `ProjectSettings -> GameplayTags -> GameplayTagTableList`. It's good practice to categorize `GameplayTags` into different `DataTables` for better organization of data.
+Alternatively, `GameplayTags` can be imported from `DataTable` Assets. To do this, create a `DataTable` whose Row Type is `GameplayTagTableRow`. Here, you can add `GameplayTags` and optional DevCommands. You can import these `DataTables` by adding them in `ProjectSettings -> GameplayTags -> GameplayTagTableList`. It's good practice to categorize `GameplayTags` into different `DataTables` for better organization of data.
     
 ![GameplayTag DataTable](https://github.com/tranek/GASDocumentation/raw/master/Images/gameplaytagdatatable.png) 
 ![GameplayTag Table List in Project Settings](https://github.com/tranek/GASDocumentation/raw/master/Images/gameplaytagstablelist.png)
