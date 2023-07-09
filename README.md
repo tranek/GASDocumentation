@@ -115,10 +115,11 @@ The best documentation will always be the plugin source code.
 >    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.9.1 [InitGlobalData()](#concepts-asg-initglobaldata)  
 >    4.10 [Prediction](#concepts-p)  
 >    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.10.1 [Prediction Key](#concepts-p-key)  
->    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.10.2 [Creating New Prediction Windows in Abilities](#concepts-p-windows)  
->    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.10.3 [Predictively Spawning Actors](#concepts-p-spawn)  
->    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.10.4 [Future of Prediction in GAS](#concepts-p-future)  
->    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.10.5 [Network Prediction Plugin](#concepts-p-npp)  
+>    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.10.2 [Creating New Prediction Windows in Abilities](#concepts-p-windows)
+>    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.10.3 [Registering Extra Rollback Functions to PredictionKey](#concepts-p-delegates)
+>    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.10.4 [Predictively Spawning Actors](#concepts-p-spawn)  
+>    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.10.5 [Future of Prediction in GAS](#concepts-p-future)  
+>    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.10.6 [Network Prediction Plugin](#concepts-p-npp)  
 >    4.11 [Targeting](#concepts-targeting)  
 >    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.11.1 [Target Data](#concepts-targeting-data)  
 >    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.11.2 [Target Actors](#concepts-targeting-actors)  
@@ -2264,13 +2265,9 @@ In Blueprint, we just use the Blueprint node that we create for the `AbilityTask
 
 ![Blueprint WaitTargetData AbilityTask](https://github.com/tranek/GASDocumentation/raw/master/Images/abilitytask.png)
 
-<<<<<<< HEAD
 To manually cancel an `AbilityTask`, just call `EndTask()` on the `AbilityTask` object in Blueprint (called `Async Task Proxy`) or in C++. 
 
 When an `AbilityTask` becomes activated (in C++ we need to call `ReadyForActivation()` and in Blueprint the function will be automatically called for you), it is automatically registered to the owning `GameplayAbility` within the `TArray<TObjectPtr<UGameplayTask>> UGameplayAbility::ActiveTasks`. Subsequently, when the ability ends, each of the `AbilityTasks` within the array will be automatically ended, and the array reset. This takes place in `UGameplayAbility::EndAbility()`. Therefore, there is no need to explicitly call `EndTask()` on active `AbilityTasks` within `EndAbility()` in your Ability class. However, for `AbilityTask` that hasn't been activated when the ability is ending, you will still need to call `EndTask()` on them to clean up. 
-=======
-To manually cancel an `AbilityTask`, just call `EndTask()` on the `AbilityTask` object in Blueprint (called `Async Task Proxy`) or in C++.
->>>>>>> parent of d36021f (Added notes about ending Ability Task)
 
 **[⬆ Back to Top](#table-of-contents)**
 
@@ -2616,8 +2613,61 @@ If you have a predicted `GameplayEffect` that is playing twice on the owning cli
 
 **[⬆ Back to Top](#table-of-contents)**
 
+<a name="concepts-p-delegates"></a>
+#### 4.10.3 Registering Extra Rollback Functions to PredictionKey
+Sometimes we may need to bind custom rollback functions to a `PredicitonKey`. To do that, There are two types of delegates associated with a `PredictionKey`: `RejectedDelegates` and `CaughtUpDelegates`.
+For more implementation details, see `struct FPredictionKeyDelegates` in `GameplayPrediction.h`.
+
+`RejectedDelegates` are meant for the case where the action associated with the `PredictionKey` is explicitly rejected on the server and this requires server manually notifying the client to broadcast the delegates. 
+If the `PredictionKey` is associated with activating a `LocallyPredicted` `GameplayAbility`, then the notifying and broadcasting part has been done for you. You just need to register to the `RejectedDelegates`.
+```c++
+{
+    //will return the current active scoped prediction window if there's one  
+    FPredictionKey PredictionKey = GetPredictionKeyForNewAction();
+	if (PredictionKey.IsValidKey())
+	{
+		PredictionKey.NewRejectedDelegate().BindUObject(this, &YourOnAbilityActivatedRejectedRollbackFunction);
+	}
+}
+```
+A good example for this is the playing montage function from `ASC` will instantly start previewing the montage on client side, if it's from activating a `Locally Predicted GameplayAbility`. It registers
+a Stop Montage callback to the `RejectedDelegates` so if it gets rejected by server, the montage preview will be ended properly.
+For more implementation details, see `UAbilitySystemComponent::PlayMontage`, `UAbilitySystemComponent::OnPredictiveMontageRejected` in `AbilitySystemComponent.h`.
+
+**Note:** If the `PredictionKey` is not associated with ability activision(for example you might need to do Local Prediciton and Rollback on latent action from spawned `AbilityTasks`), you will need to manually send `FPredictionKey` from client to server, send it back to the client and broadcast `RejectedDelegates` if it fails on server.   
+
+`CatchUp` is like 'a synch point" between client and server. It doesn't imply rejection or acceptance of the locally predicted action. This is appropriate for rolling back predictive changes associated with an locally predicted action that was previously done on the client, regardless of the success of performing that action on the server, because the authoritative change predicted by the previous predictive change on the client side are being replicated from the server back to the client.
+`CaughtUpDelegates` are broadcasted automatically. When the `ScopedPredictionWindow` gets destructed on the server, it will replicate the `ReplicatedPredictionKeyItem` associated with that `PredictionKey` back to the client, which will further trigger broadcasting `CaughtUpDelegates` of this `PredictionKey`. It's a property replication so it won't happen instantly, usually there will be a few frames delay.
+For more implementation details, see `struct FReplicatedPredictionKeyItem` and `struct FReplicatedPredictionKeyMap` in `GameplayPrediction.h`.
+To Register your custom callbacks to `CatchUp`, do
+```c++
+{
+    //will return the current active scoped prediction window if there's one  
+    FPredictionKey PredictionKey = GetPredictionKeyForNewAction();
+	if (PredictionKey.IsValidKey())
+	{
+		PredictionKey.NewCaughtUpDelegate().BindUObject(this, &YourRollbackFunction);
+	}
+}
+```
+You can also register your callback to both `CatchUp` and `Reject` by doing
+```c++
+{
+    //will return the current active scoped prediction window if there's one  
+    FPredictionKey PredictionKey = GetPredictionKeyForNewAction();
+	if (PredictionKey.IsValidKey())
+	{
+		PredictionKey.NewRejectOrCaughtUpDelegate().BindUObject(this, &YourRollbackFunction);
+	}
+}
+```
+A good example for this is `GameplayEffect` Prediction when `GameplayAbility` is being activated.
+For more implementation details, see `FActiveGameplayEffectsContainer::ApplyGameplayEffectSpec` in `GameplayEffect.h`.
+
+**[⬆ Back to Top](#table-of-contents)**
+
 <a name="concepts-p-spawn"></a>
-#### 4.10.3 Predictively Spawning Actors
+#### 4.10.4 Predictively Spawning Actors
 Spawning `Actors` predictively on clients is an advanced topic. GAS does not provide functionality to handle this out of the box (the `SpawnActor` `AbilityTask` only spawns the `Actor` on the server). The key concept is to spawn a replicated `Actor` on both the client and the server.
 
 If the `Actor` is just cosmetic or doesn't serve any gameplay purpose, the simple solution is to override the `Actor's` `IsNetRelevantFor()` function to restrict the server from replicating to the owning client. The owning client would have his locally spawned version and the server and other clients would have the server's replicated version.
@@ -2633,7 +2683,7 @@ If the spawned `Actor` affects gameplay like a projectile that needs to predict 
 **[⬆ Back to Top](#table-of-contents)**
 
 <a name="concepts-p-future"></a>
-#### 4.10.4 Future of Prediction in GAS
+#### 4.10.5 Future of Prediction in GAS
 `GameplayPrediction.h` states in the future they could potentially add functionality for predicting `GameplayEffect` removal and periodic `GameplayEffects`.
 
 Dave Ratti from Epic has [expressed interest](https://epicgames.ent.box.com/s/m1egifkxv3he3u3xezb9hzbgroxyhx89) in fixing the `latency reconciliation` problem for predicting cooldowns, disadvantaging players with higher latencies versus players with lower latencies.
@@ -2643,7 +2693,7 @@ The new [`Network Prediction` plugin](#concepts-p-npp) by Epic is expected to be
 **[⬆ Back to Top](#table-of-contents)**
 
 <a name="concepts-p-npp"></a>
-#### 4.10.5 Network Prediction Plugin
+#### 4.10.6 Network Prediction Plugin
 Epic recently started an initiative to replace the `CharacterMovementComponent` with a new `Network Prediction` plugin. This plugin is still in its very early stages but is available to very early access on the Unreal Engine GitHub. It's too soon to tell which future version of the Engine that it will make its experimental beta debut in.
 
 **[⬆ Back to Top](#table-of-contents)**
