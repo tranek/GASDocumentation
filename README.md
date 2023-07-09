@@ -115,8 +115,8 @@ The best documentation will always be the plugin source code.
 >    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.9.1 [InitGlobalData()](#concepts-asg-initglobaldata)  
 >    4.10 [Prediction](#concepts-p)  
 >    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.10.1 [Prediction Key](#concepts-p-key)  
->    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.10.2 [Creating New Prediction Windows in Abilities](#concepts-p-windows)
->    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.10.3 [Registering Extra Rollback Functions to PredictionKey](#concepts-p-delegates)
+>    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.10.2 [Creating New Prediction Windows in Abilities](#concepts-p-windows)  
+>    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.10.3 [Registering Extra Rollback Functions to Prediction Key](#concepts-p-delegates)  
 >    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.10.4 [Predictively Spawning Actors](#concepts-p-spawn)  
 >    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.10.5 [Future of Prediction in GAS](#concepts-p-future)  
 >    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.10.6 [Network Prediction Plugin](#concepts-p-npp)  
@@ -2616,38 +2616,41 @@ If you have a predicted `GameplayEffect` that is playing twice on the owning cli
 <a name="concepts-p-delegates"></a>
 #### 4.10.3 Registering Extra Rollback Functions to PredictionKey
 Sometimes we may need to bind custom rollback functions to a `PredicitonKey`. To do that, There are two types of delegates associated with a `PredictionKey`: `RejectedDelegates` and `CaughtUpDelegates`.
+
 For more implementation details, see `struct FPredictionKeyDelegates` in `GameplayPrediction.h`.
 
-`RejectedDelegates` are meant for the case where the action associated with the `PredictionKey` is explicitly rejected on the server and this requires server manually notifying the client to broadcast the delegates. 
+`RejectedDelegates` are meant for the case where the action associated with the `PredictionKey` is explicitly rejected on the server and this requires the server manually notify the client to broadcast the delegates. 
 If the `PredictionKey` is associated with activating a `LocallyPredicted` `GameplayAbility`, then the notifying and broadcasting part has been done for you. You just need to register to the `RejectedDelegates`.
 ```c++
 {
     //will return the current active scoped prediction window if there's one  
     FPredictionKey PredictionKey = GetPredictionKeyForNewAction();
-	if (PredictionKey.IsValidKey())
-	{
-		PredictionKey.NewRejectedDelegate().BindUObject(this, &YourOnAbilityActivatedRejectedRollbackFunction);
-	}
+    if (PredictionKey.IsValidKey())
+    {
+	PredictionKey.NewRejectedDelegate().BindUObject(this, &YourOnAbilityActivatedRejectedRollbackFunction);
+    }
 }
 ```
-A good example for this is the playing montage function from `ASC` will instantly start previewing the montage on client side, if it's from activating a `Locally Predicted GameplayAbility`. It registers
-a Stop Montage callback to the `RejectedDelegates` so if it gets rejected by server, the montage preview will be ended properly.
+A good example of this is the playing montage function from `ASC` will instantly start previewing the montage on the client side if it's from activating a `Locally Predicted GameplayAbility`. It registers a Stop Montage callback to the `RejectedDelegates` so if it gets rejected by the server, the montage preview will be ended properly.
+
 For more implementation details, see `UAbilitySystemComponent::PlayMontage`, `UAbilitySystemComponent::OnPredictiveMontageRejected` in `AbilitySystemComponent.h`.
 
-**Note:** If the `PredictionKey` is not associated with ability activision(for example you might need to do Local Prediciton and Rollback on latent action from spawned `AbilityTasks`), you will need to manually send `FPredictionKey` from client to server, send it back to the client and broadcast `RejectedDelegates` if it fails on server.   
+**Note:** If the `PredictionKey` is not associated with ability activation(for example you might need to do Local Prediciton and Rollback on latent action from spawned `AbilityTasks`), you will need to manually send `FPredictionKey` from the client to server, send it back to the client and broadcast `RejectedDelegates` if it fails on server.   
 
-`CatchUp` is like 'a synch point" between client and server. It doesn't imply rejection or acceptance of the locally predicted action. This is appropriate for rolling back predictive changes associated with an locally predicted action that was previously done on the client, regardless of the success of performing that action on the server, because the authoritative change predicted by the previous predictive change on the client side are being replicated from the server back to the client.
-`CaughtUpDelegates` are broadcasted automatically. When the `ScopedPredictionWindow` gets destructed on the server, it will replicate the `ReplicatedPredictionKeyItem` associated with that `PredictionKey` back to the client, which will further trigger broadcasting `CaughtUpDelegates` of this `PredictionKey`. It's a property replication so it won't happen instantly, usually there will be a few frames delay.
+`CatchUp` is like 'a synch point" between client and server. It doesn't imply rejection or acceptance of the locally predicted action. This is appropriate for rolling back predictive changes associated with a locally predicted action that was previously done on the client, regardless of the success of performing that action on the server, because the authoritative change predicted by the previous predictive change on the client side is being replicated from the server back to the client.
+`CaughtUpDelegates` are broadcasted automatically. When the `ScopedPredictionWindow` gets destructed on the server, it will replicate the `ReplicatedPredictionKeyItem` associated with that `PredictionKey` back to the client, which will further trigger broadcasting `CaughtUpDelegates` of this `PredictionKey`. It's a property replication so it won't happen instantly, usually, there will be a few frames delay.
+
 For more implementation details, see `struct FReplicatedPredictionKeyItem` and `struct FReplicatedPredictionKeyMap` in `GameplayPrediction.h`.
+
 To Register your custom callbacks to `CatchUp`, do
 ```c++
 {
     //will return the current active scoped prediction window if there's one  
     FPredictionKey PredictionKey = GetPredictionKeyForNewAction();
-	if (PredictionKey.IsValidKey())
-	{
-		PredictionKey.NewCaughtUpDelegate().BindUObject(this, &YourRollbackFunction);
-	}
+    if (PredictionKey.IsValidKey())
+    {
+	PredictionKey.NewCaughtUpDelegate().BindUObject(this, &YourRollbackFunction);
+    }
 }
 ```
 You can also register your callback to both `CatchUp` and `Reject` by doing
@@ -2655,13 +2658,14 @@ You can also register your callback to both `CatchUp` and `Reject` by doing
 {
     //will return the current active scoped prediction window if there's one  
     FPredictionKey PredictionKey = GetPredictionKeyForNewAction();
-	if (PredictionKey.IsValidKey())
-	{
-		PredictionKey.NewRejectOrCaughtUpDelegate().BindUObject(this, &YourRollbackFunction);
-	}
+    if (PredictionKey.IsValidKey())
+    {
+	PredictionKey.NewRejectOrCaughtUpDelegate().BindUObject(this, &YourRollbackFunction);
+    }
 }
 ```
-A good example for this is `GameplayEffect` Prediction when `GameplayAbility` is being activated.
+A good example of this is `GameplayEffect` Prediction when `GameplayAbility` is being activated.
+
 For more implementation details, see `FActiveGameplayEffectsContainer::ApplyGameplayEffectSpec` in `GameplayEffect.h`.
 
 **[⬆ Back to Top](#table-of-contents)**
