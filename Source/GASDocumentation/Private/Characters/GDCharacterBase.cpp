@@ -247,6 +247,10 @@ void AGDCharacterBase::Die()
 		EffectTagsToRemove.AddTag(EffectRemoveOnDeathTag);
 		int32 NumEffectsRemoved = AbilitySystemComponent->RemoveActiveEffectsWithTags(EffectTagsToRemove);
 
+		/**
+		 * The Sample Project uses a `LooseGameplayTag` for `State.Dead` so that the owning clients can immediately respond to when their health drops to zero.
+		 * Respawning manually sets the `TagMapCount` back to zero.
+		 */
 		AbilitySystemComponent->AddLooseGameplayTag(DeadTag);
 	}
 

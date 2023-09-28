@@ -139,8 +139,7 @@ void UGDAttributeSetBase::PostGameplayEffectExecute(const FGameplayEffectModCall
 
 				if (Hit)
 				{
-					EGDHitReactDirection HitDirection = TargetCharacter->GetHitReactDirection(Data.EffectSpec.GetContext().GetHitResult()->Location);
-					switch (HitDirection)
+					switch (EGDHitReactDirection HitDirection = TargetCharacter->GetHitReactDirection(Data.EffectSpec.GetContext().GetHitResult()->Location))
 					{
 					case EGDHitReactDirection::Left:
 						TargetCharacter->PlayHitReact(HitDirectionLeftTag, SourceCharacter);
@@ -154,6 +153,7 @@ void UGDAttributeSetBase::PostGameplayEffectExecute(const FGameplayEffectModCall
 					case EGDHitReactDirection::Back:
 						TargetCharacter->PlayHitReact(HitDirectionBackTag, SourceCharacter);
 						break;
+					default: ;
 					}
 				}
 				else
