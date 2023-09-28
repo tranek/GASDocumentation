@@ -95,9 +95,9 @@ void AGDPlayerController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 
-	AGDPlayerState* PS = GetPlayerState<AGDPlayerState>();
-	if (PS)
+	if (AGDPlayerState* PS = GetPlayerState<AGDPlayerState>())
 	{
+		// 在服务器上设置 ASC（ASC 在 PlayerState 上的情况）TODO 感觉没有必要，因为 AI 没有 PlayerController ，而在 AGDHeroCharacter::PossessedBy 一定会设置好
 		// Init ASC with PS (Owner) and our new Pawn (AvatarActor)
 		PS->GetAbilitySystemComponent()->InitAbilityActorInfo(PS, InPawn);
 	}

@@ -21,6 +21,8 @@ AGDMinionCharacter::AGDMinionCharacter(const class FObjectInitializer& ObjectIni
 	// Set our parent's TWeakObjectPtr
 	AbilitySystemComponent = HardRefAbilitySystemComponent;
 
+	// AttributeSet 是默认复制的
+	// 当 AttributeSet 作为拥有 AbilitySystemComponent 的 OwningActor 的子对象时，会自动注册到 AbilitySystemComponent 上。
 	// Create the attribute set, this replicates by default
 	// Adding it as a subobject of the owning actor of an AbilitySystemComponent
 	// automatically registers the AttributeSet with the AbilitySystemComponent
@@ -50,6 +52,7 @@ void AGDMinionCharacter::BeginPlay()
 
 	if (AbilitySystemComponent.IsValid())
 	{
+		// 设置 ASC（ASC 在 Pawn 上的情况）
 		AbilitySystemComponent->InitAbilityActorInfo(this, this);
 		InitializeAttributes();
 		AddStartupEffects();
@@ -77,6 +80,7 @@ void AGDMinionCharacter::BeginPlay()
 		// Attribute change callbacks
 		HealthChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSetBase->GetHealthAttribute()).AddUObject(this, &AGDMinionCharacter::HealthChanged);
 
+		// 给眩晕标签的新增和移除添加回调
 		// Tag change callbacks
 		AbilitySystemComponent->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag(FName("State.Debuff.Stun")), EGameplayTagEventType::NewOrRemoved).AddUObject(this, &AGDMinionCharacter::StunTagChanged);
 	}

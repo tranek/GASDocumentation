@@ -84,6 +84,7 @@ void AGDHeroCharacter::PossessedBy(AController * NewController)
 		// Set the ASC on the Server. Clients do this in OnRep_PlayerState()
 		AbilitySystemComponent = Cast<UGDAbilitySystemComponent>(PS->GetAbilitySystemComponent());
 
+		// 在服务器上设置 ASC（ASC 在 PlayerState 的情况）
 		// AI won't have PlayerControllers so we can init again here just to be sure. No harm in initing twice for heroes that have PlayerControllers.
 		PS->GetAbilitySystemComponent()->InitAbilityActorInfo(PS, this);
 
@@ -97,6 +98,8 @@ void AGDHeroCharacter::PossessedBy(AController * NewController)
 		
 		// Respawn specific things that won't affect first possession.
 
+		// 在服务器上将 DeadTag 的计数手动设为 0
+		// TODO 为什么不使用 RemoveLooseGameplayTag()
 		// Forcibly set the DeadTag count to 0
 		AbilitySystemComponent->SetTagMapCount(DeadTag, 0);
 
@@ -275,6 +278,7 @@ void AGDHeroCharacter::OnRep_PlayerState()
 		// Set the ASC for clients. Server does this in PossessedBy.
 		AbilitySystemComponent = Cast<UGDAbilitySystemComponent>(PS->GetAbilitySystemComponent());
 
+		// 在客户端上设置 ASC（ASC 在 PlayerState 上的情况），这个函数可以保证此时客户端上存在 PlayerState
 		// Init ASC Actor Info for clients. Server will init its ASC when it possesses a new Actor.
 		AbilitySystemComponent->InitAbilityActorInfo(PS, this);
 
@@ -300,6 +304,8 @@ void AGDHeroCharacter::OnRep_PlayerState()
 
 		// Respawn specific things that won't affect first possession.
 
+		// 在服务器上将 DeadTag 的计数手动设为 0
+		// TODO 为什么不使用 RemoveLooseGameplayTag()
 		// Forcibly set the DeadTag count to 0
 		AbilitySystemComponent->SetTagMapCount(DeadTag, 0);
 
