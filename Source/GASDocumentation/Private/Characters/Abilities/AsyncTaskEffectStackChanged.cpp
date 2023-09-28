@@ -30,7 +30,11 @@ void UAsyncTaskEffectStackChanged::EndTask()
 		
 		if(ActiveEffectHandle.IsValid())
 		{
-			ASC->OnGameplayEffectStackChangeDelegate(ActiveEffectHandle)->RemoveAll(this);
+			if (FOnActiveGameplayEffectStackChange* OnActiveGameplayEffectStackChange = ASC->OnGameplayEffectStackChangeDelegate(ActiveEffectHandle))
+			{
+				OnActiveGameplayEffectStackChange->RemoveAll(this);
+			}
+			
 		}
 	}
 
