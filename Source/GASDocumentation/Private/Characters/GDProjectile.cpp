@@ -10,8 +10,8 @@ AGDProjectile::AGDProjectile()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	bReplicates = true;
-
+	// bReplicates = true;
+	
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(FName("ProjectileMovement"));
 }
 
@@ -19,6 +19,7 @@ AGDProjectile::AGDProjectile()
 void AGDProjectile::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	// SetReplicateMovement(true);
 }
 
