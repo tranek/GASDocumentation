@@ -3,7 +3,7 @@ My understanding of Unreal Engine 5's GameplayAbilitySystem plugin (GAS) with a 
 
 The goal of this documentation is to explain the major concepts and classes in GAS and provide some additional commentary based on my experience with it. There is a lot of 'tribal knowledge' of GAS among users in the community and I aim to share all of mine here.
 
-The Sample Project and documentation are current with **Unreal Engine 5.2**. There are branches of this documentation for older versions of Unreal Engine, but they are no longer supported and are liable to have bugs or out of date information.
+The Sample Project and documentation are current with **Unreal Engine 5.3**. There are branches of this documentation for older versions of Unreal Engine, but they are no longer supported and are liable to have bugs or out of date information.
 
 [GASShooter](https://github.com/tranek/GASShooter) is a sister Sample Project demonstrating advanced techniques with GAS for a multiplayer FPS/TPS.
 
@@ -3483,6 +3483,11 @@ level or something that each game has to solve on it's own?
 ## 12. GAS Changelog
 
 This is a list of notable changes (fixes, changes, and new features) to GAS compiled from the official Unreal Engine upgrade changelog and from undocumented changes that I've encountered. If you've found something that isn't listed here, please make an issue or pull request.
+
+<a name="changelog-5.2"></a>
+### 5.3
+
+https://docs.unrealengine.com/5.3/en-US/unreal-engine-5.3-release-notes/
 
 <a name="changelog-5.2"></a>
 ### 5.2
