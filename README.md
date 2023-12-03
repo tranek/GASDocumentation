@@ -21,6 +21,7 @@ The best documentation will always be the plugin source code.
 >    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.1.2 [Setup and Initialization](#concepts-asc-setup)  
 >    4.2 [Gameplay Tags](#concepts-gt)  
 >    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.2.1 [Responding to Changes in Gameplay Tags](#concepts-gt-change)  
+>    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.2.2 [Loading Gameplay Tags from Plugin .ini Files](#concepts-gt-loadfromplugin)  
 >    4.3 [Attributes](#concepts-a)  
 >    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.3.1 [Attribute Definition](#concepts-a-definition)  
 >    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.3.2 [BaseValue vs CurrentValue](#concepts-a-value)  
@@ -466,6 +467,28 @@ The callback function has a parameter for the `GameplayTag` and the new `TagCoun
 ```c++
 virtual void StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
 ```
+
+**[⬆ Back to Top](#table-of-contents)**
+
+<a name="concepts-gt-loadfromplugin"></a>
+### 4.2.2 Loading Gameplay Tags from Plugin .ini Files
+If you create a plugin with its own .ini files with `GameplayTags`, you can load that plugin's `GameplayTag` .ini directory in your plugin's `StartupModule()` function.
+
+For example, this is how the CommonConversation plugin that comes with Unreal Engine does it:
+
+```c++
+void FCommonConversationRuntimeModule::StartupModule()
+{
+	TSharedPtr<IPlugin> ThisPlugin = IPluginManager::Get().FindPlugin(TEXT("CommonConversation"));
+	check(ThisPlugin.IsValid());
+	
+	UGameplayTagsManager::Get().AddTagIniSearchPath(ThisPlugin->GetBaseDir() / TEXT("Config") / TEXT("Tags"));
+
+	//...
+}
+```
+
+This would look for the directory `Plugins\CommonConversation\Config\Tags` and load any .ini files with `GameplayTags` in them into your project when the Engine starts up if the plugin is enabled.
 
 **[⬆ Back to Top](#table-of-contents)**
 
