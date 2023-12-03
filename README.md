@@ -3,7 +3,7 @@ My understanding of Unreal Engine 5's GameplayAbilitySystem plugin (GAS) with a 
 
 The goal of this documentation is to explain the major concepts and classes in GAS and provide some additional commentary based on my experience with it. There is a lot of 'tribal knowledge' of GAS among users in the community and I aim to share all of mine here.
 
-The Sample Project and documentation are current with **Unreal Engine 5.3**. There are branches of this documentation for older versions of Unreal Engine, but they are no longer supported and are liable to have bugs or out of date information.
+The Sample Project and documentation are current with **Unreal Engine 5.3** (UE5). There are branches of this documentation for older versions of Unreal Engine, but they are no longer supported and are liable to have bugs or out of date information. Please use the branch that matches your engine version.
 
 [GASShooter](https://github.com/tranek/GASShooter) is a sister Sample Project demonstrating advanced techniques with GAS for a multiplayer FPS/TPS.
 
@@ -176,7 +176,7 @@ The best documentation will always be the plugin source code.
 From the [Official Documentation](https://docs.unrealengine.com/en-US/Gameplay/GameplayAbilitySystem/index.html):
 >The Gameplay Ability System is a highly-flexible framework for building abilities and attributes of the type you might find in an RPG or MOBA title. You can build actions or passive abilities for the characters in your games to use, status effects that can build up or wear down various attributes as a result of these actions, implement "cooldown" timers or resource costs to regulate the usage of these actions, change the level of the ability and its effects at each level, activate particle or sound effects, and more. Put simply, this system can help you to design, implement, and efficiently network in-game abilities as simple as jumping or as complex as your favorite character's ability set in any modern RPG or MOBA title.
 
-The GameplayAbilitySystem plugin is developed by Epic Games and comes with Unreal Engine 5 (UE5). It has been battle tested in AAA commercial games such as Paragon and Fortnite among others.
+The GameplayAbilitySystem plugin is developed by Epic Games and comes with Unreal Engine. It has been battle tested in AAA commercial games such as Paragon and Fortnite among others.
 
 The plugin provides an out-of-the-box solution in single and multiplayer games for:
 * Implementing level-based character abilities or skills with optional costs and cooldowns ([GameplayAbilities](#concepts-ga))
@@ -205,7 +205,7 @@ Current issues with GAS:
 
 <a name="sp"></a>
 ## 2. Sample Project
-A multiplayer third person shooter sample project is included with this documentation aimed at people new to the GameplayAbilitySystem Plugin but not new to Unreal Engine 5. Users are expected to know C++, Blueprints, UMG, Replication, and other intermediate topics in UE5. This project provides an example of how to set up a basic third person shooter multiplayer-ready project with the `AbilitySystemComponent` (`ASC`) on the `PlayerState` class for player/AI controlled heroes and the `ASC` on the `Character` class for AI controlled minions.
+A multiplayer third person shooter sample project is included with this documentation aimed at people new to the GameplayAbilitySystem Plugin but not new to Unreal Engine. Users are expected to know C++, Blueprints, UMG, Replication, and other intermediate topics in UE. This project provides an example of how to set up a basic third person shooter multiplayer-ready project with the `AbilitySystemComponent` (`ASC`) on the `PlayerState` class for player/AI controlled heroes and the `ASC` on the `Character` class for AI controlled minions.
 
 The goal is to keep this project simple while showing the GAS basics and demonstrating some commonly requested abilities with well-commented code. Because of its beginner focus, the project does not show advanced topics like [predicting projectiles](#concepts-p-spawn).
 
@@ -425,7 +425,7 @@ Multiple `GameplayTags` can be stored in an `FGameplayTagContainer`. It is prefe
 
 `GameplayTags` stored in `FGameplayTagCountContainer` have a `TagMap` that stores the number of instances of that `GameplayTag`. A `FGameplayTagCountContainer` may still have the `GameplayTag` in it but its `TagMapCount` is zero. You may encounter this while debugging if an `ASC` still has a `GameplayTag`. Any of the `HasTag()` or `HasMatchingTag()` or similar functions will check the `TagMapCount` and return false if the `GameplayTag` is not present or its `TagMapCount` is zero.
 
-`GameplayTags` must be defined ahead of time in the `DefaultGameplayTags.ini`. The UE5 Editor provides an interface in the project settings to let developers manage `GameplayTags` without needing to manually edit the `DefaultGameplayTags.ini`. The `GameplayTag` editor can create, rename, search for references, and delete `GameplayTags`.
+`GameplayTags` must be defined ahead of time in the `DefaultGameplayTags.ini`. The Unreal Engine Editor provides an interface in the project settings to let developers manage `GameplayTags` without needing to manually edit the `DefaultGameplayTags.ini`. The `GameplayTag` editor can create, rename, search for references, and delete `GameplayTags`.
 
 ![GameplayTag Editor in Project Settings](https://github.com/tranek/GASDocumentation/raw/master/Images/gameplaytageditor.png)
 
@@ -1904,7 +1904,7 @@ To activate a `GameplayAbility` by event, the `GameplayAbility` must have its `T
 
 `GameplayAbility` `Triggers` also allow you to activate the `GameplayAbility` when a `GameplayTag` is added or removed.
 
-**Note:** When activating a `GameplayAbility` from event in Blueprint, you must use the `ActivateAbilityFromEvent` node and the standard `ActivateAbility` node **cannot exist** in your graph. If the `ActivateAbility` node exists, it will always be called over the `ActivateAbilityFromEvent` node.
+**Note:** When activating a `GameplayAbility` from event in Blueprint, you must use the `ActivateAbilityFromEvent` node.
 
 **Note:** Don't forget to call `EndAbility()` when the `GameplayAbility` should terminate unless you have a `GameplayAbility` that will always run like a passive ability.
 
@@ -2539,7 +2539,7 @@ Epic's mindset is to only predict what you "can get away with". For example, Par
 >    * GameplayTag modification
 > * Gameplay Cue events (both from within predictive gameplay effect and on their own)
 > * Montages
-> * Movement (built into UE5 UCharacterMovement)
+> * Movement (built into UE's UCharacterMovement)
 
 **What is not predicted:**
 > * GameplayEffect removal
@@ -3485,8 +3485,49 @@ level or something that each game has to solve on it's own?
 
 This is a list of notable changes (fixes, changes, and new features) to GAS compiled from the official Unreal Engine upgrade changelog and from undocumented changes that I've encountered. If you've found something that isn't listed here, please make an issue or pull request.
 
-<a name="changelog-5.2"></a>
+<a name="changelog-5.3"></a>
 ### 5.3
+* Crash Fix: Fixed a crash when trying to apply Gameplay Cues after a seamless travel.
+* Crash Fix: Fixed a crash caused by GlobalAbilityTaskCount when using Live Coding.
+* Crash Fix: Fixed UAbilityTask::OnDestroy to not crash if called recursively for cases like UAbilityTask_StartAbilityState.
+* Bug Fix: It is now safe to call `Super::ActivateAbility` in a child class. Previously, it would call `CommitAbility`.
+* Bug Fix: Added support for properly replicating different types of FGameplayEffectContext.
+* Bug Fix: FGameplayEffectContextHandle will now check if data is valid before retrieving "Actors".
+* Bug Fix: Retain rotation for Gameplay Ability System Target Data LocationInfo.
+* Bug Fix: Gameplay Ability System now stops searching for PC only if a valid PC is found.
+* Bug Fix: Use existing GameplayCueParameters if it exists instead of default parameters object in RemoveGameplayCue_Internal.
+* Bug Fix: GameplayAbilityWorldReticle now faces towards the source Actor instead of the TargetingActor.
+* Bug Fix: Cache trigger event data if it was passed in with GiveAbilityAndActivateOnce and the ability list was locked.
+* Bug Fix: Support has been added for the FInheritedGameplayTags to update its CombinedTags immediately rather than waiting until a Save.
+* Bug Fix: Moved ShouldAbilityRespondToEvent from client-only code path to both server and client.
+* Bug Fix: Fixed FAttributeSetInitterDiscreteLevels from not working in Cooked Builds due to Curve Simplification.
+* Bug Fix: Set CurrentEventData in GameplayAbility.
+* Bug Fix: Ensure MinimalReplicationTags are set up correctly before potentially executing callbacks.
+* Bug Fix: Fixed ShouldAbilityRespondToEvent from not getting called on the instanced GameplayAbility.
+* Bug Fix: Gameplay Cue Notify Actors executing on Child Actors no longer leak memory when gc.PendingKill is disabled.
+* Bug Fix: Fixed an issue in GameplayCueManager where GameplayCueNotify_Actors could be 'lost' due to hash collisions.
+* Bug Fix: WaitGameplayTagQuery will now respect its Query even if we have no Gameplay Tags on the Actor.
+* Bug Fix: PostAttributeChange and AttributeValueChangeDelegates will now have the correct OldValue.
+* Bug Fix: Fixed FGameplayTagQuery from not showing a proper Query Description if the struct was created by native code.
+* Bug Fix: Ensure that the UAbilitySystemGlobals::InitGlobalData is called if the Ability System is in use. Previously if the user did not call it, the Gameplay Ability System did not function correctly.
+* Bug Fix: Fixed issue when linking/unlinking anim layers from UGameplayAbility::EndAbility.
+* Bug Fix: Updated Ability System Component function to check the Spec's ability pointer before use.
+* New: Added a GameplayTagQuery field to FGameplayTagRequirements to enable more complex requirements to be specified.
+* New: Introduced FGameplayEffectQuery::SourceAggregateTagQuery to augment SourceTagQuery.
+* New: Extended the functonality to execute and cancel Gameplay Abilities & Gameplay Effects from a console command.
+* New: Added the ability to perform an "Audit" on Gameplay Ability Blueprints that will show information on how they're developed and intended to be used.
+* Change: OnAvatarSet is now called on the primary instance instead of the CDO for instanced per Actor Gameplay Abilities.
+* Change: Allow both Activate Ability and Activate Ability From Event in the same Gameplay Ability Graph.
+* Change: AnimTask_PlayMontageAndWait now has a toggle to allow Completed and Interrupted after a BlendOut event.
+* Change: ModMagnitudeCalc wrapper functions have been declared const.
+* Change: FGameplayTagQuery::Matches now returns false for empty queries.
+* Change: Updated FGameplayAttribute::PostSerialize to mark the contained attribute as a searchable name.
+* Change: Updated GetAbilitySystemComponent to default parameter to Self.
+* Change: Marked functions as virtual in AbilityTask_WaitTargetData.
+* Change: Removed unused function FGameplayAbilityTargetData::AddTargetDataToGameplayCueParameters.
+* Change: Removed vestigial GameplayAbility::SetMovementSyncPoint.
+* Change: Removed unused replication flag from Gameplay tasks & Ability system components.
+* Change: Moved some gameplay effect functionality into optional components. All existing content will automatically update to use components during PostCDOCompiled, if necessary.
 
 https://docs.unrealengine.com/5.3/en-US/unreal-engine-5.3-release-notes/
 
