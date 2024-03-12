@@ -428,7 +428,7 @@ Multiple `GameplayTags` can be stored in an `FGameplayTagContainer`. It is prefe
 
 `GameplayTags` must be defined ahead of time in the `DefaultGameplayTags.ini`. The Unreal Engine Editor provides an interface in the project settings to let developers manage `GameplayTags` without needing to manually edit the `DefaultGameplayTags.ini`. The `GameplayTag` editor can create, rename, search for references, and delete `GameplayTags`.
 
-![GameplayTag Editor in Project Settings](https://github.com/tranek/GASDocumentation/raw/master/Images/gameplaytageditor.png)
+![GameplayTag Editor in Project Settings](./Images/gameplaytageditor.png)
 
 Searching for `GameplayTag` references will bring up the familiar `Reference Viewer` graph in the Editor showing all the assets that reference the `GameplayTag`. This will not however show any C++ classes that reference the `GameplayTag`.
 
@@ -541,7 +541,7 @@ The Sample Project binds to the `Attribute` value changed delegates on the `GDPl
 
 A custom Blueprint node that wraps this into an `ASyncTask` is included in the Sample Project. It is used in the `UI_HUD` UMG Widget to update the health, mana, and stamina values. This `AsyncTask` will live forever until manually called `EndTask()`, which we do in the UMG Widget's `Destruct` event. See `AsyncTaskAttributeChanged.h/cpp`.
 
-![Listen for Attribute Change BP Node](https://github.com/tranek/GASDocumentation/raw/master/Images/attributechange.png)
+![Listen for Attribute Change BP Node](./Images/attributechange.png)
 
 **[⬆ Back to Top](#table-of-contents)**
 
@@ -559,7 +559,7 @@ The final formula for all the `Modifiers` on a `Derived Attribute` is the same f
 
 In this example, we have an `Infinite` `GameplayEffect` that derives the value of `TestAttrA` from the `Attributes`, `TestAttrB` and `TestAttrC`, in the formula `TestAttrA = (TestAttrA + TestAttrB) * ( 2 * TestAttrC)`. `TestAttrA` recalculates its value automatically whenever any of the `Attributes` update their values.
 
-![Derived Attribute Example](https://github.com/tranek/GASDocumentation/raw/master/Images/derivedattribute.png)
+![Derived Attribute Example](./Images/derivedattribute.png)
 
 **[⬆ Back to Top](#table-of-contents)**
 
@@ -921,7 +921,7 @@ There are four types of `Modifiers`: Scalable Float, Attribute Based, Custom Cal
 
 | `Modifier` Type            | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Scalable Float`           | `FScalableFloats` are a structure that can point to a Data Table that has the variables as rows and levels as columns. The Scalable Floats will automatically read the value of the specified table row at the ability's current level (or different level if overriden on the [`GameplayEffectSpec`](#concepts-ge-spec)). This value can further be manipulated by a coefficient. If no Data Table/Row is specified, it treats the value as a 1 so the coefficient can be used to hard code in a single value at all levels. ![ScalableFloat](https://github.com/tranek/GASDocumentation/raw/master/Images/scalablefloats.png)                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| `Scalable Float`           | `FScalableFloats` are a structure that can point to a Data Table that has the variables as rows and levels as columns. The Scalable Floats will automatically read the value of the specified table row at the ability's current level (or different level if overriden on the [`GameplayEffectSpec`](#concepts-ge-spec)). This value can further be manipulated by a coefficient. If no Data Table/Row is specified, it treats the value as a 1 so the coefficient can be used to hard code in a single value at all levels. ![ScalableFloat](./Images/scalablefloats.png)                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | `Attribute Based`          | `Attribute Based` `Modifiers` take the `CurrentValue` or `BaseValue` of a backing `Attribute` on the `Source` (who created the `GameplayEffectSpec`) or `Target` (who received the `GameplayEffectSpec`) and further modifies it with a coefficient and pre and post coefficient additions. `Snapshotting` means the backing `Attribute` is captured when the `GameplayEffectSpec` is created whereas no snapshotting means the `Attribute` is captured when the `GameplayEffectSpec` is applied.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 | `Custom Calculation Class` | `Custom Calculation Class` provides the most flexibility for complex `Modifiers`. This `Modifier` takes a [`ModifierMagnitudeCalculation`](#concepts-ge-mmc) class and can further manipulate the resulting float value with a coefficient and pre and post coefficient additions.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | `Set By Caller`            | `SetByCaller` `Modifiers` are values that are set outside of the `GameplayEffect` at runtime by the ability or whoever made the `GameplayEffectSpec` on the `GameplayEffectSpec`. For example, you would use a `SetByCaller` if you want to set the damage to be based on how long the player held down a button to charge the ability. `SetByCallers` are essentially `TMap<FGameplayTag, float>` that live on the `GameplayEffectSpec`. The `Modifier` is just telling the `Aggregator` to look for a `SetByCaller` value associated with the supplied `GameplayTag`. The `SetByCallers` used by `Modifiers` can only use the `GameplayTag` version of the concept. The `FName` version is disabled here. If the `Modifier` is set to `SetByCaller` but a `SetByCaller` with the correct `GameplayTag` does not exist on the `GameplayEffectSpec`, the game will throw a runtime error and return a value of 0. This might cause issues in the case of a `Divide` operation. See [`SetByCallers`](#concepts-ge-spec-setbycaller) for more information on how to use `SetByCallers`. |
@@ -1051,7 +1051,7 @@ Stacks also have policies for expiration, duration refresh, and period reset. Th
 
 The Sample Project includes a custom Blueprint node that listens for `GameplayEffect` stack changes. The HUD UMG Widget uses it to update the amount of passive armor stacks that the player has. This `AsyncTask` will live forever until manually called `EndTask()`, which we do in the UMG Widget's `Destruct` event. See `AsyncTaskEffectStackChanged.h/cpp`.
 
-![Listen for GameplayEffect Stack Change BP Node](https://github.com/tranek/GASDocumentation/raw/master/Images/gestackchange.png)
+![Listen for GameplayEffect Stack Change BP Node](./Images/gestackchange.png)
 
 **[⬆ Back to Top](#table-of-contents)**
 
@@ -1128,7 +1128,7 @@ Notable `GameplayEffectSpec` Contents:
 
 To assign `SetByCaller` values in Blueprint, use the Blueprint node for the version that you need (`GameplayTag` or `FName`):
 
-![Assigning SetByCaller](https://github.com/tranek/GASDocumentation/raw/master/Images/setbycaller.png)
+![Assigning SetByCaller](./Images/setbycaller.png)
 
 To read a `SetByCaller` value in Blueprint, you will need to make custom nodes in your Blueprint Library.
 
@@ -1288,7 +1288,7 @@ If you want to hardcode values to a `GameplayEffect`, you can pass them in using
 
 In this screenshot example, we're adding 50 to the captured Damage `Attribute`. You could also set this to `Override` to just take in only the hardcoded value.
 
-![Backing Data Attribute Calculation Modifier](https://github.com/tranek/GASDocumentation/raw/master/Images/calculationmodifierbackingdataattribute.png)
+![Backing Data Attribute Calculation Modifier](./Images/calculationmodifierbackingdataattribute.png)
 
 The `ExecutionCalculation` reads this value in when it captures the `Attribute`.
 
@@ -1304,7 +1304,7 @@ If you want to hardcode values to a `GameplayEffect`, you can pass them in using
 
 In this screenshot example, we're adding 50 to a `Temporary Variable` using the `Data.Damage` `GameplayTag`.
 
-![Backing Data Temporary Variable Calculation Modifier](https://github.com/tranek/GASDocumentation/raw/master/Images/calculationmodifierbackingdatatempvariable.png)
+![Backing Data Temporary Variable Calculation Modifier](./Images/calculationmodifierbackingdatatempvariable.png)
 
 Add backing `Temporary Variables` to your `ExecutionCalculation`'s constructor:
 
@@ -1388,7 +1388,7 @@ UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Cost")
 FScalableFloat Cost;
 ```
 
-![Cost GE With MMC](https://github.com/tranek/GASDocumentation/raw/master/Images/costmmc.png)
+![Cost GE With MMC](./Images/costmmc.png)
 
 2. **Override `UGameplayAbility::GetCostGameplayEffect()`.** Override this function and [create a `GameplayEffect` at runtime](#concepts-ge-dynamic) that reads the cost value on the `GameplayAbility`.
 
@@ -1449,7 +1449,7 @@ void UPGGameplayAbility::ApplyCooldown(const FGameplayAbilitySpecHandle Handle, 
 
 In this picture, the cooldown's duration `Modifier` is set to `SetByCaller` with a `Data Tag` of `Data.Cooldown`. `Data.Cooldown` would be `OurSetByCallerTag` in the code above.
 
-![Cooldown GE with SetByCaller](https://github.com/tranek/GASDocumentation/raw/master/Images/cooldownsbc.png)
+![Cooldown GE with SetByCaller](./Images/cooldownsbc.png)
 
 2. **Use an [`MMC`](#concepts-ge-mmc).** This has the same setup as above except for setting the `SetByCaller` as the duration on the `Cooldown GE` and in `ApplyCooldown`. Instead, set the duration to be a `Custom Calculation Class` and point to the new `MMC` that we will make.
 ```c++
@@ -1509,7 +1509,7 @@ float UPGMMC_HeroAbilityCooldown::CalculateBaseMagnitude_Implementation(const FG
 }
 ```
 
-![Cooldown GE with MMC](https://github.com/tranek/GASDocumentation/raw/master/Images/cooldownmmc.png)
+![Cooldown GE with MMC](./Images/cooldownmmc.png)
 
 **[⬆ Back to Top](#table-of-contents)**
 
@@ -1561,7 +1561,7 @@ To listen for when a cooldown ends, you can either respond to when the `Cooldown
 
 The Sample Project includes a custom Blueprint node that listens for cooldowns beginning and ending. The HUD UMG Widget uses it to update the amount of time remaining on the Meteor's cooldown. This `AsyncTask` will live forever until manually called `EndTask()`, which we do in the UMG Widget's `Destruct` event. See [`AsyncTaskCooldownChanged.h/cpp`](Source/GASDocumentation/Private/Characters/Abilities/AsyncTaskCooldownChanged.cpp).
 
-![Listen for Cooldown Change BP Node](https://github.com/tranek/GASDocumentation/raw/master/Images/cooldownchange.png)
+![Listen for Cooldown Change BP Node](./Images/cooldownchange.png)
 
 <a name="concepts-ge-cooldown-prediction"></a>
 ##### 4.5.15.3 Predicting Cooldowns
@@ -1703,7 +1703,7 @@ Epic's [Action RPG Sample Project](https://www.unrealengine.com/marketplace/en-U
 
 To access the `GESpecs` inside of the `GameplayEffectContainers` to do things like adding `SetByCallers`, break the `FGameplayEffectContainer` and access the `GESpec` reference by its index in the array of `GESpecs`. This requires that you know the index ahead of time of the `GESpec` that you want to access.
 
-![SetByCaller with a GameplayEffectContainer](https://github.com/tranek/GASDocumentation/raw/master/Images/gecontainersetbycaller.png)
+![SetByCaller with a GameplayEffectContainer](./Images/gecontainersetbycaller.png)
 
 `GameplayEffectContainers` also contain an optional efficient means of [targeting](#concepts-targeting-containers).
 
@@ -1739,11 +1739,11 @@ These are not rules, just my recommendations. Your design and implementations ma
 All `GameplayAbilities` will have their `ActivateAbility()` function overriden with your gameplay logic. Additional logic can be added to `EndAbility()` that runs when the `GameplayAbility` completes or is canceled.
 
 Flowchart of a simple `GameplayAbility`:
-![Simple GameplayAbility Flowchart](https://github.com/tranek/GASDocumentation/raw/master/Images/abilityflowchartsimple.png)
+![Simple GameplayAbility Flowchart](./Images/abilityflowchartsimple.png)
 
 
 Flowchart of a more complex `GameplayAbility`:
-![Complex GameplayAbility Flowchart](https://github.com/tranek/GASDocumentation/raw/master/Images/abilityflowchartcomplex.png)
+![Complex GameplayAbility Flowchart](./Images/abilityflowchartcomplex.png)
 
 Complex abilities can be implemented using multiple `GameplayAbilities` that interact (activate, cancel, etc) with each other.
 
@@ -2008,7 +2008,7 @@ LogAbilitySystem: Display: InternalServerTryActivateAbility. Rejecting ClientAct
 LogAbilitySystem: Display: ClientActivateAbilityFailed_Implementation. PredictionKey :109 Ability: Default__GA_FireGun_C
 ```
 
-![Activation Failed Tags Displayed in showdebug AbilitySystem](https://github.com/tranek/GASDocumentation/raw/master/Images/activationfailedtags.png)
+![Activation Failed Tags Displayed in showdebug AbilitySystem](./Images/activationfailedtags.png)
 
 **[⬆ Back to Top](#table-of-contents)**
 
@@ -2208,7 +2208,7 @@ GASShooter reuses the same batched `GameplayAbility` for semi-automatic and full
 
 GASShooter exposes a Blueprint node to allow batching abilities which the aforementioned local-only ability uses to trigger the batched ability.
 
-![Activate Batched Ability](https://github.com/tranek/GASDocumentation/raw/master/Images/batchabilityactivate.png)
+![Activate Batched Ability](./Images/batchabilityactivate.png)
 
 **[⬆ Back to Top](#table-of-contents)**
 
@@ -2281,7 +2281,7 @@ Task->ReadyForActivation();
 
 In Blueprint, we just use the Blueprint node that we create for the `AbilityTask`. We don't have to call `ReadyForActivation()`. That is automatically called by `Engine/Source/Editor/GameplayTasksEditor/Private/K2Node_LatentGameplayTaskCall.cpp`. `K2Node_LatentGameplayTaskCall` also automatically calls `BeginSpawningActor()` and `FinishSpawningActor()` if they exist in your `AbilityTask` class (see `AbilityTask_WaitTargetData`). To reiterate, `K2Node_LatentGameplayTaskCall` only does automagic sorcery for Blueprint. In C++, we have to manually call `ReadyForActivation()`, `BeginSpawningActor()`, and `FinishSpawningActor()`.
 
-![Blueprint WaitTargetData AbilityTask](https://github.com/tranek/GASDocumentation/raw/master/Images/abilitytask.png)
+![Blueprint WaitTargetData AbilityTask](./Images/abilitytask.png)
 
 To manually cancel an `AbilityTask`, just call `EndTask()` on the `AbilityTask` object in Blueprint (called `Async Task Proxy`) or in C++.
 
@@ -2328,11 +2328,11 @@ The Sample Project includes a `GameplayCueNotify_Actor` for stun and sprint effe
 
 From inside of a `GameplayEffect` when it is successfully applied (not blocked by tags or immunity), fill in the `GameplayTags` of all the `GameplayCues` that should be triggered.
 
-![GameplayCue Triggered from a GameplayEffect](https://github.com/tranek/GASDocumentation/raw/master/Images/gcfromge.png)
+![GameplayCue Triggered from a GameplayEffect](./Images/gcfromge.png)
 
 `UGameplayAbility` offers Blueprint nodes to `Execute`, `Add`, or `Remove` `GameplayCues`.
 
-![GameplayCue Triggered from a GameplayAbility](https://github.com/tranek/GASDocumentation/raw/master/Images/gcfromga.png)
+![GameplayCue Triggered from a GameplayAbility](./Images/gcfromga.png)
 
 In C++, you can call functions directly on the `ASC` (or expose them to Blueprint in your `ASC` subclass):
 
@@ -2836,7 +2836,7 @@ FGameplayTargetDataFilterHandle UGDTargetDataFilterBlueprintLibrary::MakeGDNameF
 [`AGameplayAbilityWorldReticles`](https://docs.unrealengine.com/en-US/API/Plugins/GameplayAbilities/Abilities/AGameplayAbilityWorldReticle/index.html) (`Reticles`) visualize **who** you are targeting when targeting with non-`Instant` confirmed [`TargetActors`](#concepts-targeting-actors). `TargetActors` are responsible for the spawn and destroy lifetimes for all `Reticles`. `Reticles` are `AActors` so they can use any kind of visual component for representation. A common implementation as seen in [GASShooter](https://github.com/tranek/GASShooter) is to use a `WidgetComponent` to display a UMG Widget in screen space (always facing the player's camera). `Reticles` do not know which `AActor` that they're on, but you could subclass in that functionality on a custom `TargetActor`. `TargetActors` will typically update the `Reticle`'s location to the target's location on every `Tick()`.
 
 GASShooter uses `Reticles` to show locked-on targets for the rocket launcher's secondary ability's homing rockets. The red indicator on the enemy is the `Reticle`. The similar white image is the rocket launcher's crosshair.
-![Reticles in GASShooter](https://github.com/tranek/GASDocumentation/raw/master/Images/gameplayabilityworldreticle.png)
+![Reticles in GASShooter](./Images/gameplayabilityworldreticle.png)
 
 `Reticles` come with a handful of `BlueprintImplementableEvents` for designers (they're intended to be developed in Blueprints):
 
@@ -3000,13 +3000,13 @@ UE_ENABLE_OPTIMIZATION
 Type `showdebug abilitysystem` in the in-game console. This feature is split into three "pages". All three pages will show the `GameplayTags` that you currently have. Type `AbilitySystem.Debug.NextCategory` into the console to cycle between the pages.
 
 The first page shows the `CurrentValue` of all of your `Attributes`:
-![First Page of showdebug abilitysystem](https://github.com/tranek/GASDocumentation/raw/master/Images/showdebugpage1.png)
+![First Page of showdebug abilitysystem](./Images/showdebugpage1.png)
 
 The second page shows all of the `Duration` and `Infinite` `GameplayEffects` on you, their number of stacks, what `GameplayTags` they give, and what `Modifiers` they give.
-![Second Page of showdebug abilitysystem](https://github.com/tranek/GASDocumentation/raw/master/Images/showdebugpage2.png)
+![Second Page of showdebug abilitysystem](./Images/showdebugpage2.png)
 
 The third page shows all of the `GameplayAbilities` that have been granted to you, whether they are currently running, whether they are blocked from activating, and the status of currently running `AbilityTasks`.
-![Third Page of showdebug abilitysystem](https://github.com/tranek/GASDocumentation/raw/master/Images/showdebugpage3.png)
+![Third Page of showdebug abilitysystem](./Images/showdebugpage3.png)
 
 To cycle between targets (denoted by a green rectangular prism around the Actor), use the `PageUp` key or `NextDebugTarget` console command to go to the next target and the `PageDown` key or `PreviousDebugTarget` console command to go to the previous target.
 
@@ -3026,7 +3026,7 @@ GAS adds functionality to the Gameplay Debugger. Access the Gameplay Debugger wi
 
 Use the Gameplay Debugger when you want to see the `GameplayTags`, `GameplayEffects`, and `GameplayAbilities` on **other** `Characters`. Unfortunately it does not show the `CurrentValue` of the target's `Attributes`. It will target whatever `Character` is in the center of your screen. You can change targets by selecting them in the World Outliner in the Editor or by looking at a different `Character` and press Apostrophe (') again. The currently inspected `Character` has the largest red circle above it.
 
-![Gameplay Debugger](https://github.com/tranek/GASDocumentation/raw/master/Images/gameplaydebugger.png)
+![Gameplay Debugger](./Images/gameplaydebugger.png)
 
 **[⬆ Back to Top](#table-of-contents)**
 
@@ -3115,15 +3115,15 @@ To increase designer-friendly iteration times, especially when designing UMG Wid
 
 Listen for `Attribute` changes:
 
-![Listen for Attributes Changes BP Node](https://github.com/tranek/GASDocumentation/raw/master/Images/attributeschange.png)
+![Listen for Attributes Changes BP Node](./Images/attributeschange.png)
 
 Listen for cooldown changes:
 
-![Listen for Cooldown Change BP Node](https://github.com/tranek/GASDocumentation/raw/master/Images/cooldownchange.png)
+![Listen for Cooldown Change BP Node](./Images/cooldownchange.png)
 
 Listen for `GE` stack changes:
 
-![Listen for GameplayEffect Stack Change BP Node](https://github.com/tranek/GASDocumentation/raw/master/Images/gestackchange.png)
+![Listen for GameplayEffect Stack Change BP Node](./Images/gestackchange.png)
 
 **[⬆ Back to Top](#table-of-contents)**
 
