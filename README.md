@@ -3204,7 +3204,7 @@ As a reminder, the `ASC` only ever expects at most one `AttributeSet` object per
 **[⬆ Back to Top](#table-of-contents)**
 
 <a name="troubleshooting-unresolvedexternalsymbolmarkpropertydirty"></a>
-### 9.5 unresolved external symbol UEPushModelPrivate::MarkPropertyDirty(int,int)
+### 9.5 Unresolved external symbol UEPushModelPrivate::MarkPropertyDirty(int,int)
 
 If you get a compiler error like:
 
