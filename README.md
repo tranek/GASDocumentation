@@ -2001,6 +2001,16 @@ ActivateFailTagsBlockedName=Activation.Fail.BlockedByTags
 ActivateFailTagsMissingName=Activation.Fail.MissingTags
 ActivateFailNetworkingName=Activation.Fail.Networking
 ```
+**Note**: In 5.5, those "Name" config variables have been deprecated and are replaced with their FGameplayTag counterparts, configured directly in the editor:
+```
+/** TryActivate failed due to not being able to spend costs */
+    UPROPERTY()
+    FGameplayTag ActivateFailCostTag; 
+    
+    UE_DEPRECATED(5.5, "Configure this variable through the Project Settings (it will map to ActivateFailCostTag)")
+    UPROPERTY(config)
+    FName ActivateFailCostName;
+```
 
 Now whenever an ability activation fails, this corresponding GameplayTag will be included in output log messages or visible on the `showdebug AbilitySystem` hud.
 ```
