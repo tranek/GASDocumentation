@@ -690,6 +690,8 @@ Limitations:
 #### 4.4.3 Defining Attributes
 **`Attributes` can only be defined in C++** in the `AttributeSet's` header file. It is recommended to add this block of macros to the top of every `AttributeSet` header file. It will automatically generate getter and setter functions for your `Attributes`.
 
+> **NOTE**: As of UE 5.6 the `ATTRIBUTE_ACCESORS` macro does not need to be defined manually since it is provided out of the box with the name `ATTRIBUTE_ACCESSORS_BASIC`. For older versions the following macro should be defined
+
 ```c++
 // Uses macros from AttributeSet.h
 #define ATTRIBUTE_ACCESSORS(ClassName, PropertyName) \
