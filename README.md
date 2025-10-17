@@ -22,6 +22,7 @@ The best documentation will always be the plugin source code.
 >    4.2 [Gameplay Tags](#concepts-gt)  
 >    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.2.1 [Responding to Changes in Gameplay Tags](#concepts-gt-change)  
 >    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.2.2 [Loading Gameplay Tags from Plugin .ini Files](#concepts-gt-loadfromplugin)  
+>    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.2.3 [Remapping Gameplay Tag Categories](#concepts-gt-categoryremapping)  
 >    4.3 [Attributes](#concepts-a)  
 >    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.3.1 [Attribute Definition](#concepts-a-definition)  
 >    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.3.2 [BaseValue vs CurrentValue](#concepts-a-value)  
@@ -489,6 +490,37 @@ void FCommonConversationRuntimeModule::StartupModule()
 ```
 
 This would look for the directory `Plugins\CommonConversation\Config\Tags` and load any .ini files with `GameplayTags` in them into your project when the Engine starts up if the plugin is enabled.
+
+**[⬆ Back to Top](#table-of-contents)**
+
+<a name="concepts-gt-categoryremapping"></a>
+### 4.2.3 Remapping Gameplay Tag Categories
+
+GAS will mark `GameplayTag` properties with the meta tag `Categories` to help filter the tags that should be used with the given property. For example: 
+
+```c++
+	// Inside of UGameplayAbility
+
+	/** Abilities with these tags are blocked while this ability is active */
+	UPROPERTY(EditDefaultsOnly, Category = Tags, meta=(Categories="AbilityTagCategory"))
+	FGameplayTagContainer BlockAbilitiesWithTag;
+
+	/** Tags to apply to activating owner while this ability is active. These are replicated if ReplicateActivationOwnedTags is enabled in AbilitySystemGlobals. */
+	UPROPERTY(EditDefaultsOnly, Category = Tags, meta=(Categories="OwnedTagsCategory"))
+	FGameplayTagContainer ActivationOwnedTags;
+```
+
+The intention with these is not that they map to a literal `GameplayTag` name, but rather that these are per project mappings that you remap to whatever tags you desire. You can map these categories to concrete tag paths using the `Category Remappings` project settings under the `GameplayTags` section of project settings. Each entry will have a `Base Category` that matches the name of one of the `Categories` meta tags and a set of `Remap Categories` being a list of a actual tag names to remap to. For example, if you map `AbilityTagCategory` to the tag `MyGame.Abilities` then when editing `BlockAbilitiesWithTag` on your abilities, only tags that are children of `MyGame.Abilities` will appear.
+
+Here's a list of all of these `Categories` used by the base GAS plugin:
+- TriggerTagCategory
+- AbilityTagCategory
+- OwnedTagsCategory
+- SourceTagsCategory
+- TargetTagsCategory
+- GameplayEventTagsCategory
+
+You can also use this meta tag in your own project to add your own `Categories`. This is mostly useful so that you can map multiple concrete tag path filters to a single category name used throughout your project.
 
 **[⬆ Back to Top](#table-of-contents)**
 
@@ -2305,6 +2337,8 @@ GAS comes with `AbilityTasks` for moving `Characters` over time for things like 
 We trigger `GameplayCues` by sending a corresponding `GameplayTag` with the **mandatory parent name of `GameplayCue.`** and an event type (`Execute`, `Add`, or `Remove`) to the `GameplayCueManager` via the `ASC`. `GameplayCueNotify` objects and other `Actors` that implement the `IGameplayCueInterface` can subscribe to these events based on the `GameplayCue's` `GameplayTag` (`GameplayCueTag`).
 
 **Note:** Just to reiterate, `GameplayCue` `GameplayTags` need to start with the parent `GameplayTag` of `GameplayCue`. So for example, a valid `GameplayCue` `GameplayTag` might be `GameplayCue.A.B.C`.
+
+If named properly, `GameplayCues` assets will have their `GameplayCue` `GameplayTag` automatically filled in. If you want a `GameplayCue` to be associated with the tag `GameplayCue.A.B.C` you can name your `GameplayCue` one of any `GameplayCue_A_B_C`, `GC_A_B_C`, or simply `A_B_C`. If the tag `GameplayCue.A.B.C` exists, the tag on the asset will be autmoatically filled. To see the implementation of where this occurs, see `UAbilitySystemGlobals::DeriveGameplayCueTagFromAssetName`.
 
 There are two classes of `GameplayCueNotifies`, `Static` and `Actor`. They respond to different events and different types of `GameplayEffects` can trigger them. Override the corresponding event with your logic.
 
