@@ -1,0 +1,650 @@
+{
+	"folders": [
+		{
+			"name": "GASDocumentation",
+			"path": "."
+		},
+		{
+			"name": "UE5",
+			"path": "E:\\UE_5.7"
+		}
+	],
+	"settings": {
+		"typescript.tsc.autoDetect": "off",
+		"npm.autoDetect": "off",
+		"terminal.integrated.env.windows": {
+			"PATH": "E:\\UE_5.7\\Engine\\Binaries\\ThirdParty\\DotNet\\8.0.412\\win-x64;${env:PATH}",
+			"DOTNET_ROOT": "E:\\UE_5.7\\Engine\\Binaries\\ThirdParty\\DotNet\\8.0.412\\win-x64",
+			"DOTNET_HOST_PATH": "E:\\UE_5.7\\Engine\\Binaries\\ThirdParty\\DotNet\\8.0.412\\win-x64\\dotnet.exe",
+			"DOTNET_MULTILEVEL_LOOKUP": "0",
+			"DOTNET_ROLL_FORWARD": "LatestMajor"
+		},
+		"clangd.detectExtensionConflicts": false,
+		"clangd.arguments": [
+			"-header-insertion=iwyu",
+			"-header-insertion-decorators=true",
+			"-all-scopes-completion=true",
+			"-limit-results=100",
+			"-background-index=true",
+			"-limit-references=2000",
+			"-completion-style=detailed",
+			"-function-arg-placeholders=true",
+			"-log=info"
+		],
+		"clangd.path": "c:\\Program Files\\LLVM\\bin\\clangd.exe",
+		"files.associations": {
+			"*.clangd": "yaml",
+			"*.clang-format": "yaml",
+			"*.clang-tidy": "yaml"
+		},
+		"workbench.colorCustomizations": {
+			"editorInlayHint.foreground": "#a2a2a2c0",
+			"editorInlayHint.background": "#00000000"
+		},
+		"editor.suggestFontSize": 0
+	},
+	"extensions": {
+		"recommendations": [
+			"ms-vscode.cpptools",
+			"ms-dotnettools.csharp"
+		]
+	},
+	"tasks": {
+		"version": "2.0.0",
+		"tasks": [
+			{
+				"label": "GASDocumentation Win64 Debug Build",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Build.bat",
+				"args": [
+					"GASDocumentation",
+					"Win64",
+					"Debug",
+					"E:\\Projects\\GASDocumentation\\GASDocumentation.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "E:\\UE_5.7"
+				}
+			},
+			{
+				"label": "GASDocumentation Win64 Debug Rebuild",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Build.bat",
+				"args": [
+					"GASDocumentation",
+					"Win64",
+					"Debug",
+					"E:\\Projects\\GASDocumentation\\GASDocumentation.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"dependsOn": [
+					"GASDocumentation Win64 Debug Clean"
+				],
+				"type": "shell",
+				"options": {
+					"cwd": "E:\\UE_5.7"
+				}
+			},
+			{
+				"label": "GASDocumentation Win64 Debug Clean",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Clean.bat",
+				"args": [
+					"GASDocumentation",
+					"Win64",
+					"Debug",
+					"E:\\Projects\\GASDocumentation\\GASDocumentation.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "E:\\UE_5.7"
+				}
+			},
+			{
+				"label": "GASDocumentation Win64 DebugGame Build",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Build.bat",
+				"args": [
+					"GASDocumentation",
+					"Win64",
+					"DebugGame",
+					"E:\\Projects\\GASDocumentation\\GASDocumentation.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "E:\\UE_5.7"
+				}
+			},
+			{
+				"label": "GASDocumentation Win64 DebugGame Rebuild",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Build.bat",
+				"args": [
+					"GASDocumentation",
+					"Win64",
+					"DebugGame",
+					"E:\\Projects\\GASDocumentation\\GASDocumentation.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"dependsOn": [
+					"GASDocumentation Win64 DebugGame Clean"
+				],
+				"type": "shell",
+				"options": {
+					"cwd": "E:\\UE_5.7"
+				}
+			},
+			{
+				"label": "GASDocumentation Win64 DebugGame Clean",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Clean.bat",
+				"args": [
+					"GASDocumentation",
+					"Win64",
+					"DebugGame",
+					"E:\\Projects\\GASDocumentation\\GASDocumentation.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "E:\\UE_5.7"
+				}
+			},
+			{
+				"label": "GASDocumentation Win64 Development Build",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Build.bat",
+				"args": [
+					"GASDocumentation",
+					"Win64",
+					"Development",
+					"E:\\Projects\\GASDocumentation\\GASDocumentation.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "E:\\UE_5.7"
+				}
+			},
+			{
+				"label": "GASDocumentation Win64 Development Rebuild",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Build.bat",
+				"args": [
+					"GASDocumentation",
+					"Win64",
+					"Development",
+					"E:\\Projects\\GASDocumentation\\GASDocumentation.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"dependsOn": [
+					"GASDocumentation Win64 Development Clean"
+				],
+				"type": "shell",
+				"options": {
+					"cwd": "E:\\UE_5.7"
+				}
+			},
+			{
+				"label": "GASDocumentation Win64 Development Clean",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Clean.bat",
+				"args": [
+					"GASDocumentation",
+					"Win64",
+					"Development",
+					"E:\\Projects\\GASDocumentation\\GASDocumentation.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "E:\\UE_5.7"
+				}
+			},
+			{
+				"label": "GASDocumentation Win64 Test Build",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Build.bat",
+				"args": [
+					"GASDocumentation",
+					"Win64",
+					"Test",
+					"E:\\Projects\\GASDocumentation\\GASDocumentation.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "E:\\UE_5.7"
+				}
+			},
+			{
+				"label": "GASDocumentation Win64 Test Rebuild",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Build.bat",
+				"args": [
+					"GASDocumentation",
+					"Win64",
+					"Test",
+					"E:\\Projects\\GASDocumentation\\GASDocumentation.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"dependsOn": [
+					"GASDocumentation Win64 Test Clean"
+				],
+				"type": "shell",
+				"options": {
+					"cwd": "E:\\UE_5.7"
+				}
+			},
+			{
+				"label": "GASDocumentation Win64 Test Clean",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Clean.bat",
+				"args": [
+					"GASDocumentation",
+					"Win64",
+					"Test",
+					"E:\\Projects\\GASDocumentation\\GASDocumentation.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "E:\\UE_5.7"
+				}
+			},
+			{
+				"label": "GASDocumentation Win64 Shipping Build",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Build.bat",
+				"args": [
+					"GASDocumentation",
+					"Win64",
+					"Shipping",
+					"E:\\Projects\\GASDocumentation\\GASDocumentation.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "E:\\UE_5.7"
+				}
+			},
+			{
+				"label": "GASDocumentation Win64 Shipping Rebuild",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Build.bat",
+				"args": [
+					"GASDocumentation",
+					"Win64",
+					"Shipping",
+					"E:\\Projects\\GASDocumentation\\GASDocumentation.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"dependsOn": [
+					"GASDocumentation Win64 Shipping Clean"
+				],
+				"type": "shell",
+				"options": {
+					"cwd": "E:\\UE_5.7"
+				}
+			},
+			{
+				"label": "GASDocumentation Win64 Shipping Clean",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Clean.bat",
+				"args": [
+					"GASDocumentation",
+					"Win64",
+					"Shipping",
+					"E:\\Projects\\GASDocumentation\\GASDocumentation.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "E:\\UE_5.7"
+				}
+			},
+			{
+				"label": "GASDocumentationEditor Win64 Debug Build",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Build.bat",
+				"args": [
+					"GASDocumentationEditor",
+					"Win64",
+					"Debug",
+					"E:\\Projects\\GASDocumentation\\GASDocumentation.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "E:\\UE_5.7"
+				}
+			},
+			{
+				"label": "GASDocumentationEditor Win64 Debug Rebuild",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Build.bat",
+				"args": [
+					"GASDocumentationEditor",
+					"Win64",
+					"Debug",
+					"E:\\Projects\\GASDocumentation\\GASDocumentation.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"dependsOn": [
+					"GASDocumentationEditor Win64 Debug Clean"
+				],
+				"type": "shell",
+				"options": {
+					"cwd": "E:\\UE_5.7"
+				}
+			},
+			{
+				"label": "GASDocumentationEditor Win64 Debug Clean",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Clean.bat",
+				"args": [
+					"GASDocumentationEditor",
+					"Win64",
+					"Debug",
+					"E:\\Projects\\GASDocumentation\\GASDocumentation.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "E:\\UE_5.7"
+				}
+			},
+			{
+				"label": "GASDocumentationEditor Win64 DebugGame Build",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Build.bat",
+				"args": [
+					"GASDocumentationEditor",
+					"Win64",
+					"DebugGame",
+					"E:\\Projects\\GASDocumentation\\GASDocumentation.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "E:\\UE_5.7"
+				}
+			},
+			{
+				"label": "GASDocumentationEditor Win64 DebugGame Rebuild",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Build.bat",
+				"args": [
+					"GASDocumentationEditor",
+					"Win64",
+					"DebugGame",
+					"E:\\Projects\\GASDocumentation\\GASDocumentation.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"dependsOn": [
+					"GASDocumentationEditor Win64 DebugGame Clean"
+				],
+				"type": "shell",
+				"options": {
+					"cwd": "E:\\UE_5.7"
+				}
+			},
+			{
+				"label": "GASDocumentationEditor Win64 DebugGame Clean",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Clean.bat",
+				"args": [
+					"GASDocumentationEditor",
+					"Win64",
+					"DebugGame",
+					"E:\\Projects\\GASDocumentation\\GASDocumentation.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "E:\\UE_5.7"
+				}
+			},
+			{
+				"label": "GASDocumentationEditor Win64 Development Build",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Build.bat",
+				"args": [
+					"GASDocumentationEditor",
+					"Win64",
+					"Development",
+					"E:\\Projects\\GASDocumentation\\GASDocumentation.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "E:\\UE_5.7"
+				}
+			},
+			{
+				"label": "GASDocumentationEditor Win64 Development Rebuild",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Build.bat",
+				"args": [
+					"GASDocumentationEditor",
+					"Win64",
+					"Development",
+					"E:\\Projects\\GASDocumentation\\GASDocumentation.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"dependsOn": [
+					"GASDocumentationEditor Win64 Development Clean"
+				],
+				"type": "shell",
+				"options": {
+					"cwd": "E:\\UE_5.7"
+				}
+			},
+			{
+				"label": "GASDocumentationEditor Win64 Development Clean",
+				"group": "build",
+				"command": "Engine\\Build\\BatchFiles\\Clean.bat",
+				"args": [
+					"GASDocumentationEditor",
+					"Win64",
+					"Development",
+					"E:\\Projects\\GASDocumentation\\GASDocumentation.uproject",
+					"-waitmutex"
+				],
+				"problemMatcher": "$msCompile",
+				"type": "shell",
+				"options": {
+					"cwd": "E:\\UE_5.7"
+				}
+			}
+		]
+	},
+	"launch": {
+		"version": "0.2.0",
+		"configurations": [
+			{
+				"name": "Launch GASDocumentation (Debug)",
+				"request": "launch",
+				"program": "E:\\Projects\\GASDocumentation\\Binaries\\Win64\\UnrealGame-Win64-Debug.exe",
+				"preLaunchTask": "GASDocumentation Win64 Debug Build",
+				"args": [
+				],
+				"cwd": "E:\\UE_5.7",
+				"stopAtEntry": false,
+				"console": "integratedTerminal",
+				"type": "cppvsdbg",
+				"visualizerFile": "E:\\UE_5.7\\Engine\\Extras\\VisualStudioDebugging\\Unreal.natvis",
+				"sourceFileMap": {
+					"D:\\build\\++UE5\\Sync": "E:\\UE_5.7"
+				}
+			},
+			{
+				"name": "Launch GASDocumentation (DebugGame)",
+				"request": "launch",
+				"program": "E:\\Projects\\GASDocumentation\\Binaries\\Win64\\UnrealGame-Win64-DebugGame.exe",
+				"preLaunchTask": "GASDocumentation Win64 DebugGame Build",
+				"args": [
+				],
+				"cwd": "E:\\UE_5.7",
+				"stopAtEntry": false,
+				"console": "integratedTerminal",
+				"type": "cppvsdbg",
+				"visualizerFile": "E:\\UE_5.7\\Engine\\Extras\\VisualStudioDebugging\\Unreal.natvis",
+				"sourceFileMap": {
+					"D:\\build\\++UE5\\Sync": "E:\\UE_5.7"
+				}
+			},
+			{
+				"name": "Launch GASDocumentation (Development)",
+				"request": "launch",
+				"program": "E:\\Projects\\GASDocumentation\\Binaries\\Win64\\UnrealGame.exe",
+				"preLaunchTask": "GASDocumentation Win64 Development Build",
+				"args": [
+				],
+				"cwd": "E:\\UE_5.7",
+				"stopAtEntry": false,
+				"console": "integratedTerminal",
+				"type": "cppvsdbg",
+				"visualizerFile": "E:\\UE_5.7\\Engine\\Extras\\VisualStudioDebugging\\Unreal.natvis",
+				"sourceFileMap": {
+					"D:\\build\\++UE5\\Sync": "E:\\UE_5.7"
+				}
+			},
+			{
+				"name": "Launch GASDocumentation (Test)",
+				"request": "launch",
+				"program": "E:\\Projects\\GASDocumentation\\Binaries\\Win64\\UnrealGame-Win64-Test.exe",
+				"preLaunchTask": "GASDocumentation Win64 Test Build",
+				"args": [
+				],
+				"cwd": "E:\\UE_5.7",
+				"stopAtEntry": false,
+				"console": "integratedTerminal",
+				"type": "cppvsdbg",
+				"visualizerFile": "E:\\UE_5.7\\Engine\\Extras\\VisualStudioDebugging\\Unreal.natvis",
+				"sourceFileMap": {
+					"D:\\build\\++UE5\\Sync": "E:\\UE_5.7"
+				}
+			},
+			{
+				"name": "Launch GASDocumentation (Shipping)",
+				"request": "launch",
+				"program": "E:\\Projects\\GASDocumentation\\Binaries\\Win64\\UnrealGame-Win64-Shipping.exe",
+				"preLaunchTask": "GASDocumentation Win64 Shipping Build",
+				"args": [
+				],
+				"cwd": "E:\\UE_5.7",
+				"stopAtEntry": false,
+				"console": "integratedTerminal",
+				"type": "cppvsdbg",
+				"visualizerFile": "E:\\UE_5.7\\Engine\\Extras\\VisualStudioDebugging\\Unreal.natvis",
+				"sourceFileMap": {
+					"D:\\build\\++UE5\\Sync": "E:\\UE_5.7"
+				}
+			},
+			{
+				"name": "Launch GASDocumentationEditor (Debug)",
+				"request": "launch",
+				"program": "E:\\UE_5.7\\Engine\\Binaries\\Win64\\UnrealEditor-Win64-Debug.exe",
+				"preLaunchTask": "GASDocumentationEditor Win64 Debug Build",
+				"args": [
+					"E:\\Projects\\GASDocumentation\\GASDocumentation.uproject"
+				],
+				"cwd": "E:\\UE_5.7",
+				"stopAtEntry": false,
+				"console": "integratedTerminal",
+				"type": "cppvsdbg",
+				"visualizerFile": "E:\\UE_5.7\\Engine\\Extras\\VisualStudioDebugging\\Unreal.natvis",
+				"sourceFileMap": {
+					"D:\\build\\++UE5\\Sync": "E:\\UE_5.7"
+				}
+			},
+			{
+				"name": "Launch GASDocumentationEditor (DebugGame)",
+				"request": "launch",
+				"program": "E:\\UE_5.7\\Engine\\Binaries\\Win64\\UnrealEditor-Win64-DebugGame.exe",
+				"preLaunchTask": "GASDocumentationEditor Win64 DebugGame Build",
+				"args": [
+					"E:\\Projects\\GASDocumentation\\GASDocumentation.uproject"
+				],
+				"cwd": "E:\\UE_5.7",
+				"stopAtEntry": false,
+				"console": "integratedTerminal",
+				"type": "cppvsdbg",
+				"visualizerFile": "E:\\UE_5.7\\Engine\\Extras\\VisualStudioDebugging\\Unreal.natvis",
+				"sourceFileMap": {
+					"D:\\build\\++UE5\\Sync": "E:\\UE_5.7"
+				}
+			},
+			{
+				"name": "Launch GASDocumentationEditor (Development)",
+				"request": "launch",
+				"program": "E:\\UE_5.7\\Engine\\Binaries\\Win64\\UnrealEditor.exe",
+				"preLaunchTask": "GASDocumentationEditor Win64 Development Build",
+				"args": [
+					"E:\\Projects\\GASDocumentation\\GASDocumentation.uproject"
+				],
+				"cwd": "E:\\UE_5.7",
+				"stopAtEntry": false,
+				"console": "integratedTerminal",
+				"type": "cppvsdbg",
+				"visualizerFile": "E:\\UE_5.7\\Engine\\Extras\\VisualStudioDebugging\\Unreal.natvis",
+				"sourceFileMap": {
+					"D:\\build\\++UE5\\Sync": "E:\\UE_5.7"
+				}
+			},
+			{
+				"name": "Generate Project Files",
+				"type": "coreclr",
+				"request": "launch",
+				"preLaunchTask": "UnrealBuildTool Win64 Development Build",
+				"program": "E:\\UE_5.7\\Engine\\Build\\BatchFiles\\RunUBT.bat",
+				"args": [
+					"-projectfiles",
+					"-vscode",
+					"-project=E:\\Projects\\GASDocumentation\\GASDocumentation.uproject",
+					"-game",
+					"-engine",
+					"-dotnet"
+				],
+				"env": {
+					"PATH": "E:\\UE_5.7\\Engine\\Binaries\\ThirdParty\\DotNet\\8.0.412\\win-x64;${env:PATH}",
+					"DOTNET_ROOT": "E:\\UE_5.7\\Engine\\Binaries\\ThirdParty\\DotNet\\8.0.412\\win-x64",
+					"DOTNET_HOST_PATH": "E:\\UE_5.7\\Engine\\Binaries\\ThirdParty\\DotNet\\8.0.412\\win-x64\\dotnet.exe",
+					"DOTNET_MULTILEVEL_LOOKUP": "0",
+					"DOTNET_ROLL_FORWARD": "LatestMajor"
+				},
+				"console": "integratedTerminal",
+				"stopAtEntry": false,
+				"cwd": "E:\\UE_5.7"
+			}
+		]
+	}
+}

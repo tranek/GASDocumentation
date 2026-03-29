@@ -15,7 +15,9 @@ public class GASDocumentation : ModuleRules
             "SlateCore",
             "GameplayAbilities",
             "GameplayTags",
-            "GameplayTasks"
+            "GameplayTasks",
+            "AIModule",
+            "UMG"
         });
     }
 }

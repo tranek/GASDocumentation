@@ -1,0 +1,10 @@
+{
+    "unreal-clangd.creation.overwrite": "full",
+    "unreal-clangd.creation.compilerPath": "c:\\Program Files\\LLVM\\bin\\clang-cl.exe",
+    "unreal-clangd.utility.createProjectOnStartup": false,
+    "C_Cpp.autocomplete": "disabled",
+    "C_Cpp.errorSquiggles": "disabled",
+    "C_Cpp.formatting": "disabled",
+    "C_Cpp.intelliSenseEngine": "disabled",
+    "editor.suggest.snippetsPreventQuickSuggestions": false
+}

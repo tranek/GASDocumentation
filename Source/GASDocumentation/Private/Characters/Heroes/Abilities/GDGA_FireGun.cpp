@@ -13,7 +13,7 @@ UGDGA_FireGun::UGDGA_FireGun()
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 
 	FGameplayTag Ability1Tag = FGameplayTag::RequestGameplayTag(FName("Ability.Skill.Ability1"));
-	AbilityTags.AddTag(Ability1Tag);
+	SetAssetTags(FGameplayTagContainer(Ability1Tag));
 	ActivationOwnedTags.AddTag(Ability1Tag);
 
 	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag(FName("Ability.Skill")));

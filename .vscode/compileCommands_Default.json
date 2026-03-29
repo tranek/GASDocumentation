@@ -1,0 +1,426 @@
+[
+	{
+		"file": "E:\\Projects\\GASDocumentation\\Source\\GASDocumentation\\GASDocumentation.Build.cs",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+			"@E:\\Projects\\GASDocumentation\\.vscode\\compileCommands_Default\\GASDocumentation.1.rsp"
+		],
+		"directory": "E:\\UE_5.7\\Engine\\Source"
+	},
+	{
+		"file": "E:\\Projects\\GASDocumentation\\Source\\GASDocumentation\\GASDocumentation.cpp",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+			"@E:\\Projects\\GASDocumentation\\.vscode\\compileCommands_Default\\GASDocumentation.1.rsp"
+		],
+		"directory": "E:\\UE_5.7\\Engine\\Source"
+	},
+	{
+		"file": "E:\\Projects\\GASDocumentation\\Source\\GASDocumentation\\GASDocumentation.h",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+			"@E:\\Projects\\GASDocumentation\\.vscode\\compileCommands_Default\\GASDocumentation.1.rsp"
+		],
+		"directory": "E:\\UE_5.7\\Engine\\Source"
+	},
+	{
+		"file": "E:\\Projects\\GASDocumentation\\Source\\GASDocumentation\\GASDocumentationGameMode.cpp",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+			"@E:\\Projects\\GASDocumentation\\.vscode\\compileCommands_Default\\GASDocumentation.1.rsp"
+		],
+		"directory": "E:\\UE_5.7\\Engine\\Source"
+	},
+	{
+		"file": "E:\\Projects\\GASDocumentation\\Source\\GASDocumentation\\GASDocumentationGameMode.h",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+			"@E:\\Projects\\GASDocumentation\\.vscode\\compileCommands_Default\\GASDocumentation.1.rsp"
+		],
+		"directory": "E:\\UE_5.7\\Engine\\Source"
+	},
+	{
+		"file": "E:\\Projects\\GASDocumentation\\Source\\GASDocumentation\\Private\\AI\\GDHeroAIController.cpp",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+			"@E:\\Projects\\GASDocumentation\\.vscode\\compileCommands_Default\\GASDocumentation.1.rsp"
+		],
+		"directory": "E:\\UE_5.7\\Engine\\Source"
+	},
+	{
+		"file": "E:\\Projects\\GASDocumentation\\Source\\GASDocumentation\\Private\\Characters\\Abilities\\AbilityTasks\\GDAT_PlayMontageAndWaitForEvent.cpp",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+			"@E:\\Projects\\GASDocumentation\\.vscode\\compileCommands_Default\\GASDocumentation.1.rsp"
+		],
+		"directory": "E:\\UE_5.7\\Engine\\Source"
+	},
+	{
+		"file": "E:\\Projects\\GASDocumentation\\Source\\GASDocumentation\\Private\\Characters\\Abilities\\AbilityTasks\\GDAT_WaitReceiveDamage.cpp",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+			"@E:\\Projects\\GASDocumentation\\.vscode\\compileCommands_Default\\GASDocumentation.1.rsp"
+		],
+		"directory": "E:\\UE_5.7\\Engine\\Source"
+	},
+	{
+		"file": "E:\\Projects\\GASDocumentation\\Source\\GASDocumentation\\Private\\Characters\\Abilities\\AsyncTaskAttributeChanged.cpp",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+			"@E:\\Projects\\GASDocumentation\\.vscode\\compileCommands_Default\\GASDocumentation.1.rsp"
+		],
+		"directory": "E:\\UE_5.7\\Engine\\Source"
+	},
+	{
+		"file": "E:\\Projects\\GASDocumentation\\Source\\GASDocumentation\\Private\\Characters\\Abilities\\AsyncTaskCooldownChanged.cpp",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+			"@E:\\Projects\\GASDocumentation\\.vscode\\compileCommands_Default\\GASDocumentation.1.rsp"
+		],
+		"directory": "E:\\UE_5.7\\Engine\\Source"
+	},
+	{
+		"file": "E:\\Projects\\GASDocumentation\\Source\\GASDocumentation\\Private\\Characters\\Abilities\\AsyncTaskEffectStackChanged.cpp",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+			"@E:\\Projects\\GASDocumentation\\.vscode\\compileCommands_Default\\GASDocumentation.1.rsp"
+		],
+		"directory": "E:\\UE_5.7\\Engine\\Source"
+	},
+	{
+		"file": "E:\\Projects\\GASDocumentation\\Source\\GASDocumentation\\Private\\Characters\\Abilities\\AttributeSets\\GDAttributeSetBase.cpp",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+			"@E:\\Projects\\GASDocumentation\\.vscode\\compileCommands_Default\\GASDocumentation.1.rsp"
+		],
+		"directory": "E:\\UE_5.7\\Engine\\Source"
+	},
+	{
+		"file": "E:\\Projects\\GASDocumentation\\Source\\GASDocumentation\\Private\\Characters\\Abilities\\GDAbilitySystemComponent.cpp",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+			"@E:\\Projects\\GASDocumentation\\.vscode\\compileCommands_Default\\GASDocumentation.1.rsp"
+		],
+		"directory": "E:\\UE_5.7\\Engine\\Source"
+	},
+	{
+		"file": "E:\\Projects\\GASDocumentation\\Source\\GASDocumentation\\Private\\Characters\\Abilities\\GDDamageExecCalculation.cpp",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+			"@E:\\Projects\\GASDocumentation\\.vscode\\compileCommands_Default\\GASDocumentation.1.rsp"
+		],
+		"directory": "E:\\UE_5.7\\Engine\\Source"
+	},
+	{
+		"file": "E:\\Projects\\GASDocumentation\\Source\\GASDocumentation\\Private\\Characters\\Abilities\\GDGA_CharacterJump.cpp",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+			"@E:\\Projects\\GASDocumentation\\.vscode\\compileCommands_Default\\GASDocumentation.1.rsp"
+		],
+		"directory": "E:\\UE_5.7\\Engine\\Source"
+	},
+	{
+		"file": "E:\\Projects\\GASDocumentation\\Source\\GASDocumentation\\Private\\Characters\\Abilities\\GDGameplayAbility.cpp",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+			"@E:\\Projects\\GASDocumentation\\.vscode\\compileCommands_Default\\GASDocumentation.1.rsp"
+		],
+		"directory": "E:\\UE_5.7\\Engine\\Source"
+	},
+	{
+		"file": "E:\\Projects\\GASDocumentation\\Source\\GASDocumentation\\Private\\Characters\\GDCharacterBase.cpp",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+			"@E:\\Projects\\GASDocumentation\\.vscode\\compileCommands_Default\\GASDocumentation.1.rsp"
+		],
+		"directory": "E:\\UE_5.7\\Engine\\Source"
+	},
+	{
+		"file": "E:\\Projects\\GASDocumentation\\Source\\GASDocumentation\\Private\\Characters\\GDCharacterMovementComponent.cpp",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+			"@E:\\Projects\\GASDocumentation\\.vscode\\compileCommands_Default\\GASDocumentation.1.rsp"
+		],
+		"directory": "E:\\UE_5.7\\Engine\\Source"
+	},
+	{
+		"file": "E:\\Projects\\GASDocumentation\\Source\\GASDocumentation\\Private\\Characters\\GDProjectile.cpp",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+			"@E:\\Projects\\GASDocumentation\\.vscode\\compileCommands_Default\\GASDocumentation.1.rsp"
+		],
+		"directory": "E:\\UE_5.7\\Engine\\Source"
+	},
+	{
+		"file": "E:\\Projects\\GASDocumentation\\Source\\GASDocumentation\\Private\\Characters\\Heroes\\Abilities\\GDGA_FireGun.cpp",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+			"@E:\\Projects\\GASDocumentation\\.vscode\\compileCommands_Default\\GASDocumentation.1.rsp"
+		],
+		"directory": "E:\\UE_5.7\\Engine\\Source"
+	},
+	{
+		"file": "E:\\Projects\\GASDocumentation\\Source\\GASDocumentation\\Private\\Characters\\Heroes\\GDHeroCharacter.cpp",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+			"@E:\\Projects\\GASDocumentation\\.vscode\\compileCommands_Default\\GASDocumentation.1.rsp"
+		],
+		"directory": "E:\\UE_5.7\\Engine\\Source"
+	},
+	{
+		"file": "E:\\Projects\\GASDocumentation\\Source\\GASDocumentation\\Private\\Characters\\Minions\\GDMinionCharacter.cpp",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+			"@E:\\Projects\\GASDocumentation\\.vscode\\compileCommands_Default\\GASDocumentation.1.rsp"
+		],
+		"directory": "E:\\UE_5.7\\Engine\\Source"
+	},
+	{
+		"file": "E:\\Projects\\GASDocumentation\\Source\\GASDocumentation\\Private\\GDBlueprintLibrary.cpp",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+			"@E:\\Projects\\GASDocumentation\\.vscode\\compileCommands_Default\\GASDocumentation.1.rsp"
+		],
+		"directory": "E:\\UE_5.7\\Engine\\Source"
+	},
+	{
+		"file": "E:\\Projects\\GASDocumentation\\Source\\GASDocumentation\\Private\\GDEngineSubsystem.cpp",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+			"@E:\\Projects\\GASDocumentation\\.vscode\\compileCommands_Default\\GASDocumentation.1.rsp"
+		],
+		"directory": "E:\\UE_5.7\\Engine\\Source"
+	},
+	{
+		"file": "E:\\Projects\\GASDocumentation\\Source\\GASDocumentation\\Private\\Player\\GDPlayerController.cpp",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+			"@E:\\Projects\\GASDocumentation\\.vscode\\compileCommands_Default\\GASDocumentation.1.rsp"
+		],
+		"directory": "E:\\UE_5.7\\Engine\\Source"
+	},
+	{
+		"file": "E:\\Projects\\GASDocumentation\\Source\\GASDocumentation\\Private\\Player\\GDPlayerState.cpp",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+			"@E:\\Projects\\GASDocumentation\\.vscode\\compileCommands_Default\\GASDocumentation.1.rsp"
+		],
+		"directory": "E:\\UE_5.7\\Engine\\Source"
+	},
+	{
+		"file": "E:\\Projects\\GASDocumentation\\Source\\GASDocumentation\\Private\\UI\\GDDamageTextWidgetComponent.cpp",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+			"@E:\\Projects\\GASDocumentation\\.vscode\\compileCommands_Default\\GASDocumentation.1.rsp"
+		],
+		"directory": "E:\\UE_5.7\\Engine\\Source"
+	},
+	{
+		"file": "E:\\Projects\\GASDocumentation\\Source\\GASDocumentation\\Private\\UI\\GDFloatingStatusBarWidget.cpp",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+			"@E:\\Projects\\GASDocumentation\\.vscode\\compileCommands_Default\\GASDocumentation.1.rsp"
+		],
+		"directory": "E:\\UE_5.7\\Engine\\Source"
+	},
+	{
+		"file": "E:\\Projects\\GASDocumentation\\Source\\GASDocumentation\\Private\\UI\\GDHUDWidget.cpp",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+			"@E:\\Projects\\GASDocumentation\\.vscode\\compileCommands_Default\\GASDocumentation.1.rsp"
+		],
+		"directory": "E:\\UE_5.7\\Engine\\Source"
+	},
+	{
+		"file": "E:\\Projects\\GASDocumentation\\Source\\GASDocumentation\\Public\\AI\\GDHeroAIController.h",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+			"@E:\\Projects\\GASDocumentation\\.vscode\\compileCommands_Default\\GASDocumentation.1.rsp"
+		],
+		"directory": "E:\\UE_5.7\\Engine\\Source"
+	},
+	{
+		"file": "E:\\Projects\\GASDocumentation\\Source\\GASDocumentation\\Public\\Characters\\Abilities\\AbilityTasks\\GDAT_PlayMontageAndWaitForEvent.h",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+			"@E:\\Projects\\GASDocumentation\\.vscode\\compileCommands_Default\\GASDocumentation.1.rsp"
+		],
+		"directory": "E:\\UE_5.7\\Engine\\Source"
+	},
+	{
+		"file": "E:\\Projects\\GASDocumentation\\Source\\GASDocumentation\\Public\\Characters\\Abilities\\AbilityTasks\\GDAT_WaitReceiveDamage.h",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+			"@E:\\Projects\\GASDocumentation\\.vscode\\compileCommands_Default\\GASDocumentation.1.rsp"
+		],
+		"directory": "E:\\UE_5.7\\Engine\\Source"
+	},
+	{
+		"file": "E:\\Projects\\GASDocumentation\\Source\\GASDocumentation\\Public\\Characters\\Abilities\\AsyncTaskAttributeChanged.h",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+			"@E:\\Projects\\GASDocumentation\\.vscode\\compileCommands_Default\\GASDocumentation.1.rsp"
+		],
+		"directory": "E:\\UE_5.7\\Engine\\Source"
+	},
+	{
+		"file": "E:\\Projects\\GASDocumentation\\Source\\GASDocumentation\\Public\\Characters\\Abilities\\AsyncTaskCooldownChanged.h",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+			"@E:\\Projects\\GASDocumentation\\.vscode\\compileCommands_Default\\GASDocumentation.1.rsp"
+		],
+		"directory": "E:\\UE_5.7\\Engine\\Source"
+	},
+	{
+		"file": "E:\\Projects\\GASDocumentation\\Source\\GASDocumentation\\Public\\Characters\\Abilities\\AsyncTaskEffectStackChanged.h",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+			"@E:\\Projects\\GASDocumentation\\.vscode\\compileCommands_Default\\GASDocumentation.1.rsp"
+		],
+		"directory": "E:\\UE_5.7\\Engine\\Source"
+	},
+	{
+		"file": "E:\\Projects\\GASDocumentation\\Source\\GASDocumentation\\Public\\Characters\\Abilities\\AttributeSets\\GDAttributeSetBase.h",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+			"@E:\\Projects\\GASDocumentation\\.vscode\\compileCommands_Default\\GASDocumentation.1.rsp"
+		],
+		"directory": "E:\\UE_5.7\\Engine\\Source"
+	},
+	{
+		"file": "E:\\Projects\\GASDocumentation\\Source\\GASDocumentation\\Public\\Characters\\Abilities\\GDAbilitySystemComponent.h",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+			"@E:\\Projects\\GASDocumentation\\.vscode\\compileCommands_Default\\GASDocumentation.1.rsp"
+		],
+		"directory": "E:\\UE_5.7\\Engine\\Source"
+	},
+	{
+		"file": "E:\\Projects\\GASDocumentation\\Source\\GASDocumentation\\Public\\Characters\\Abilities\\GDDamageExecCalculation.h",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+			"@E:\\Projects\\GASDocumentation\\.vscode\\compileCommands_Default\\GASDocumentation.1.rsp"
+		],
+		"directory": "E:\\UE_5.7\\Engine\\Source"
+	},
+	{
+		"file": "E:\\Projects\\GASDocumentation\\Source\\GASDocumentation\\Public\\Characters\\Abilities\\GDGA_CharacterJump.h",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+			"@E:\\Projects\\GASDocumentation\\.vscode\\compileCommands_Default\\GASDocumentation.1.rsp"
+		],
+		"directory": "E:\\UE_5.7\\Engine\\Source"
+	},
+	{
+		"file": "E:\\Projects\\GASDocumentation\\Source\\GASDocumentation\\Public\\Characters\\Abilities\\GDGameplayAbility.h",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+			"@E:\\Projects\\GASDocumentation\\.vscode\\compileCommands_Default\\GASDocumentation.1.rsp"
+		],
+		"directory": "E:\\UE_5.7\\Engine\\Source"
+	},
+	{
+		"file": "E:\\Projects\\GASDocumentation\\Source\\GASDocumentation\\Public\\Characters\\GDCharacterBase.h",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+			"@E:\\Projects\\GASDocumentation\\.vscode\\compileCommands_Default\\GASDocumentation.1.rsp"
+		],
+		"directory": "E:\\UE_5.7\\Engine\\Source"
+	},
+	{
+		"file": "E:\\Projects\\GASDocumentation\\Source\\GASDocumentation\\Public\\Characters\\GDCharacterMovementComponent.h",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+			"@E:\\Projects\\GASDocumentation\\.vscode\\compileCommands_Default\\GASDocumentation.1.rsp"
+		],
+		"directory": "E:\\UE_5.7\\Engine\\Source"
+	},
+	{
+		"file": "E:\\Projects\\GASDocumentation\\Source\\GASDocumentation\\Public\\Characters\\GDProjectile.h",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+			"@E:\\Projects\\GASDocumentation\\.vscode\\compileCommands_Default\\GASDocumentation.1.rsp"
+		],
+		"directory": "E:\\UE_5.7\\Engine\\Source"
+	},
+	{
+		"file": "E:\\Projects\\GASDocumentation\\Source\\GASDocumentation\\Public\\Characters\\Heroes\\Abilities\\GDGA_FireGun.h",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+			"@E:\\Projects\\GASDocumentation\\.vscode\\compileCommands_Default\\GASDocumentation.1.rsp"
+		],
+		"directory": "E:\\UE_5.7\\Engine\\Source"
+	},
+	{
+		"file": "E:\\Projects\\GASDocumentation\\Source\\GASDocumentation\\Public\\Characters\\Heroes\\GDHeroCharacter.h",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+			"@E:\\Projects\\GASDocumentation\\.vscode\\compileCommands_Default\\GASDocumentation.1.rsp"
+		],
+		"directory": "E:\\UE_5.7\\Engine\\Source"
+	},
+	{
+		"file": "E:\\Projects\\GASDocumentation\\Source\\GASDocumentation\\Public\\Characters\\Minions\\GDMinionCharacter.h",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+			"@E:\\Projects\\GASDocumentation\\.vscode\\compileCommands_Default\\GASDocumentation.1.rsp"
+		],
+		"directory": "E:\\UE_5.7\\Engine\\Source"
+	},
+	{
+		"file": "E:\\Projects\\GASDocumentation\\Source\\GASDocumentation\\Public\\GDBlueprintLibrary.h",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+			"@E:\\Projects\\GASDocumentation\\.vscode\\compileCommands_Default\\GASDocumentation.1.rsp"
+		],
+		"directory": "E:\\UE_5.7\\Engine\\Source"
+	},
+	{
+		"file": "E:\\Projects\\GASDocumentation\\Source\\GASDocumentation\\Public\\GDEngineSubsystem.h",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+			"@E:\\Projects\\GASDocumentation\\.vscode\\compileCommands_Default\\GASDocumentation.1.rsp"
+		],
+		"directory": "E:\\UE_5.7\\Engine\\Source"
+	},
+	{
+		"file": "E:\\Projects\\GASDocumentation\\Source\\GASDocumentation\\Public\\Player\\GDPlayerController.h",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+			"@E:\\Projects\\GASDocumentation\\.vscode\\compileCommands_Default\\GASDocumentation.1.rsp"
+		],
+		"directory": "E:\\UE_5.7\\Engine\\Source"
+	},
+	{
+		"file": "E:\\Projects\\GASDocumentation\\Source\\GASDocumentation\\Public\\Player\\GDPlayerState.h",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+			"@E:\\Projects\\GASDocumentation\\.vscode\\compileCommands_Default\\GASDocumentation.1.rsp"
+		],
+		"directory": "E:\\UE_5.7\\Engine\\Source"
+	},
+	{
+		"file": "E:\\Projects\\GASDocumentation\\Source\\GASDocumentation\\Public\\UI\\GDDamageTextWidgetComponent.h",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+			"@E:\\Projects\\GASDocumentation\\.vscode\\compileCommands_Default\\GASDocumentation.1.rsp"
+		],
+		"directory": "E:\\UE_5.7\\Engine\\Source"
+	},
+	{
+		"file": "E:\\Projects\\GASDocumentation\\Source\\GASDocumentation\\Public\\UI\\GDFloatingStatusBarWidget.h",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+			"@E:\\Projects\\GASDocumentation\\.vscode\\compileCommands_Default\\GASDocumentation.1.rsp"
+		],
+		"directory": "E:\\UE_5.7\\Engine\\Source"
+	},
+	{
+		"file": "E:\\Projects\\GASDocumentation\\Source\\GASDocumentation\\Public\\UI\\GDHUDWidget.h",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+			"@E:\\Projects\\GASDocumentation\\.vscode\\compileCommands_Default\\GASDocumentation.1.rsp"
+		],
+		"directory": "E:\\UE_5.7\\Engine\\Source"
+	}
+]

@@ -76,10 +76,6 @@ DerivedDataCache/*
 # Spotlight index files
 .DS_Store
 
-# Visual Studio Code files
-.vscode
-*.code-workspace
-
 # Rider user specific files
 .idea/
 /Plugins/Developer/RiderLink
